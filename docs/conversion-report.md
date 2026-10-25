@@ -43,6 +43,8 @@ the conversion touches no Dockerfile or `root/`, and the pipeline builds and tes
 | docker-openssh-server | master | `alpine_apk` v3.24/main `openssh-server-pam` | none | none | Converted with no edits: the cleanest migrate output so far. |
 | docker-duplicati | master, development | master `github_release`; development `json` over the GitHub releases API (first `beta` tag) | master `github_release`; none on development (legacy had none) | 8200, subdomain only | Subfolder off for the same reason as syncthing. |
 
+All 19 first builds passed (9 of them dispatched by hand, see AGENTS.md).
+
 Found while converting:
 
 - **`builder migrate` still copies Groovy-escaped commands verbatim** (doubled `\\` in lidarr's notes and
@@ -54,3 +56,49 @@ Found while converting:
   nextcloud) relied on `rewrite /<name>(.*) $1 break;` in the legacy confs, so they are marked subdomain only
   here. heimdall is already marked `subfolder.supported: true` with "SWAG rewrites", but the generated
   sample does not rewrite, so it likely does not work.
+
+## Third batch (2026-10-25)
+
+Twenty more images, 28 live branches, converted and pushed the same way after the second batch built green.
+Live branches that are deprecated upstream were not converted: jackett `development`, wireguard `legacy`,
+firefox `kasm`, mylar3 `unstable`. changedetection.io was swapped for pairdrop because its name has a dot
+(see below). Every version, notes and `require_assets` source was resolved live before pushing.
+
+Subfolder support is set only where the hub's generated sample works as is. Apps whose legacy conf needs a
+`rewrite` (freshrss, deluge, phpmyadmin, thelounge), a header in the main location (calibre-web's
+`X-Script-Name`) or a location outside the prefix (emby's `/embywebsocket`) are subdomain only for now.
+
+| Repo | Branches converted | Version source | Notes source | Proxy | Notes / open questions |
+| --- | --- | --- | --- | --- | --- |
+| docker-freshrss | master | `github_release` FreshRSS/FreshRSS | `github_release` | 80, subdomain only | Legacy subfolder needs a rewrite. |
+| docker-emby | master, beta | master `github_release` MediaBrowser/Emby.Releases; beta `json` (first prerelease) | `github_release` | 8096, subdomain only | Migrate crashed on this repo (fixed in builder, below). The legacy `external_artifact_check` became `require_assets` for the amd64 and arm64 debs. master changelog 2020-11-03 "missing samba folder" → 2020-12-03 (commit date). |
+| docker-calibre-web | master, nightly | `github_release`; nightly `github_commit` | same as version | 8083, subdomain only, `/opds`, `/kobo` | `build_armhf` dropped. |
+| docker-grocy | master | `github_release` grocy/grocy | `github_release` | 80, subdomain only, `/api` | Changelog 2024-05-02 "Rebase to Alpine 3.21" → 2025-05-02. |
+| docker-jackett | master | `github_release` Jackett/Jackett | `github_release` | 9117, subfolder (Base path override `/jackett`), `/api`, `/dl` | `development` is deprecated upstream; not converted. |
+| docker-nzbget | master, testing | `github_release`; testing `json` (sha of the `testing` tag) | master `github_release`; none on testing | 6789, subfolder (any prefix), `/jsonrpc`, `/jsonprpc`, `/xmlrpc` | The legacy confs also match `/<user>:<pass>/jsonrpc`; `api_locations` cannot express that form. |
+| docker-ombi | master, development | `github_release` (development `prerelease`) | `github_release` | 3579, subfolder (Base URL `/ombi`), `/api`, `/swagger` | master notes are empty because upstream's release body is empty. |
+| docker-piwigo | master | `github_release` Piwigo/Piwigo | `github_release` | 80, subdomain only | |
+| docker-wikijs | master | `github_release` Requarks/wiki-v2 | `github_release` | 3000, subdomain only, `/graphql` | Changelog 2022-08-25 "Rebase to Alpine 3.18" → 2023-08-25. |
+| docker-librespeed | master | `github_release` librespeed/speedtest | `github_release` | 80, subdomain only | |
+| docker-healthchecks | master | `github_release` healthchecks/healthchecks | `github_release` | 8000, subdomain only | |
+| docker-smokeping | master | `alpine_apk` | none | 80, subfolder (serves `/smokeping`) | |
+| docker-deluge | master, libtorrentv1 | `pip` deluge | none | 8112, subdomain only | Changelog 2019-05-09 "Add python3 requests" → 2020-05-09 on both. |
+| docker-phpmyadmin | main | `command` (phpmyadmin.net `version.txt` is plain text; no typed source reads it) | none | 80, subdomain only | |
+| docker-thelounge | master, next, nightly | `github_release` (next `prerelease`); nightly `github_commit` | same as version | 9000, subdomain only | next/nightly categories copied from master. |
+| docker-pairdrop | main | `json` GitHub tags `.[0].name` (typed from the legacy curl) | none | 3000, subdomain only | |
+| docker-duckdns | master | `os` | none | none | No web UI; tests run with dummy `SUBDOMAINS`/`TOKEN`. |
+| docker-wireguard | master | `alpine_apk` | none | none | `builder check` failed on `init-wireguard-module/run`, which lacked `# shellcheck shell=bash`; the header was added in the conversion commit (no runtime change, no changelog entry). Tests are disabled, as in the legacy repo. `legacy` is deprecated; not converted. |
+| docker-firefox | master | `deb_packages` xtradeb PPA `firefox` + transform stripping `[+~,]` (typed from the legacy curl; same result) | none | 3001 https, subdomain only | selkies base. `kasm` is deprecated; not converted. |
+| docker-mylar3 | master, nightly | `github_release`; nightly `github_commit` | same as version | 8090, subdomain only | nightly category copied from master. `unstable` is deprecated; not converted. |
+
+Found while converting:
+
+- **Migrate crashed on emby** (`UndefinedError: 'secrets' is undefined`): it re-renders strings until they stop
+  changing, so the escaped `${{ '{{' }} secrets.CR_PAT {{ '}}' }}` became `${{ secrets.CR_PAT }}` and then failed
+  on the next pass. Fixed in builder (escaped expressions stay literal), with emby added as a live fixture.
+  migrate now also points `external_artifact_check` at `require_assets`.
+- **Categories copied to non-master branches were incomplete** in the second batch (only master's first
+  category); lidarr develop/nightly and nextcloud develop/previous got a follow-up commit with master's full list.
+- **Image names cannot contain a dot.** `changedetection.io` fails the schema's `name` pattern. Allowing it is a
+  contract change (k8s object names, store ids, container names and site URLs all derive from `name`), so
+  it needs a maintainer decision.
