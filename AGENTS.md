@@ -65,9 +65,10 @@ generated output.
    scan, `dumper files` for the file tree.
 3. `publish-manifest` creates the released multi-arch tags (CONVENTIONS §3), attaches our own SBOM
    attestation, and creates the GitHub Release with the bundle assets.
-4. The workflow POSTs signed events to control `/events`. Control posts to Discord and sends the hub
-   `repository_dispatch image-released`.
-5. The hub ingests the Release, commits `data/`, rebuilds Pages and pushes the store repos.
+4. The workflow POSTs signed events to control `/events`. Control posts to Discord (held at "publishing" until
+   the build's site page is live) and sends the hub `repository_dispatch image-released`.
+5. The hub sweeps for every release `data/` lacks (the dispatch is only a hint), scans the new builds with
+   grype, commits `data/`, rebuilds Pages and pushes the store repos.
 6. When the hub's Deploy succeeds, control sends `hub-updated` to the site, and the site rebuilds from the hub API.
 7. The site's fleet pages read control's JSON API live, with the session cookie, for anything that changes
    minute to minute.
