@@ -103,7 +103,10 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
      files rendered by builder`.
 
   `docs/conversion-report.md` and the converted repos are worked examples. The GHCR package is created
-  public on the first publish (an org setting); nothing else needs doing.
+  public on the first publish (an org setting); nothing else needs doing. Push only the live branches
+  (where `jenkins-vars.yml` `ls_branch` names the branch). On a brand-new repo GitHub runs a workflow
+  for only one of the first pushes, so check `gh run list` and dispatch the live branches that got no run
+  (`gh workflow run build.yml -R linuxserver-playground/docker-<name> --ref <branch> -f reason=manual`).
 - **Site-only change** (layout, docs page, blog post). Edit `site` and validate with its AGENTS.md list
   (check, build, a11y, overflow at 390px). Docs pages and posts are content collections; front matter is
   validated at build time.
