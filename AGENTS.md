@@ -101,19 +101,34 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   4. Make one commit, `Convert to the v2 layout: image.yml replaces readme-vars and jenkins-vars, generated
      files rendered by builder`.
 
-  `docs/conversion-report.md` and the converted repos are worked examples. After the first
-  publish, an org owner sets the new GHCR package to public (package settings in the GitHub UI; there is no
-  API for it).
+  `docs/conversion-report.md` and the converted repos are worked examples. The GHCR package is created
+  public on the first publish (an org setting); nothing else needs doing.
 - **Site-only change** (layout, docs page, blog post). Edit `site` and validate with its AGENTS.md list
   (check, build, a11y, overflow at 390px). Docs pages and posts are content collections; front matter is
   validated at build time.
 - **Hub generator or API change.** Edit `hub`, update the fixture tests for sonarr, swag and multidb, and
   push. Pages redeploys on push. To force a full refresh: `gh workflow run deploy.yml -R linuxserver-playground/hub`.
 - **Control change.** Edit `control`, run its checks, and push to main. That deploys. A red main ships
-  nothing, so watch the Publish run. A new setting needs a default that works without it. If it must be set
-  on n97, say so to the maintainers: only they edit `~/control/.env`.
+  nothing, so watch the Publish run. Settings live as defaults in `control/config.py`, so changing one is a
+  code change. Only a new *secret* needs n97 (see Secrets).
 - **New mod.** Follow `repos/docker-mods/AGENTS.md`: a branch from `template` with `mod.yml`, then
   `tools/check-branch.sh` and `tools/test-mod.sh`.
+
+## Secrets
+
+You need none. Your own `gh` login (as an org member) is all a change requires:
+
+- Image builds, the hub and the site run on GitHub Actions with `GITHUB_TOKEN` plus org-level secrets that
+  every repo already inherits (`CONTROL_EVENTS_SECRET`, `CONTROL_URL`, `PACKAGES_TOKEN`, `ATTACHMENTS_TOKEN`,
+  `STORE_APP_ID`/`STORE_APP_PRIVATE_KEY` on the hub). A new repo gets them without any setup.
+- The control plane holds the GitHub App key, the Discord webhook, the OAuth secret and the session key in
+  `~/control/.env` on n97. Its non-secret settings are code defaults, so a normal change never touches n97.
+- Nothing local needs a secret either: every repo's tests run against fixtures and mocks.
+
+Only a change that adds a *new* credential needs a maintainer: a new org secret, or a new value in n97's
+`.env`. Write the code so that it degrades cleanly when the secret is missing (the hub's store publishing,
+for example, skips until its key exists), and ask in the PR or issue for it to be set. Never ask anyone to
+paste a secret into a chat, an issue or a file.
 
 ## Operating and checking the live system
 
@@ -138,8 +153,7 @@ anything specific to one repo in that repo's AGENTS.md instead.
 
 - Commit subjects are short imperative sentences with no prefixes, no emoji and no trailers of any kind, AI
   co-author lines included (CONVENTIONS §8). Disclose AI assistance in PR descriptions.
-- Nothing may contain a credential. The org secrets (`CONTROL_EVENTS_SECRET`, `PACKAGES_TOKEN`,
-  `ATTACHMENTS_TOKEN`, `STORE_APP_*`) and n97's `.env` are never printed, copied or committed.
+- Nothing may contain a credential, and secrets are never printed, copied or committed.
 - Nothing may reference a namespace other than `linuxserver-playground`, except the `linuxserver` base
   images (`ghcr.io/linuxserver/baseimage-*`) and links to upstream docs.
 - The site is the single pane of glass. New data lands on the site first; the hub and README follow.

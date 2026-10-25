@@ -15,5 +15,5 @@ image" recipe in AGENTS.md and the conversions in `docs/conversion-report.md`.
 5. Build and run it locally as the image repo's AGENTS.md describes, if Docker is available. Say plainly if
    it is not.
 6. Push and watch the first build to the end (`gh run watch`).
-7. Finish with: the Release link, the site image page, and a reminder that an org owner must set the new GHCR
-   package to public in the GitHub UI. Add a row to `docs/conversion-report.md` with anything unusual.
+7. Finish with the Release link and the site image page (control finds the repo on its first push; the GHCR
+   package is created public). Add a row to `docs/conversion-report.md` with anything unusual.
