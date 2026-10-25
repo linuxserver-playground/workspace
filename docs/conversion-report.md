@@ -19,3 +19,38 @@ expected `Dockerfile`/`Dockerfile.aarch64` non-FROM differences). Legacy `Jenkin
 
 Unsure about: the `exclude` negative-lookahead for qbittorrent libtorrentv1 relies on the resolver using Python `re` (it does today);
 the two `command` notes sources (qbittorrent, jellyfin) could become typed if `notes.tag` ever learns a transform.
+
+## Second batch (2026-10-25)
+
+Ten more images, converted the same way (one conversion commit per live branch, `builder check` `ok` on all 19
+branches, only the expected Dockerfile non-FROM warnings) and pushed: only the live branches (where
+`ls_branch` names the branch), with history. Stale branches (`deny-dotfile-access*` on nextcloud,
+`master-3.24`/`develop-3.24` on bazarr, a `copilot/` branch on openssh-server) were not pushed. Every version
+and notes source was resolved live with `workflows/scripts/resolve_version.py` and `upstream_notes.py` before
+pushing. Subfolder support comes from the legacy `linuxserver/reverse-proxy-confs` samples. Not built locally:
+the conversion touches no Dockerfile or `root/`, and the pipeline builds and tests every branch.
+
+| Repo | Branches converted | Version source | Notes source | Proxy | Notes / open questions |
+| --- | --- | --- | --- | --- | --- |
+| docker-lidarr | master, develop, nightly | `json` (servarr update API, `.[0].version`) | `github_release` Lidarr/Lidarr `v${VERSION}` (master, develop); none on nightly | 8686, subfolder supported (URL Base `/lidarr`), `/api` | As radarr: the Groovy-escaped commit-linkifying `sed` notes command replaced by the typed source. develop/nightly categories copied from master. |
+| docker-bazarr | master, development | `github_release` morpheus65535/bazarr (development: `prerelease: true`) | `github_release` | 6767, subfolder supported (URL Base `/bazarr`), `/api` | master changelog `2021-15-15` (invalid date, migrate flagged it) → 2021-11-15 (commit date); development `2019-12-19` "Rebasing to alpine 3.12" → 2020-06-01. |
+| docker-sabnzbd | master, unstable, nightly | `github_release` (unstable `prerelease: true`); nightly `github_commit` branch `develop` | same as version | 8080, subfolder supported (serves `/sabnzbd` by default), `/api`, note about `host_whitelist` | Changelog `2015-01-23` "Refresh image." → 2016-01-23 on all three. |
+| docker-syncthing | master | `github_release` syncthing/syncthing | `github_release` | 8384, subdomain only, `/rest` | Legacy subfolder conf strips the prefix with `rewrite`; the hub generator cannot, so subfolder is off (see below). |
+| docker-transmission | master | `alpine_apk` edge/community `transmission-daemon` | none (legacy had none) | 9091, subfolder supported (serves `/transmission`), `/rpc` | `DIST_TAG = edge` unmapped; it is already in `repo_url`. |
+| docker-mariadb | master | `alpine_apk` v3.24/main `mariadb` | `command` (legacy curl; needs `${VERSION%%-r*}`) | none (not a web app) | Changelog `2025-02-14` "Rebase to Alpine 3.23" → 2026-02-14 (commit date). |
+| docker-nextcloud | master, develop, previous | `command` on all three (legacy curl kept: `sort -rV` over all releases, which `github_release` cannot do since Nextcloud publishes old-major patches after newer majors) | `github_release` nextcloud-releases/server `v${VERSION}` | 443 https, subdomain only | Un-doubled the `\\"rc\\"` escapes in previous's command. develop/previous categories copied from master. |
+| docker-tautulli | master, develop | `github_release`; develop `github_commit` branch `nightly` | same as version | 8181, subfolder supported (HTTP Root `/tautulli`), `/api`, `/newsletter`, `/image` | develop category copied from master. |
+| docker-openssh-server | master | `alpine_apk` v3.24/main `openssh-server-pam` | none | none | Converted with no edits: the cleanest migrate output so far. |
+| docker-duplicati | master, development | master `github_release`; development `json` over the GitHub releases API (first `beta` tag) | master `github_release`; none on development (legacy had none) | 8200, subdomain only | Subfolder off for the same reason as syncthing. |
+
+Found while converting:
+
+- **`builder migrate` still copies Groovy-escaped commands verbatim** (doubled `\\` in lidarr's notes and
+  nextcloud previous's version command), the same as qbittorrent and jellyfin in the first batch. Every
+  `command` source needs a manual un-doubling; migrate could do it, or at least flag it.
+- **migrate leaves `api_locations` empty** even for the servarr apps; they were filled by hand from the legacy
+  proxy confs, as for radarr.
+- **The hub's subfolder sample has no prefix rewrite.** Apps without an in-app base URL (syncthing, duplicati,
+  nextcloud) relied on `rewrite /<name>(.*) $1 break;` in the legacy confs, so they are marked subdomain only
+  here. heimdall is already marked `subfolder.supported: true` with "SWAG rewrites", but the generated
+  sample does not rewrite, so it likely does not work.
