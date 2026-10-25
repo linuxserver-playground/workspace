@@ -1,0 +1,149 @@
+# AGENTS.md - workspace
+
+## Purpose
+
+The starting point for working on the LinuxServer.io v2 playground, the GitHub organisation
+`linuxserver-playground`: a proof of concept of LinuxServer.io with no Jenkins. Image repos hold a manifest
+(`image.yml`), one shared GitHub Actions workflow builds, tests and releases every image, a hub turns the
+release bundles into data and generated artefacts, a control plane schedules builds, and one website shows
+all of it. This repo holds no product code. It clones every other repo into `repos/` and explains how they
+fit together, so an agent started here can make a change that crosses repos.
+
+Live surfaces:
+
+| What | URL |
+| --- | --- |
+| Website (the single pane of glass: images, builds, fleet, docs, blog) | https://linuxserver-playground.github.io/site/ |
+| Hub (static API and generated artefacts) | https://linuxserver-playground.github.io/hub/ |
+| Control plane (scheduler, webhooks, JSON API, member actions) | https://ci.thelamer.duckdns.org:8443 |
+| Images | `ghcr.io/linuxserver-playground/<name>` |
+
+## Getting started
+
+```bash
+gh auth login                  # an account that owns or belongs to linuxserver-playground
+./bootstrap.sh                 # clone or fast-forward every repo into repos/
+./bootstrap.sh --setup         # once: venvs, npm, cargo for the infrastructure repos
+./bootstrap.sh --reference     # optional: the read-only linuxserver/* originals, for converting images
+```
+
+Re-run `./bootstrap.sh` at the start of every session; others push too. It never merges over local changes.
+
+**Before editing a repo, read its own `AGENTS.md`.** Each one says what may be edited there, how to validate
+locally and what its pull request rules are. This file only covers what crosses repos. The contract behind
+everything is `repos/builder/CONVENTIONS.md` with the JSON Schemas in `repos/builder/schemas/`; when anything
+here disagrees with it, CONVENTIONS wins. The settled design decisions are in `DECISIONS.md`: do not reopen
+them without the maintainers.
+
+## Layout
+
+`repos/` (from `bootstrap.sh`, gitignored):
+
+| Repo | Role | A change goes live when |
+| --- | --- | --- |
+| `builder` | Contracts: `CONVENTIONS.md`, `schemas/`, the `contracts` package, the `builder` CLI (check, render, migrate, snippets), AGENTS.md templates for image repos | push to main publishes `ghcr.io/linuxserver-playground/builder:latest`; the other Python repos install `lsio-builder` from `builder@main` |
+| `workflows` | The reusable `image-build.yml` and `mod-build.yml` plus one composite action per step | the floating tag `v1` moves to the new commit (image repos call `@v1`) |
+| `ci` | The container test harness: runs each built image, takes screenshots, emits the release bundle | push to main publishes `ghcr.io/linuxserver-playground/ci:latest`, which workflows pulls |
+| `dumper` | Rust static file-tree walker for the bundle (`dumper files`) | a GitHub Release; workflows fetch `releases/latest` |
+| `hub` | Ingests bundles into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index and build reports, and runs grype | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
+| `site` | Astro website: image pages, build pages, fleet board (live from control), docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
+| `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
+| `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated | push to a live branch builds and releases; any other branch builds to `dev/` |
+| `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` | push to a mod branch |
+| `unraid-store`, `umbrel-store`, `runtipi-store` | Generated store repos, pushed by the hub | never edit by hand; change the generator in hub |
+| `dot-github` | The org's `.github` repo: profile README, CONTRIBUTING, SECURITY, FUNDING | push to main |
+
+`reference/` (from `--reference`, read-only): `linuxserver/docker-ci`, `docker-jenkins-builder`, `docker-mods`,
+`templates` and `docker-documentation`, the Jenkins-era originals. Read them for intent; never copy their
+generated output.
+
+## How data flows
+
+1. A push to a live branch of `docker-<name>` (or a scheduler dispatch) runs `build.yml`, which calls
+   `workflows/.github/workflows/image-build.yml@v1`.
+2. Per arch, on native runners: build to the `build/` staging namespace, test with the `ci` image, one syft
+   scan, `dumper files` for the file tree.
+3. `publish-manifest` creates the released multi-arch tags (CONVENTIONS §3), attaches our own SBOM
+   attestation, and creates the GitHub Release with the bundle assets.
+4. The workflow POSTs signed events to control `/events`. Control posts to Discord and sends the hub
+   `repository_dispatch image-released`.
+5. The hub ingests the Release, commits `data/`, rebuilds Pages and pushes the store repos.
+6. When the hub's Deploy succeeds, control sends `hub-updated` to the site, and the site rebuilds from the hub API.
+7. The site's fleet pages read control's JSON API live, with the session cookie, for anything that changes
+   minute to minute.
+
+Control finds the fleet on its own: every 30 minutes, and on the first push to a new repo, it reads `image.yml`
+from every `docker-*` repo. Adding an image needs no change to control, the hub or n97.
+
+## Change recipes
+
+Run the validation steps from each repo's AGENTS.md before every push. Never claim a test you did not run.
+
+- **New or changed `image.yml` field.** In `builder`: schema, then the `contracts` models, then
+  CONVENTIONS, then the renderer and checks, with tests. Push. Then update each consumer: the hub (transform,
+  models, generator fixtures), the site (show it on the image page first: the site is where users read it),
+  and control if the scheduler reads it. Control and the hub install builder at build time, so they only pick
+  up the change after their next push or dispatch.
+- **Change to how images build or test.** Edit `workflows` (and `ci` for the harness). Run
+  `./scripts/check.sh`, push, then move `v1`:
+  `git tag -f v1 && git push -f origin v1`. Verify with a dispatched build of a small image
+  (`gh workflow run build.yml -R linuxserver-playground/docker-heimdall`). A change that breaks the
+  inputs, outputs or ci interface is a new major tag, not `v1`.
+- **Change to generated image-repo files** (README, AGENTS.md, build.yml). Edit the templates in `builder`.
+  Image repos pick them up on their next live build, as one bot commit `Update generated files`. Never
+  hand-edit generated files in an image repo: `builder check` fails the build.
+- **New image.** Clone `linuxserver/docker-<name>`, create the playground repo
+  (`gh repo create linuxserver-playground/docker-<name> --public`) and push the original's branches to it,
+  history included. Then, per live branch:
+  1. `builder migrate`, review the TODOs.
+  2. `builder render`, then `builder check`.
+  3. Delete `Jenkinsfile`, `jenkins-vars.yml`, `readme-vars.yml` and the old `.github/`.
+  4. Make one commit, `Convert to the v2 layout: image.yml replaces readme-vars and jenkins-vars, generated
+     files rendered by builder`.
+
+  `docs/conversion-report.md` and the converted repos are worked examples. After the first
+  publish, an org owner sets the new GHCR package to public (package settings in the GitHub UI; there is no
+  API for it).
+- **Site-only change** (layout, docs page, blog post). Edit `site` and validate with its AGENTS.md list
+  (check, build, a11y, overflow at 390px). Docs pages and posts are content collections; front matter is
+  validated at build time.
+- **Hub generator or API change.** Edit `hub`, update the fixture tests for sonarr, swag and multidb, and
+  push. Pages redeploys on push. To force a full refresh: `gh workflow run deploy.yml -R linuxserver-playground/hub`.
+- **Control change.** Edit `control`, run its checks, and push to main. That deploys. A red main ships
+  nothing, so watch the Publish run. A new setting needs a default that works without it. If it must be set
+  on n97, say so to the maintainers: only they edit `~/control/.env`.
+- **New mod.** Follow `repos/docker-mods/AGENTS.md`: a branch from `template` with `mod.yml`, then
+  `tools/check-branch.sh` and `tools/test-mod.sh`.
+
+## Operating and checking the live system
+
+- Fleet and scheduler state: the site's `/fleet/` pages, or `https://ci.thelamer.duckdns.org:8443/status`
+  and `/api/*.json` (listed in `repos/control/README.md`).
+- Runs: `gh run list -R linuxserver-playground/<repo>`. Logs are the only reason to leave the site.
+- Member actions (rerun, cancel, dispatch, skip flags) are on the site after signing in with GitHub. Use
+  Chromium: the playground's site and control are cross-site, so the session cookie is `SameSite=None`.
+- Images under `dev/` and `untrusted-pr/` are unreviewed by design. PR builds are deleted when the PR closes.
+
+## What you may edit
+
+Everything in the playground org: commits, branches, tags and new repos are fine. You may move floating tags
+(`v1`) without asking. The real `linuxserver` org (and anything under `reference/`) is read-only: no pushes,
+PRs, issues or comments there.
+
+In this repo you may edit this file, `DECISIONS.md`, `README.md`, `docs/`, `bootstrap.sh` (shellcheck clean)
+and `.claude/`. When you learn something the next agent needs, a cross-repo rule or a recipe, add it here. Put
+anything specific to one repo in that repo's AGENTS.md instead.
+
+## Rules for every repo
+
+- Commit subjects are short imperative sentences with no prefixes, no emoji and no trailers of any kind, AI
+  co-author lines included (CONVENTIONS §8). Disclose AI assistance in PR descriptions.
+- Nothing may contain a credential. The org secrets (`CONTROL_EVENTS_SECRET`, `PACKAGES_TOKEN`,
+  `ATTACHMENTS_TOKEN`, `STORE_APP_*`) and n97's `.env` are never printed, copied or committed.
+- Nothing may reference a namespace other than `linuxserver-playground`, except the `linuxserver` base
+  images (`ghcr.io/linuxserver/baseimage-*`) and links to upstream docs.
+- The site is the single pane of glass. New data lands on the site first; the hub and README follow.
+- Generated files (image repo READMEs, AGENTS.md and `build.yml`, the hub's `data/`, `dist/` and `out/`,
+  and the store repos) are never hand-edited. Change the generator.
+- Stepping on each other is best effort for now. Re-run `bootstrap.sh`, pull before you push, and when a push
+  is rejected, rebase onto the new work rather than force-pushing over it.

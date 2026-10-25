@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./bootstrap.sh)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run watch:*)",
+      "Bash(gh repo list:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh release list:*)",
+      "Bash(gh release view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh issue view:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git fetch:*)",
+      "Bash(ruff check:*)",
+      "Bash(ruff format:*)",
+      "Bash(mypy:*)",
+      "Bash(pytest:*)",
+      "Bash(npm run check)",
+      "Bash(npm run build)",
+      "Bash(cargo test:*)",
+      "Bash(cargo clippy:*)",
+      "Bash(curl -fsS https://ci.thelamer.duckdns.org:8443/*)",
+      "Bash(curl -fsS https://linuxserver-playground.github.io/*)"
+    ],
+    "deny": [
+      "Bash(gh pr create --repo linuxserver/*)",
+      "Bash(gh issue create --repo linuxserver/*)"
+    ]
+  }
+}
