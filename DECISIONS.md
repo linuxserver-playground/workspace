@@ -45,6 +45,20 @@ change one, ask the maintainers first, then update this file in the same change.
 - **Screenshots.** ci waits at least 30 s on amd64 and 90 s on arm64 for selkies, kasmvnc and rdesktop
   bases.
 
+## Mods
+
+- **One branch per mod** in `docker-mods`, named `<target>-<name>`, with `mod.yml` as its only metadata.
+  `README.md`, `AGENTS.md` and `build.yml` are rendered by `builder render-mod`. Every legacy
+  linuxserver/docker-mods mod was converted with its history (`builder.mods.convert`), except upstream work
+  branches and deprecated mods that no longer build.
+- **`mod.yml` `images` replaces `mod-list.yml`:** the images a mod is meant for besides its target. The hub's
+  `applies_to` is the target then `images`; image pages and config labs list an image's own mods, then the
+  universal mods curated for it, then the rest. Deprecated mods are left off image pages and labs.
+- **Every mod has a site page,** `/mods/<branch>/`, with its docs; the mods index, image pages and the
+  config lab link it.
+- **Helper repos** (`docker-*` without an `image.yml` on the default branch, such as `docker-mods`) are not
+  images: the fleet board lists them apart with their branch build health and never links an image page.
+
 ## Control plane
 
 - **A central scheduler** replaces every per-repo cron: hourly upstream checks, hourly release checks, and

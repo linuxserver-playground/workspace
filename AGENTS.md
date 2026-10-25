@@ -49,7 +49,7 @@ them without the maintainers.
 | `site` | Astro website: image pages, build pages, fleet board (live from control), docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
 | `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated | push to a live branch builds and releases; any other branch builds to `dev/` |
-| `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` | push to a mod branch |
+| `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` (about 95 branches) | push to a mod branch builds the image; the hub's next scheduled or dispatched run reads the `mod.yml` |
 | `unraid-store`, `umbrel-store`, `runtipi-store` | Generated store repos, pushed by the hub | never edit by hand; change the generator in hub |
 | `dot-github` | The org's `.github` repo: profile README, CONTRIBUTING, SECURITY, FUNDING | push to main |
 
@@ -113,7 +113,10 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   nothing, so watch the Publish run. Settings live as defaults in `control/config.py`, so changing one is a
   code change. Only a new *secret* needs n97 (see Secrets).
 - **New mod.** Follow `repos/docker-mods/AGENTS.md`: a branch from `template` with `mod.yml`, then
-  `tools/check-branch.sh` and `tools/test-mod.sh`.
+  `builder render-mod`, `tools/check-branch.sh` and `tools/test-mod.sh`. List the other images it suits under
+  `images`. The hub refreshes the mods index only on scheduled or dispatched runs (control dispatches one
+  hourly); `gh workflow run deploy.yml -R linuxserver-playground/hub` to see it sooner.
+- **New `docker-*` repo that is not an image.** Leave out `image.yml`; discovery lists it as a helper repo.
 
 ## Secrets
 
