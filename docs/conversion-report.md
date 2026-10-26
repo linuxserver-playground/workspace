@@ -1,9 +1,10 @@
-# Conversion report: curated images to the v2 layout
+# Conversion report: images to the v2 layout
 
 Each live branch carries one commit, `Convert to the v2 layout: image.yml replaces readme-vars and jenkins-vars, generated files rendered by builder`,
 produced with `builder migrate` → review → `builder render` → `builder check` (`ok` on every branch; the only warnings are the
 expected `Dockerfile`/`Dockerfile.aarch64` non-FROM differences). Legacy `Jenkinsfile`, `jenkins-vars.yml`, `readme-vars.yml`,
-`README.md` and `.github/` were removed, `.jenkins-external` dropped from `.gitignore`. Nothing was pushed; sonarr and swag untouched.
+`README.md` and `.github/` were removed, `.jenkins-external` dropped from `.gitignore`. sonarr and swag were converted
+earlier. This first batch was pushed after review and builds like any other live branch.
 
 | Repo | Branches converted | Version source | Notes source | Proxy | Notes / open questions |
 | --- | --- | --- | --- | --- | --- |
@@ -48,8 +49,8 @@ All 19 first builds passed (9 of them dispatched by hand, see AGENTS.md).
 Found while converting:
 
 - **`builder migrate` still copies Groovy-escaped commands verbatim** (doubled `\\` in lidarr's notes and
-  nextcloud previous's version command), the same as qbittorrent and jellyfin in the first batch. Every
-  `command` source needs a manual un-doubling; migrate could do it, or at least flag it.
+  nextcloud previous's version command), the same as qbittorrent and jellyfin in the first batch. Fixed since:
+  migrate now undoes the Groovy escapes in version and notes commands.
 - **migrate leaves `api_locations` empty** even for the servarr apps; they were filled by hand from the legacy
   proxy confs, as for radarr.
 - **The hub's subfolder sample has no prefix rewrite.** Apps without an in-app base URL (syncthing, duplicati,
@@ -102,3 +103,81 @@ Found while converting:
 - **Image names cannot contain a dot.** `changedetection.io` fails the schema's `name` pattern. Allowing it is a
   contract change (k8s object names, store ids, container names and site URLs all derive from `name`), so
   it needs a maintainer decision.
+
+## Remaining fleet (2026-10-25 and 26)
+
+Every other `linuxserver/docker-*` repo that is not deprecated, 176 images, in six batches (A to F), with
+the playground now holding 216 `docker-*` repos. These were converted by a driver script rather than by hand.
+After each `builder migrate`, the driver:
+
+- copies the default branch's categories to the other branches;
+- fills the proxy block from `linuxserver/reverse-proxy-confs`. The main location gives the port and scheme.
+  Same-port locations without auth become `api_locations`, and other-port ones become `extra_locations`.
+  Subfolder is off wherever the legacy conf needs a rewrite, `sub_filter`, `X-Script-Name` or a location
+  outside the prefix;
+- fixes changelog dates (the commit date, else a stable sort);
+- maps device placeholders to `/dev/ttyUSB0`;
+- adds missing `# shellcheck shell=bash` headers;
+- rewrites `#!/command/with-contenv` shebangs to `/usr/bin/with-contenv`.
+
+It then renders, runs `builder check` and resolves the version live before the push. Live branches
+deprecated upstream were not converted. Neither were deprecated repos (baseimage-el, budge, doplarr,
+openvscode-server), helpers (documentation, templates), or ci and jenkins-builder, which the playground
+replaces.
+
+| Batch | Repos pushed | Branches | Failing after reruns and fixes |
+| --- | --- | --- | --- |
+| A | 30 | 59 | baseimage-kasmvnc, all 9 branches |
+| B | 29 | 32 | davos, github-desktop, ffmpeg `bin` |
+| C | 30 | 32 | intellij-idea |
+| D | 30 | 33 | manyfold |
+| E | 30 | 33 | none |
+| F | 25 | 34 | xvfb `ubunturesolute`, `kali`, `fedora43`; tvheadend `j0nny` (webstation was still building when this was written) |
+
+**Failures where the source was already broken**: the same commit fails upstream on Jenkins, or upstream has not
+built it in months.
+
+| Image | Reason |
+| --- | --- |
+| baseimage-kasmvnc (9 branches) | apk "unable to select packages"; upstream unbuilt since July 2025, published images April to July 2025. Never published to the playground |
+| davos | `docker.io/library/openjdk:8-alpine` no longer exists; Jenkins failing since January 2026 |
+| github-desktop | `sed` cannot find `codium.desktop` after codium 1.140; Jenkins failing |
+| intellij-idea | the version command prints nothing; Jenkins failing |
+| manyfold | asset precompile cannot reach redis during the build; Jenkins failing |
+| ffmpeg `bin` | amd64 tests fail and the arm64 x265 compile fails; branch head from 2023, never built by Jenkins |
+| xvfb `ubunturesolute`, `kali`, `fedora43` | `apt-get build-dep` fails; Jenkins failing since August 2026 |
+| tvheadend `j0nny` | s6 v2 `cont-init.d` scripts without the executable bit; branch never built by Jenkins |
+
+**Failures that were ours**, all fixed and rebuilt green:
+
+| Image | Cause | Fix |
+| --- | --- | --- |
+| python `alpine324`, `ha`; qemu-static | `jq '.test.enabled // true'` reads `false` as missing, so disabled tests still failed the build | workflows: honour `test.enabled: false` |
+| socket-proxy, python, qemu-static | the harness failed every image without `/etc/s6-overlay/s6-rc.d` at the Init graph step | ci: skip the init graph for images without s6 |
+| kimai | Actions dropped the prepare job's `manifest_json` output ("may contain secret"): some masked value matched text in the manifest | workflows: the manifest travels as an artifact, not a job output |
+| webgrabplus | curl exits 23 (write error) when `grep -m1` closes the pipe; only SIGPIPE's 141 was accepted | workflows (and control's vendored resolver): accept 23 too |
+
+**Transient**, green on rerun: baseimage-selkies `dev`, helium (GHCR token EOF), homeassistant (uv download),
+ffmpeg `bin`'s first attempt (502). planka failed twice on the Alpine mirror and built green once moved to the
+playground base image (see `docs/base-image-case-study.md`).
+
+**Tool fixes made along the way:**
+
+- builder migrate undoes Groovy escapes in commands;
+- `MULTIARCH: false` becomes an amd64-only platform list;
+- text an earlier render pass produced is kept when it is not a template (the `{% raw %}` case);
+- escaped GitHub expressions stay literal;
+- workflows takes the base image from the last `FROM`, the runtime stage;
+- ci reads the base image's layers from the registry when it is not local, so `from_base` is filled fleet-wide;
+- the resolver accepts SIGPIPE (and now curl's 23) from command sources.
+
+**Open:**
+
+- **Names with `.` or `_`.** changedetection.io, doplarr_rs and your_spotify fail the schema's `name` pattern
+  and are not staged. This needs a maintainer decision (see the third batch).
+- **Unresolved versions.** intellij-idea prints nothing upstream too.
+- **53 branches still use a `command` version source** that migrate did not recognise; typed sources would be
+  better.
+- **7 `external_artifact_check`s were dropped** because they read `${{ secrets.CR_PAT }}`. Those branches have
+  no `require_assets` yet.
+- **The hub's subfolder sample cannot rewrite,** so many apps are subdomain only (see the second batch).

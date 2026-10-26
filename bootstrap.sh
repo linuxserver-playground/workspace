@@ -10,7 +10,7 @@
 set -euo pipefail
 
 ORG=linuxserver-playground
-REFERENCE=(docker-ci docker-jenkins-builder docker-mods templates docker-documentation)
+REFERENCE=(docker-ci docker-jenkins-builder docker-mods templates docker-documentation reverse-proxy-confs)
 here=$(cd "$(dirname "$0")" && pwd)
 repos_dir=${REPOS_DIR:-$here/repos}
 reference_dir=${REFERENCE_DIR:-$here/reference}

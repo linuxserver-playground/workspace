@@ -17,6 +17,6 @@ claude                        # or any agent that reads AGENTS.md
 | `DECISIONS.md` | Settled design decisions. Read before proposing a different direction. |
 | `bootstrap.sh` | Clones or fast-forwards every org repo (`--setup` for dev environments, `--reference` for the read-only `linuxserver/*` originals). |
 | `.claude/` | Shared Claude Code settings and slash commands (`/fleet-status`, `/new-image`, `/release-workflows`, `/refresh-hub`). |
-| `docs/` | Working notes worth keeping, such as the conversion report for the first batch of images. |
+| `docs/` | Working notes worth keeping: the conversion report for every staged image, and the base image case study. |
 
 Open work is tracked in this repository's issues.

@@ -54,7 +54,7 @@ them without the maintainers.
 | `dot-github` | The org's `.github` repo: profile README, CONTRIBUTING, SECURITY, FUNDING | push to main |
 
 `reference/` (from `--reference`, read-only): `linuxserver/docker-ci`, `docker-jenkins-builder`, `docker-mods`,
-`templates` and `docker-documentation`, the Jenkins-era originals. Read them for intent; never copy their
+`templates`, `docker-documentation` and `reverse-proxy-confs`, the Jenkins-era originals. Read them for intent; never copy their
 generated output.
 
 ## How data flows
@@ -102,7 +102,15 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   4. Make one commit, `Convert to the v2 layout: image.yml replaces readme-vars and jenkins-vars, generated
      files rendered by builder`.
 
-  `docs/conversion-report.md` and the converted repos are worked examples. The GHCR package is created
+  Leave out live branches that readme-vars marks deprecated. The name must match the schema's `name`
+  pattern: a `.` or `_` fails it, pending a maintainer decision. Expect to finish by hand what migrate does not:
+  - the proxy block, from `reference/reverse-proxy-confs`;
+  - categories on branches other than the default;
+  - `# shellcheck shell=bash` headers on s6 scripts;
+  - `#!/command/with-contenv` shebangs.
+
+  `builder check` rejects the last two. `docs/conversion-report.md` and the converted repos are worked
+  examples. The GHCR package is created
   public on the first publish (an org setting); nothing else needs doing. Push only the live branches
   (where `jenkins-vars.yml` `ls_branch` names the branch). On a brand-new repo GitHub runs a workflow
   for only one of the first pushes, so check `gh run list` and dispatch the live branches that got no run
