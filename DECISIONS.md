@@ -87,12 +87,21 @@ change one, ask the maintainers first, then update this file in the same change.
   actions in Chromium.
 - **Member sign-in** is a classic OAuth App, so GitHub shows no "act on your behalf" consent. Actions use the
   App installation token.
-- **The website editor commits as the member.** Docs pages and posts are edited on the site (`/edit/`):
-  Markdown beside a preview, no WYSIWYG. Editing asks once more, for the GitHub App's own user authorisation
-  (never a classic OAuth scope, which would reach repos outside the org). Control keeps that token encrypted,
-  uses it only on the site repo's content trees, and revokes it on sign-out. A save is a commit on
-  `edit/<login>/…`; a pull request is the draft and merging it publishes it, so posts need no `draft:` and
-  no `date:`: dates come from first-parent git history.
+- **The website editor commits as the member.** It is for quick edits and new posts by anyone on the team,
+  technical or not; larger changes are made in git. The pages are its interface: people who can edit the site
+  see Edit and Delete on posts and docs pages, New post on the blog and New page on docs sections, and every
+  open edit where it belongs (on the page it changes; new posts and pages on the blog or their section). There
+  is no overview page. Markdown beside a preview plus a details form, no WYSIWYG; Preview renders with the
+  site's own layout components. Images, galleries, videos (committed as uploaded, never transcoded) and YouTube
+  embeds (the only frames allowed). New sections and layout changes stay in git.
+- **One change, one branch, one pull request.** A save is a commit on `edit/<login>/…`; opening someone's open
+  edit joins it rather than starting a second one. The pull request is the draft and merging it publishes it,
+  so posts need no `draft:` and no `date:` (dates come from first-parent git history). A non-technical editor
+  writes; a reviewer fixes and merges on GitHub. Deleting is the same: one PR removes the page and its files,
+  with no redirect.
+- **Editing asks once more,** for the GitHub App's own user authorisation (never a classic OAuth scope, which
+  would reach repos outside the org). Control keeps that token encrypted, uses it only on the site repo's
+  content and media, and revokes it on sign-out.
 
 ## Hub and site
 
