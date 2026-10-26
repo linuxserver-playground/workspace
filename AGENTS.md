@@ -116,7 +116,10 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   4. Make one commit, `Convert to the v2 layout: image.yml replaces readme-vars and jenkins-vars, generated
      files rendered by builder`.
 
-  Leave out live branches that readme-vars marks deprecated. The name must match the schema's `name`
+  Then list every live branch's tag in the default branch's `release.tags` (its own tag first): control and the
+  hub find live branches only through that list, and the shared workflow refuses to release an unlisted one.
+  readme-vars has no development versions for base images and tools, so `migrate` leaves their list empty. Leave
+  out live branches that readme-vars marks deprecated. The name must match the schema's `name`
   pattern: a `.` or `_` fails it, pending a maintainer decision. Expect to finish by hand what migrate does not:
   - the proxy block, from `reference/reverse-proxy-confs`;
   - categories on branches other than the default;
