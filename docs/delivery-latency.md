@@ -112,7 +112,8 @@ the Pages deploy). A burst of 80 is picked up by the next run or two and lands i
   documents from the hub and renders the same parts and islands. Release notes show as plain text there until
   the site's next build renders them, because the Markdown renderer has no browser build short of a 3 MB WASI
   runtime.
-- Fleet lists link a build control has seen go live, not only the ones the site was built with.
+- Fleet lists link a build control has seen go live, not only the ones the site was built with, and image pages
+  list the builds the hub has that the page was built without (`NewerBuilds`).
 - Control's Discord hold releases as soon as the hub serves the build, checked every 20 seconds.
 
 ### Also fixed on the way
@@ -125,8 +126,6 @@ the Pages deploy). A burst of 80 is picked up by the next run or two and lands i
 
 - The hub renders all 23,700 files every run. Every response carries the fleet's `last_updated`, so reusing the
   previous run's files needs that field handled first (per-file dates, or patching it).
-- Image pages show their builds list from the site's snapshot, so a new build appears there with the site's
-  rebuild, a couple of minutes after its own page works.
 - Stores stay in the hub. They are a function of `image.yml` across the fleet, nobody waits for them, and store
   clients poll daily; rendering them per build would only multiply where the generators run.
 
