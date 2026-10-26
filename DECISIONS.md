@@ -56,6 +56,11 @@ change one, ask the maintainers first, then update this file in the same change.
   shows files only: no per-file layer numbers and no package ownership.
 - **Screenshots.** ci waits at least 30 s on amd64 and 90 s on arm64 for selkies, kasmvnc and rdesktop
   bases.
+- **Smoke tests are generic, not per image.** After init, ci checks what holds for every image type: every
+  s6 service it wants up stays up (FAIL), the web endpoint answers below 500 (FAIL), the required
+  `runtime.ports` listen (WARN), and the logs of the runtimes it runs (.NET, Java, Node.js, Python, PHP, nginx,
+  uWSGI) carry no known failure line (WARN). Runtimes are recognised from the running processes, never from
+  packages alone.
 - **Build reports.** A release's report is its build page on the website; the ci harness writes no HTML
   report of its own. A build without a page is reported where GitHub shows it, with one smoke-test report
   (`workflows/scripts/pr_report.py`: tests per arch, screenshots, runtime, package changes, log tails): a PR
