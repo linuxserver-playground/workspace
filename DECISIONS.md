@@ -97,13 +97,27 @@ change one, ask the maintainers first, then update this file in the same change.
 - **Release notes render as GitHub does.** Both sections (LinuxServer and upstream) are GitHub-flavoured
   Markdown with raw HTML allowed, rendered at site build time and sanitised to an allowlist (no scripts, styles,
   frames, forms, event handlers or non-http(s) URLs). Upstream notes may be HTML from a feed (`upstream.notes`
-  type `rss`); they are stored verbatim and only sanitised where they are shown.
+  type `rss`); they are stored verbatim and only sanitised where they are shown. A build page rendered live
+  from the hub (below) shows the notes as plain text until the next site build renders them.
+- **Data about a build is made by the build.** The publish job derives `record.json` (`builder record`): the
+  package tables, the diff against the previous release of the branch, a grype scan of both architectures and
+  the base image's layers. Image builds may take a minute longer for it, so that the hub only indexes. The hub
+  keeps the same code (`builder.derive`) for older releases and for rescans.
+- **The release path never waits for slow work.** The hub's Deploy only ingests and publishes; stars, GHCR tags,
+  the mods index and vulnerability rescans are `refresh.yml`'s, hourly, and each writes only its own files in
+  `data/` so both commit without conflicts.
+- **The site renders a build it predates from the hub.** Pages answers a new build's URL with the 404 page,
+  which renders the build page in the browser from the hub's API with the same components as the static page.
+  A release is on the website once the hub serves it; the site's own rebuild only makes it static. Control's
+  Discord hold treats the hub serving the build as live.
 - **Heavy data** (file trees) stays on GitHub Releases. Release assets have no CORS headers, so the site fetches
   them through control's CORS gateway, with a loading state.
 - **Vulnerabilities** are shown on build pages, with backport-aware framing, for users who look for them; they
-  are never a headline and not on image pages. The hub runs grype on new builds in the run that ingests them.
-- **Every hub run sweeps for pending releases.** A dispatch's payload is only a hint: GitHub drops all but one
-  pending run per concurrency group, so each run (dispatch or push) ingests every release `data/` lacks.
+  are never a headline and not on image pages. Every build scans itself (in its `record.json`); the hub rescans
+  the newest build of each branch when the vulnerability database changes, at most daily.
+- **Every hub run reconciles the organisation.** A dispatch's payload is only a hint: GitHub drops all but one
+  pending run per concurrency group, so each run reads every `image.yml` and the newest releases of every repo
+  over GraphQL (about 15 seconds) and ingests every release `data/` lacks.
 - **Stores.** The hub generates Unraid, Portainer, CasaOS, Umbrel, Runtipi, Cosmos and Arcane templates, with
   the store id prefix `lsio`. Unraid, Umbrel and Runtipi read a git repo, so the hub pushes them to
   `unraid-store`, `umbrel-store` and `runtipi-store`. The site's stores page lists only these stores;

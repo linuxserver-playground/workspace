@@ -41,11 +41,11 @@ them without the maintainers.
 
 | Repo | Role | A change goes live when |
 | --- | --- | --- |
-| `builder` | Contracts: `CONVENTIONS.md`, `schemas/`, the `contracts` package, the `builder` CLI (check, render, migrate, snippets), AGENTS.md templates for image repos | push to main publishes `ghcr.io/linuxserver-playground/builder:latest`; the other Python repos install `lsio-builder` from `builder@main` |
+| `builder` | Contracts: `CONVENTIONS.md`, `schemas/`, the `contracts` package, the `builder` CLI (check, render, migrate, snippets, record), `builder.derive` (per-build data, shared by the build and the hub), AGENTS.md templates for image repos | push to main publishes `ghcr.io/linuxserver-playground/builder:latest`; the other Python repos install `lsio-builder` from `builder@main` |
 | `workflows` | The reusable `image-build.yml` and `mod-build.yml` plus one composite action per step | the floating tag `v1` moves to the new commit (image repos call `@v1`) |
 | `ci` | The container test harness: runs each built image, takes screenshots, emits the release bundle | push to main publishes `ghcr.io/linuxserver-playground/ci:latest`, which workflows pulls |
 | `dumper` | Rust static file-tree walker for the bundle (`dumper files`) | a GitHub Release; workflows fetch `releases/latest` |
-| `hub` | Ingests bundles into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index and build reports, and runs grype | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
+| `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index and build reports; `refresh.yml` hourly: stars, GHCR tags, mods, grype rescans | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
 | `site` | Astro website: image pages, build pages, fleet board (live from control), docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
 | `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated | push to a live branch builds and releases; any other branch builds to `dev/` |
@@ -63,15 +63,23 @@ generated output.
    `workflows/.github/workflows/image-build.yml@v1`.
 2. Per arch, on native runners: build to the `build/` staging namespace, test with the `ci` image, one syft
    scan, `dumper files` for the file tree.
-3. `publish-manifest` creates the released multi-arch tags (CONVENTIONS §3), attaches our own SBOM
-   attestation, and creates the GitHub Release with the bundle assets.
+3. `publish-manifest` creates the released multi-arch tags (CONVENTIONS §3) and attaches our own SBOM
+   attestation. `builder record` derives `record.json`: package tables, the diff against the previous release,
+   a grype scan, base layers. The GitHub Release gets the bundle assets with it.
 4. The workflow POSTs signed events to control `/events`. Control posts to Discord (held at "publishing" until
-   the build's site page is live) and sends the hub `repository_dispatch image-released`.
-5. The hub sweeps for every release `data/` lacks (the dispatch is only a hint), scans the new builds with
-   grype, commits `data/`, rebuilds Pages and pushes the store repos.
-6. When the hub's Deploy succeeds, control sends `hub-updated` to the site, and the site rebuilds from the hub API.
+   the hub serves the build) and sends the hub `repository_dispatch image-released`.
+5. The hub's Deploy reconciles the organisation over GraphQL, ingests every release `data/` lacks (build.json
+   and record.json: two downloads each), commits `data/`, renders the API on every core and deploys Pages. From
+   then on the build's site page works: the site renders a build it predates from the hub's API on its 404
+   page (`LiveBuildPage`).
+6. When the hub's Deploy succeeds, control sends `hub-updated` to the site, and the site rebuilds from the hub
+   API, which makes the new build pages static. Nobody waits for this step.
 7. The site's fleet pages read control's JSON API live, with the session cookie, for anything that changes
    minute to minute.
+8. Hourly, the hub's `refresh.yml` reads stars and GHCR tags, rescans vulnerabilities when grype's database moved,
+   refreshes the mods index, commits and asks for a Deploy.
+
+`docs/delivery-latency.md` measures this path and records why it is shaped this way.
 
 Control finds the fleet on its own: every 30 minutes, and on the first push to a new repo, it reads `image.yml`
 from every `docker-*` repo. Adding an image needs no change to control, the hub or n97.
@@ -90,6 +98,12 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   `git tag -f v1 && git push -f origin v1`. Verify with a dispatched build of a small image
   (`gh workflow run build.yml -R linuxserver-playground/docker-heimdall`). A change that breaks the
   inputs, outputs or ci interface is a new major tag, not `v1`.
+- **Change to per-build data** (a diff field, the package table, the scan). Edit `builder/builder/derive/`, bump
+  `record.schema.json` and `contracts_version` if the shape changes, and push builder: every build from then on
+  writes it into `record.json`, and the hub uses the same code for releases without one. Then the hub's models
+  and responses, then the site's `src/lib/hub.ts` and the build page parts (`src/components/build/`, used by the
+  static and the live build page alike). Builds made before the change keep their old record; to recompute
+  everything, the hub can derive from the assets (`read_record` returning None).
 - **Change to generated image-repo files** (README, AGENTS.md, build.yml). Edit the templates in `builder`.
   Image repos pick them up on their next live build, as one bot commit `Update generated files`. Never
   hand-edit generated files in an image repo: `builder check` fails the build.
