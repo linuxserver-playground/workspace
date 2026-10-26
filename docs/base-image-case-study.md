@@ -246,7 +246,7 @@ Nothing failed, so these are the failures this run showed coming:
 
 | Risk | Where | Cover |
 | --- | --- | --- |
-| Node 20 actions stop running, and every build breaks the same day | workflows (and every repo's own workflows) | Bump to the Node 24 majors above, check each one's breaking changes (artifact actions especially), prove it with a heimdall build, move `v1` |
+| Node 20 actions stop running, and every build breaks the same day | workflows (and every repo's own workflows) | Done the same evening: workflows 95bb41c (`v1`), builder, ci, control, dumper and hub moved to the Node 24 majors |
 | A release misses the Discord deadline because the hub's and site's deploy jobs queue behind builds | hub `deploy.yml`, site deploy | Fewer jobs on the release path: deploy in the same job as build, and stores in their own run or in `refresh.yml`, so a burst costs one wait instead of two or three |
 | Publish jobs of finished images wait behind newer arch jobs | GitHub's queue | Pace bulk changes (Open, above), or have the scheduler stagger a member's mass dispatch |
 | A switch reaches a branch whose base tag is not published | migration scripts | Check the tag exists before rewriting, as this run did; publish 3.20 and `ubuntunoble`, or retire those branches |
@@ -254,9 +254,8 @@ Nothing failed, so these are the failures this run showed coming:
 ### Still on LinuxServer images
 
 - The five failing branches and the five whose base tag is missing (above).
-- 48 `FROM ghcr.io/linuxserver/unrar` stages in 15 repos. The playground publishes `unrar:latest` and
-  `unrar:arm64v8-latest`, so the same rewrite applies.
 - tvheadend's `ghcr.io/linuxserver/picons-builder`, which has no playground repo.
 
-These are the last references outside the playground namespace apart from the base images that AGENTS.md
-allows.
+The 48 `FROM ghcr.io/linuxserver/unrar` stages (24 branches of 14 repos) were moved to the playground's unrar
+the same evening. [Playground references](playground-references.md) lists every rewrite made for isolation,
+so they can be swapped back when the layout moves to the `linuxserver` org.

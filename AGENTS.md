@@ -115,6 +115,9 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   3. Delete `Jenkinsfile`, `jenkins-vars.yml`, `readme-vars.yml` and the old `.github/`.
   4. Make one commit, `Convert to the v2 layout: image.yml replaces readme-vars and jenkins-vars, generated
      files rendered by builder`.
+  5. Point the `FROM` lines at the playground's own images (base images, unrar) where it publishes the tag, in
+     a second commit, `Build on the playground base images`, and add the branch to
+     `docs/playground-references.md`.
 
   A branch is live when its own `image.yml` names it in `release.branch` (as `ls_branch` did); the workflow,
   control and the hub all read it from there. The default branch's `release.tags` only advertises tags in the
@@ -202,8 +205,10 @@ anything specific to one repo in that repo's AGENTS.md instead.
 - Commit subjects are short imperative sentences with no prefixes, no emoji and no trailers of any kind, AI
   co-author lines included (CONVENTIONS §8). Disclose AI assistance in PR descriptions.
 - Nothing may contain a credential, and secrets are never printed, copied or committed.
-- Nothing may reference a namespace other than `linuxserver-playground`, except the `linuxserver` base
-  images (`ghcr.io/linuxserver/baseimage-*`) and links to upstream docs.
+- Nothing may reference a namespace other than `linuxserver-playground`, except links to upstream docs and
+  images the playground does not build yet (selkies-layers, proot-apps). Images build `FROM` the playground's
+  own base images and build layers. `docs/playground-references.md` lists every such rewrite so it can be
+  swapped back when this moves to `linuxserver`; add to it whenever you make one.
 - The site is the single pane of glass. New data lands on the site first; the hub and README follow.
 - Generated files (image repo READMEs, AGENTS.md and `build.yml`, the hub's `data/`, `dist/` and `out/`,
   and the store repos) are never hand-edited. Change the generator.
