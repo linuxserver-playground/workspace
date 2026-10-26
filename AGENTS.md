@@ -147,6 +147,15 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   `builder render-mod`, `tools/check-branch.sh` and `tools/test-mod.sh`. List the other images it suits under
   `images`. The hub refreshes the mods index only on scheduled or dispatched runs (control dispatches one
   hourly); `gh workflow run deploy.yml -R linuxserver-playground/hub` to see it sooner.
+- **Remove an image.** Check nothing depends on it first: no other image builds `FROM` it and no open PRs.
+  Then delete the repo and its GHCR packages (`<name>`, `build/<name>`, and any `dev/<name>` or
+  `untrusted-pr/<name>`); packages outlive their repo. Everything else follows on its own:
+  - control drops the repo on GitHub's `repository deleted` webhook;
+  - the hub's next Deploy (within the hour, or `gh workflow run deploy.yml -R linuxserver-playground/hub`) removes
+    its data;
+  - the site rebuilds without its pages on the `hub-updated` that follows.
+
+  Archiving instead keeps it on the site with an `archived` flag.
 - **New `docker-*` repo that is not an image.** Leave out `image.yml`; discovery lists it as a helper repo.
 
 ## Secrets
