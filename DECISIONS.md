@@ -53,6 +53,12 @@ change one, ask the maintainers first, then update this file in the same change.
   shows files only: no per-file layer numbers and no package ownership.
 - **Screenshots.** ci waits at least 30 s on amd64 and 90 s on arm64 for selkies, kasmvnc and rdesktop
   bases.
+- **Build reports.** A release's report is its build page on the website; the ci harness writes no HTML
+  report of its own. A build without a page is reported where GitHub shows it, with one smoke-test report
+  (`workflows/scripts/pr_report.py`: tests per arch, screenshots, runtime, package changes, log tails): a PR
+  build as its pull request comment, a branch or live build at the top of its run's job summary, which
+  control's notifications link. The site and the hub never render branch builds; they stay lean, and data
+  that is only wanted on demand stays where the build left it.
 
 ## Mods
 
