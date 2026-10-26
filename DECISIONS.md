@@ -58,7 +58,8 @@ change one, ask the maintainers first, then update this file in the same change.
   (`workflows/scripts/pr_report.py`: tests per arch, screenshots, runtime, package changes, log tails): a PR
   build as its pull request comment, a branch or live build at the top of its run's job summary, which
   control's notifications link. The site and the hub never render branch builds; they stay lean, and data
-  that is only wanted on demand stays where the build left it.
+  that is only wanted on demand stays where the build left it. The Publish job's summary is the run page's only
+  box: the result, then the report (pull command, screenshots and tests first), then the build details.
 
 ## Mods
 
@@ -88,6 +89,10 @@ change one, ask the maintainers first, then update this file in the same change.
   Discord webhook.
 - **A release's Discord message is held until its site page is live** ("passed, publishing"), so it never
   links a 404. Past 30 minutes control posts where it is stuck (hub or site); it stops watching after 24 h.
+- **Discord follows the Jenkins colours:** green for a live success, dark green for a dev or PR success, red
+  for a live failure, dark red for a dev or PR failure. A build without a site page links its report: a PR
+  build its report comment, any other its run's summary. A package check is announced only when it fails;
+  the release build it dispatches is the one that counts.
 - **Fleet auth on the site** uses control's session cookie (`SameSite=None; Secure`, CORS with credentials,
   a CSRF header from `/api/me`). Production would share one registrable domain. In the playground, test member
   actions in Chromium.
