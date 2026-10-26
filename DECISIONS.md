@@ -48,7 +48,10 @@ change one, ask the maintainers first, then update this file in the same change.
   pulls and no duplicate SBOMs. 20 concurrent jobs are acceptable.
 - **SBOM.** One syft scan in ci, trimmed to packages. Our own lean SPDX attestation is attached at publish,
   still readable by third-party tools. BuildKit's `--sbom` is off because it produced attestations over
-  80 MB on webtop.
+  80 MB on webtop. `docker buildx imagetools` and Docker Scout read it. Trivy's `--sbom-sources oci` does
+  not: it only reads OCI referrers, never attestations inside an index (BuildKit's own included), so it
+  scans the layers itself. That is accepted, and no referrer copy is published: vulnerabilities are shown on
+  the site per build (workspace issue #2).
 - **File trees** come from `dumper`, a static Rust walker mounted into ci (not embedded in images). The tree
   shows files only: no per-file layer numbers and no package ownership.
 - **Screenshots.** ci waits at least 30 s on amd64 and 90 s on arm64 for selkies, kasmvnc and rdesktop
