@@ -62,6 +62,7 @@ Fixed so far, as examples:
 | `tests are disabled` never shown, and tests fail with `test.enabled: false` | jq's `//` read `false` as missing. |
 | `MANIFEST_JSON: parameter null or not set` and `Skip output 'manifest_json' since it may contain secret` | A masked value inside a job output. The manifest is an artifact now. |
 | `command source failed (23)` | curl's write error from an early-exiting `grep -m1`. Now accepted, like SIGPIPE. |
+| `Error response from daemon: manifest unknown` right after `pushing manifest` in Build | GHCR's read-after-write delay. The post-push pull retries it now. |
 
 Fix it in the repo that owns the step (workflows, ci, builder or control), then prove it with a rebuild of the
 images it broke. Record what you found in `conversion-report.md` when it came from staging.

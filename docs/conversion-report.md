@@ -132,7 +132,7 @@ replaces.
 | C | 30 | 32 | intellij-idea |
 | D | 30 | 33 | manyfold |
 | E | 30 | 33 | none |
-| F | 25 | 34 | xvfb `ubunturesolute`, `kali`, `fedora43`; tvheadend `j0nny` (webstation was still building when this was written) |
+| F | 25 | 34 | xvfb `ubunturesolute`, `kali`, `fedora43`; tvheadend `j0nny`; webstation cancelled (below) |
 
 **Failures where the source was already broken**: the same commit fails upstream on Jenkins, or upstream has not
 built it in months.
@@ -145,7 +145,7 @@ built it in months.
 | intellij-idea | the version command prints nothing; Jenkins failing |
 | manyfold | asset precompile cannot reach redis during the build; Jenkins failing |
 | ffmpeg `bin` | amd64 tests fail and the arm64 x265 compile fails; branch head from 2023, never built by Jenkins |
-| xvfb `ubunturesolute`, `kali`, `fedora43` | `apt-get build-dep` fails; Jenkins failing since August 2026 |
+| xvfb `ubunturesolute`, `kali`, `fedora43` | `apt-get build-dep` fails; Jenkins failing since August 2026. xvfb is abandoned, so these stay red |
 | tvheadend `j0nny` | s6 v2 `cont-init.d` scripts without the executable bit; branch never built by Jenkins |
 
 **Failures that were ours**, all fixed and rebuilt green:
@@ -156,6 +156,8 @@ built it in months.
 | socket-proxy, python, qemu-static | the harness failed every image without `/etc/s6-overlay/s6-rc.d` at the Init graph step | ci: skip the init graph for images without s6 |
 | kimai | Actions dropped the prepare job's `manifest_json` output ("may contain secret"): some masked value matched text in the manifest | workflows: the manifest travels as an artifact, not a job output |
 | webgrabplus | curl exits 23 (write error) when `grep -m1` closes the pipe; only SIGPIPE's 141 was accepted | workflows (and control's vendored resolver): accept 23 too |
+
+**Not built:** webstation was cancelled by a maintainer. It compiles three emulators and is too heavy to build alongside the rest; it is staged but has no release.
 
 **Transient**, green on rerun: baseimage-selkies `dev`, helium (GHCR token EOF), homeassistant (uv download),
 ffmpeg `bin`'s first attempt (502). planka failed twice on the Alpine mirror and built green once moved to the

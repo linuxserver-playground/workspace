@@ -35,7 +35,9 @@ The heavy builds, by their slowest arch job:
 | dolphin | 26 |
 | digikam | 22 |
 
-webstation was still building when this was measured. Almost everything else is a 3 to 10 minute build per arch.
+webstation (three emulators compiled from source) was cancelled before it finished and is not built. Almost
+everything else is a 3 to 10 minute build per arch. `base-image-case-study.md` measures a burst of 118 of those
+at once.
 
 ## What it means
 
