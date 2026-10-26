@@ -21,6 +21,11 @@ change one, ask the maintainers first, then update this file in the same change.
 
 - **One manifest per branch**, `image.yml`, validated by a JSON Schema. Everything else in an image repo is
   generated from it.
+- **Base images and internal tools are kinds, not categories.** `image.yml` `kind` is optional and defaults to
+  `app`; only the `baseimage-*` repos set `base` and the internal tools (xvfb, yq, unrar, build-agent…) set
+  `tool`. They build, test and release like any image, but the site lists them on their own tabs of the images
+  section, and the hub leaves them out of the stores, the install artefacts and the v1 image list. The
+  categories stay as LinuxServer curated them in readme-vars.
 - **Templating commits happen once, on the live branch.** PRs are only checked. A push made with
   `GITHUB_TOKEN` never triggers workflows, so the package check dispatches the release build itself. Bot
   commits use `[skip ci]`.
@@ -89,6 +94,10 @@ change one, ask the maintainers first, then update this file in the same change.
   logs. Image pages carry the complete documentation rendered from the manifest. Anything only a README or the
   hub says is a gap in the site. The separate docs site is archived; non-image docs and the blog live in the
   site as content collections. The fleet dashboard lives in the site too.
+- **Release notes render as GitHub does.** Both sections (LinuxServer and upstream) are GitHub-flavoured
+  Markdown with raw HTML allowed, rendered at site build time and sanitised to an allowlist (no scripts, styles,
+  frames, forms, event handlers or non-http(s) URLs). Upstream notes may be HTML from a feed (`upstream.notes`
+  type `rss`); they are stored verbatim and only sanitised where they are shown.
 - **Heavy data** (file trees) stays on GitHub Releases. Release assets have no CORS headers, so the site fetches
   them through control's CORS gateway, with a loading state.
 - **Vulnerabilities** are shown on build pages, with backport-aware framing, for users who look for them; they
