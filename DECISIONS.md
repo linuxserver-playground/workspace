@@ -87,6 +87,12 @@ change one, ask the maintainers first, then update this file in the same change.
   actions in Chromium.
 - **Member sign-in** is a classic OAuth App, so GitHub shows no "act on your behalf" consent. Actions use the
   App installation token.
+- **The website editor commits as the member.** Docs pages and posts are edited on the site (`/edit/`):
+  Markdown beside a preview, no WYSIWYG. Editing asks once more, for the GitHub App's own user authorisation
+  (never a classic OAuth scope, which would reach repos outside the org). Control keeps that token encrypted,
+  uses it only on the site repo's content trees, and revokes it on sign-out. A save is a commit on
+  `edit/<login>/…`; a pull request is the draft and merging it publishes it, so posts need no `draft:` and
+  no `date:`: dates come from first-parent git history.
 
 ## Hub and site
 

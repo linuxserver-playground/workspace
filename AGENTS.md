@@ -13,7 +13,7 @@ Live surfaces:
 
 | What | URL |
 | --- | --- |
-| Website (the single pane of glass: images, builds, fleet, docs, blog) | https://linuxserver-playground.github.io/site/ |
+| Website (the single pane of glass: images, builds, fleet, docs, blog, and the docs and blog editor at `/edit/`) | https://linuxserver-playground.github.io/site/ |
 | Hub (static API and generated artefacts) | https://linuxserver-playground.github.io/hub/ |
 | Control plane (scheduler, webhooks, JSON API, member actions) | https://ci.thelamer.duckdns.org:8443 |
 | Images | `ghcr.io/linuxserver-playground/<name>` |
@@ -131,7 +131,9 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   (`gh workflow run build.yml -R linuxserver-playground/docker-<name> --ref <branch> -f reason=manual`).
 - **Site-only change** (layout, docs page, blog post). Edit `site` and validate with its AGENTS.md list
   (check, build, a11y, overflow at 390px). Docs pages and posts are content collections; front matter is
-  validated at build time.
+  validated at build time. People write them in the site's editor (`/edit/`, control's `editor.py`): every
+  save is a commit on `edit/<login>/…` and a pull request publishes it. A change to the editor spans both
+  repos; `site/scripts/editor-check.mjs` drives it against a fake control plane.
 - **Hub generator or API change.** Edit `hub`, update the fixture tests for sonarr, swag and multidb, and
   push. Pages redeploys on push. To force a full refresh: `gh workflow run deploy.yml -R linuxserver-playground/hub`.
 - **Control change.** Edit `control`, run its checks, and push to main. That deploys. A red main ships
