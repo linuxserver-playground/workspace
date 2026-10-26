@@ -9,8 +9,12 @@ change one, ask the maintainers first, then update this file in the same change.
   or the Jenkins-generated file set. What carries over: the s6 base images, the mods model, the content of
   readme-vars, and the test harness ideas.
 - **GitHub only** for the proof of concept: Actions, GHCR, Releases, Pages. No registry mirroring, no pushes to
-  several registries, no Scarf.
-- **A curated set of images,** not a mirror of the whole fleet.
+  several registries, no Scarf. GHCR is all the live release needs, because lscr.io (Scarf) proxies GHCR.
+  Other registries, git mirrors and backups come later. They will be a control-run phase that never holds up
+  the GHCR release and never uses a runner (workspace issues #4 and #5).
+- **The whole fleet,** every `linuxserver/docker-*` image that is not deprecated, staged with its live
+  branches (`docs/conversion-report.md`). Deprecated live branches are not converted. Names the schema
+  rejects (a `.` or `_`) wait on a decision.
 - **riscv64 is out of scope.**
 
 ## Image repos and the pipeline
@@ -63,9 +67,12 @@ change one, ask the maintainers first, then update this file in the same change.
 
 - **A central scheduler** replaces every per-repo cron: hourly upstream checks, hourly release checks, and
   weekly package checks.
-- **Control is a small always-on server** (n97 for the playground) and stays light. It handles webhooks,
+- **Control is a small always-on server** (n97, a mini PC, for the playground; a data-centre server in
+  production) and stays light. It handles webhooks,
   live status, the queue, scheduler decisions, badges, member actions and notifications. Everything derived
   from releases is rendered by the hub on Pages or by the site.
+- **Work that is not a build runs on control, not on runners.** This covers registry copies, git mirroring and
+  backups: the 20 concurrent job slots are for builds.
 - **Control holds every notification and GitHub App credential.** Image repos never hold a hub token or a
   Discord webhook.
 - **A release's Discord message is held until its site page is live** ("passed, publishing"), so it never

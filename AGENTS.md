@@ -150,6 +150,10 @@ paste a secret into a chat, an issue or a file.
 - Fleet and scheduler state: the site's `/fleet/` pages, or `https://ci.thelamer.duckdns.org:8443/status`
   and `/api/*.json` (listed in `repos/control/README.md`).
 - Runs: `gh run list -R linuxserver-playground/<repo>`. Logs are the only reason to leave the site.
+- A red build: before fixing anything, tell upstream rot and network flakes from pipeline bugs with
+  `docs/build-failure-triage.md`.
+- Capacity: the account runs 20 concurrent jobs, and that, not minutes, is the limit (`docs/github-runners.md`).
+  Pace mass dispatches, keep the heavy builds apart, and keep work that is not a build off the runners.
 - Member actions (rerun, cancel, dispatch, skip flags) are on the site after signing in with GitHub. Use
   Chromium: the playground's site and control are cross-site, so the session cookie is `SameSite=None`.
 - Images under `dev/` and `untrusted-pr/` are unreviewed by design. PR builds are deleted when the PR closes.
