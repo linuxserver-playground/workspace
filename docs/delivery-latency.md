@@ -122,6 +122,15 @@ the Pages deploy). A burst of 80 is picked up by the next run or two and lands i
   the jobs of every completed run that still holds an unfinished job (the dangling
   `publish-stores (runtipi)` of hub run 40323844865).
 
+### Measured after
+
+The first release through the finished path, `shotcut v26.9.27-ls2`: released 14:35:40, its `build.summary` at
+control 14:35:45, ingested from its `record.json` at 14:36:33 (with its own grype scan), its page live at
+14:38:28, while the static site had not rebuilt yet. **2.7 minutes, against a median of 9.5 before.** The hub
+Deploy on the new code takes about 3.5 minutes from dispatch to done: reconcile 28 s, render and generate 50 s,
+upload 18 s, and GitHub's `deploy-pages` about 70 s, now the largest single step. The image build's publish
+job is 35 s longer for the record (about 95 s when grype's database is not yet cached that day).
+
 ### Still open
 
 - The hub renders all 23,700 files every run. Every response carries the fleet's `last_updated`, so reusing the
