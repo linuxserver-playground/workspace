@@ -138,6 +138,23 @@ job is 35 s longer for the record (about 95 s when grype's database is not yet c
 - Stores stay in the hub. They are a function of `image.yml` across the fleet, nobody waits for them, and store
   clients poll daily; rendering them per build would only multiply where the generators run.
 
+## One job per Deploy (2026-10-27)
+
+During the base-image cascade of 2026-10-26 (19:33 to 21:18, all 20 runner slots taken), the path's hub and site
+steps waited for runners, not for work. The hub's Deploy was six jobs (build, deploy, prune-caches and three
+publish-stores) and the site's two, and each job queued for a slot separately: a hub `deploy` job waited up to
+22 minutes after its `build` had finished, the site's up to 12. `github-runners.md` has the measurement.
+
+- The hub's Deploy is one job (hub b5f0ee3): ingest, render, upload and `deploy-pages`, then the cache pruning,
+  which cannot fail the run. The pages go live before the build-report cache is saved, not after.
+- The Unraid, Umbrel and Runtipi store repositories are pushed at the end of the hourly `refresh.yml`, as the
+  target above has it, not by three jobs after every Deploy. The Pages copy of every store is still rendered by
+  every Deploy.
+- The site's Deploy is one job (site d2baa95).
+
+A lone release is as fast as before (heimdall: hub 3.1 minutes, static page 5.3, against medians of 3.3 and 6.0).
+In a burst each hub run now waits for one slot instead of two, and a hub plus site pair is two jobs instead of eight.
+
 ## Decisions this changed
 
 - "The hub runs grype on new builds in the run that ingests them" became: the build scans itself; the hub

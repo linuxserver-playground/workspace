@@ -163,8 +163,9 @@ change one, ask the maintainers first, then update this file in the same change.
   the base image's layers. Image builds may take a minute longer for it, so that the hub only indexes. The hub
   keeps the same code (`builder.derive`) for older releases and for rescans.
 - **The release path never waits for slow work.** The hub's Deploy only ingests and publishes; stars, GHCR tags,
-  the mods index and vulnerability rescans are `refresh.yml`'s, hourly, and each writes only its own files in
-  `data/` so both commit without conflicts.
+  the mods index, vulnerability rescans and the pushes to the store repositories are `refresh.yml`'s, hourly, and
+  each writes only its own files in `data/` so both commit without conflicts. Each is one job, because every job
+  waits for a runner slot on its own.
 - **The site renders a build it predates from the hub.** Pages answers a new build's URL with the 404 page,
   which renders the build page in the browser from the hub's API with the same components as the static page.
   A release is on the website once the hub serves it; the site's own rebuild only makes it static. Control's

@@ -53,6 +53,85 @@ at once.
 - **Bursts are ours to pace.** Staging pushed 30 repos at a time and waited for each batch to finish. The
   scheduler's hourly checks spread the steady-state load; a manual mass dispatch does not, so throttle it.
 
+## Measured: the hub and the site during a burst
+
+On 2026-10-26 from 19:00 to 23:00 UTC, a base-image cascade rebuilt 120 repos (1,651 jobs) and held all 20
+slots from 19:33 to 21:18. In those four hours the hub ran 188 jobs, second only to webtop, and the site 60. The
+numbers come from the Actions API (runs and jobs).
+
+| Hub | Runs | Jobs | Job-minutes | Queued, minutes |
+| --- | --- | --- | --- | --- |
+| Deploy, `image-released` from control | 25 | 150 | 88 | 220 |
+| Deploy, dispatched by `refresh.yml` | 4 | 24 | 12 | 68 |
+| Deploy, push | 1 | 6 | 3 | 0 |
+| Refresh (4 dispatched by control, 1 cron) | 5 | 5 | 11 | 5 |
+| Check, push | 3 | 3 | 6 | 3 |
+| **Total** | 38 | **188** | **121** | **296** |
+
+By job, across the 30 Deploys: `build` 30 jobs and 68 minutes, `deploy` 30 and 20, `prune-caches` 30 and 2,
+`publish-stores` 90 (a matrix of three) and 14. The site ran 30 Deploys, one per successful hub Deploy
+(control relays `hub-updated`), of two jobs each: 60 jobs, 61 minutes.
+
+- **The coalescing worked.** 200 Deploy runs were created in the window and 170 of them were dropped while
+  pending, before they had a job: GitHub keeps one pending run per concurrency group, and each run reconciles
+  the whole organisation, so nothing was lost. While the slots were full (19:33 to 21:18) only seven Deploys ran,
+  back to back. The other 23 ran after 21:18, when the slots were free and each release that arrived alone got a
+  run of its own, which is what keeps a lone release fast.
+- **The jobs per run did not.** Each Deploy was six jobs, five of them under a minute of work. The hub's 188 jobs
+  were 121 job-minutes, on average half a slot over the four hours, but every one of them was a separate wait for
+  a slot.
+  In the saturated stretch the hub's 51 jobs waited 262 minutes in all: `deploy` up to 22 minutes after its
+  `build`, each `publish-stores` up to 22, `prune-caches` up to 18. The site's `deploy` job waited up to 12.
+  Those waits were on the release path: the Pages deploy is the last step before a build's page exists.
+
+What changed (2026-10-27):
+
+- The hub's Deploy is one job (hub b5f0ee3). `deploy-pages` and the cache pruning are steps after the upload, in the
+  `github-pages` environment; the pruning cannot fail the run, because control relays `hub-updated` only after a
+  successful one.
+- The Unraid, Umbrel and Runtipi store repositories are pushed by the hourly `refresh.yml`, as the last steps of
+  its one job (16 s), not by a three-job matrix after every Deploy. Store clients read them at most daily. The
+  Pages copy under `/stores/<platform>/` is still rendered by every Deploy.
+- The site's Deploy is one job (site d2baa95): the Pages deploy is a step of the build job.
+
+| Same window, recounted | Before | After |
+| --- | --- | --- |
+| Hub jobs | 188 | 38 (30 Deploy, 5 Refresh, 3 Check) |
+| Site jobs | 60 | 30 |
+| Slot waits per hub release, when the slots are full | two (build, then deploy) | one |
+
+Measured on 2026-10-27 with the new workflows, against the same shape of burst from the evening before (both with
+free slots, so the counts show the jobs and not the queue):
+
+| Burst | Releases | Hub Deploys run (dropped) | Hub jobs | Site Deploys | Site jobs | Jobs in all |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-26 22:46 to 23:06, before | 12 | 7 (5) | 42 | 8 | 16 | 58 |
+| 2026-10-27 17:07 to 17:13, after | 10 | 4 (6) | 4 | 4 | 4 | 8 |
+
+The second burst was five empty commits to small images (librespeed, freshrss, grocy, wikijs, syslog-ng) plus five
+base-image releases that happened to land in the same minutes. Each of the five reached the hub 3.1 to 4.5 minutes
+after its Release. A lone release (heimdall `v2.8.3-ls4`, the same day) reached the hub in 3.1 minutes and its
+static site page in 5.3, against medians of 3.3 and 6.0 over the 23 lone releases of the two days before. The Deploy
+itself is unchanged at about three minutes; the gain is in a burst, where it now waits for one slot instead of two.
+
+What was left alone, and why:
+
+- **Coalescing `image-released` in control.** Dispatches cost nothing on the runners: GitHub already drops all but
+  one pending Deploy, and while the slots were full only seven Deploys ran in 105 minutes. Holding dispatches back
+  would only make a lone release wait.
+- **Coalescing `hub-updated`.** The site rebuilds once per successful hub Deploy, so in a saturated stretch it ran
+  as rarely as the hub did (seven times). It is no longer on the release path (the 404 page renders a new build from
+  the hub), so it could be spaced out, but it was 60 job-minutes in four hours and a debounce in control saves
+  little where the slots are scarce.
+- **`refresh.yml` and Deploy.** They do not collide: separate concurrency groups, separate files in `data/`, and the
+  Deploy that refresh asks for joins the pending one when a burst is already queuing.
+
+Open: **the site's snapshot refresh is rate-limited by Pages.** Every site Deploy reads every image's documents and
+every build's from the hub's Pages site, several thousand requests, and since 2026-10-27 08:17 Pages has answered
+some of them with 429 after the four retries `scripts/refresh-data.mjs` allows. 16 of the last 200 site Deploys
+failed, nine of the ten newest on a 429, and three of the four in the burst above. A failed run costs its job and leaves the static pages for the
+next one (the build pages still render from the hub). Reading only the builds the snapshot lacks would fix it.
+
 ## Things the runners taught us
 
 - **Transient failures are real but rare.** In about 525 runs we saw:

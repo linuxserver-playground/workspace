@@ -45,7 +45,7 @@ them without the maintainers.
 | `workflows` | The reusable `image-build.yml` and `mod-build.yml` plus one composite action per step | the floating tag `v1` moves to the new commit (image repos call `@v1`) |
 | `ci` | The container test harness: runs each built image, takes screenshots, emits the release bundle | push to main publishes `ghcr.io/linuxserver-playground/ci:latest`, which workflows pulls |
 | `dumper` | Rust static file-tree walker for the bundle (`dumper files`) | a GitHub Release; workflows fetch `releases/latest` |
-| `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index and build reports; `refresh.yml` hourly: stars, GHCR tags, mods, grype rescans | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
+| `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index and build reports; `refresh.yml` hourly: stars, GHCR tags, mods, grype rescans, pushes to the store repos | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
 | `site` | Astro website: image pages, build pages, fleet board (live from control), docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
 | `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated | push to a live branch builds and releases; any other branch builds to `dev/` |
@@ -81,7 +81,7 @@ generated output.
 7. The site's fleet pages read control's JSON API live, with the session cookie, for anything that changes
    minute to minute.
 8. Hourly, the hub's `refresh.yml` reads stars and GHCR tags, rescans vulnerabilities when grype's database moved,
-   refreshes the mods index, commits and asks for a Deploy.
+   refreshes the mods index, commits and asks for a Deploy, then pushes the Unraid, Umbrel and Runtipi store repos.
 
 `docs/delivery-latency.md` measures this path and records why it is shaped this way.
 
@@ -211,7 +211,9 @@ paste a secret into a chat, an issue or a file.
 - A red build: before fixing anything, tell upstream rot and network flakes from pipeline bugs with
   `docs/build-failure-triage.md`.
 - Capacity: the account runs 20 concurrent jobs, and that, not minutes, is the limit (`docs/github-runners.md`).
-  Pace mass dispatches, keep the heavy builds apart, and keep work that is not a build off the runners.
+  Pace mass dispatches, keep the heavy builds apart, and keep work that is not a build off the runners. A workflow
+  on the release path (the hub's and the site's Deploy) stays one job: each job waits for a slot on its own, and
+  in a burst a small second job waited 20 minutes.
 - Member actions (rerun, cancel, dispatch, skip flags) are on the site after signing in with GitHub. Use
   Chromium: the playground's site and control are cross-site, so the session cookie is `SameSite=None`.
 - Images under `dev/` and `untrusted-pr/` are unreviewed by design. PR builds are deleted when the PR closes.
