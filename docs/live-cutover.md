@@ -36,6 +36,12 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   proxying GHCR.
 - **Docs URLs.** Point the site, hub and docs URLs baked into generated files (`builder.manifest.Settings`)
   at the production domains.
+- **Wheel index.** Point the `wheel-index.linuxserver.io` CNAME at wheelie's Pages (custom domain on the repo),
+  then revert the `Install wheels from the playground wheel index` commits
+  ([playground-references.md](playground-references.md#wheelie)) and wheelie's `INDEX_URL` default. Before
+  that, run `scripts/migrate.py` for the other indexes so no entry still needs `wheels.linuxserver.io` (the S3
+  bucket), and drop `alpine-3.20`, which the playground does not build. Many images need no non-PyPI wheel
+  at all and could drop `--find-links`.
 
 ## Membership, permissions and review
 

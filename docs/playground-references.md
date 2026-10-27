@@ -53,6 +53,20 @@ and `:arm64v8-latest` to `ghcr.io/linuxserver-playground/unrar`. 24 branches of 
 sabnzbd's `Dockerfile.riscv64` still names `ghcr.io/linuxserver/unrar:riscv64-latest`. riscv64 is out of scope
 and that file is never built, so it was left as upstream has it.
 
+## wheelie
+
+Commit subject: `Install wheels from the playground wheel index`. Rewrites the pip `--find-links`
+`https://wheel-index.linuxserver.io/<index>/` to `https://linuxserver-playground.github.io/wheelie/<index>/` in
+`Dockerfile` and `Dockerfile.aarch64`. A smoke test of the slim wheelie, so far one branch:
+
+| Repo | Branches | Index |
+| --- | --- | --- |
+| docker-sabnzbd | `master` | `alpine-3.24` |
+
+Only the playground indexes whose legacy `wheels.linuxserver.io` entries were moved (`alpine-3.24`) are safe
+to point at; see wheelie's `scripts/migrate.py`. Every other image still uses `wheel-index.linuxserver.io`.
+At the cutover the playground index becomes `wheel-index.linuxserver.io` again, so revert these commits.
+
 ## Still pointing at linuxserver
 
 - tvheadend's `ghcr.io/linuxserver/picons-builder` stage: the playground has no picons-builder repo.
