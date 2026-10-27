@@ -38,10 +38,14 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   at the production domains.
 - **Wheel index.** Point the `wheel-index.linuxserver.io` CNAME at wheelie's Pages (custom domain on the repo),
   then revert the `Install wheels from the playground wheel index` commits
-  ([playground-references.md](playground-references.md#wheelie)) and wheelie's `INDEX_URL` default. Before
-  that, run `scripts/migrate.py` for the other indexes so no entry still needs `wheels.linuxserver.io` (the S3
-  bucket), and drop `alpine-3.20`, which the playground does not build. Many images need no non-PyPI wheel
-  at all and could drop `--find-links`.
+  ([playground-references.md](playground-references.md#wheelie)) and wheelie's `INDEX_URL` default. The index
+  is a public integration, not only ours: the mods' `package-install.v1` (fetched by every base image from
+  `linuxserver/docker-mods` `mod-scripts`) adds `-f https://wheel-index.linuxserver.io/alpine-${ALPINE_VER}/`
+  or `/ubuntu/` at runtime in users' containers, on whatever Alpine they run, and outside projects (SickChill,
+  Calibre-Web-Automated, home-operations/containers, bazarr upstream) use it too. So the live cutover keeps
+  every existing page, including old Alpine versions the fleet no longer builds, and every legacy
+  `wheels.linuxserver.io` link: keep the S3 bucket serving read-only rather than deleting or trimming
+  anything. Only new wheels go to Release assets. The playground's trimmed pages are not a model for this.
 
 ## Membership, permissions and review
 

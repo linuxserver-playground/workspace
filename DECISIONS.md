@@ -104,6 +104,10 @@ change one, ask the maintainers first, then update this file in the same change.
   arches upstream, so it builds a wheel only when no compatible one exists (bluepy, and new CPython versions
   after an Alpine bump). Wheels go to GitHub Release assets and the index to Pages; no Jenkins, no S3. The
   Home Assistant and SCI variants, disabled upstream since 2024 and 2023, are not carried over.
+  Images keep `--find-links` to the index: it costs nothing while PyPI has the wheels, and the gap check
+  fills it after the next CPython bump. Packages join `packages.txt` only when compiling them dominates an
+  image's build or breaks it, not because an image compiles them. The live index stays append-only at
+  cutover: mods and outside projects read it, so no page or legacy wheel is removed.
 - **Control holds every notification and GitHub App credential.** Image repos never hold a hub token or a
   Discord webhook.
 - **A release's Discord message is held until its site page is live** ("passed, publishing"), so it never
