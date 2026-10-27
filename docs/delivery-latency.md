@@ -145,12 +145,12 @@ steps waited for runners, not for work. The hub's Deploy was six jobs (build, de
 publish-stores) and the site's two, and each job queued for a slot separately: a hub `deploy` job waited up to
 22 minutes after its `build` had finished, the site's up to 12. `github-runners.md` has the measurement.
 
-- The hub's Deploy is one job (hub b5f0ee3): ingest, render, upload and `deploy-pages`, then the cache pruning,
+- The hub's Deploy is one job (hub c169ba7): ingest, render, upload and `deploy-pages`, then the cache pruning,
   which cannot fail the run. The pages go live before the build-report cache is saved, not after.
 - The Unraid, Umbrel and Runtipi store repositories are pushed at the end of the hourly `refresh.yml`, as the
   target above has it, not by three jobs after every Deploy. The Pages copy of every store is still rendered by
   every Deploy.
-- The site's Deploy is one job (site d2baa95).
+- The site's Deploy is one job (site fcbf573).
 
 A lone release is as fast as before (heimdall: hub 3.1 minutes, static page 5.3, against medians of 3.3 and 6.0).
 In a burst each hub run now waits for one slot instead of two, and a hub plus site pair is two jobs instead of eight.

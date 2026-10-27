@@ -199,7 +199,8 @@ change one, ask the maintainers first, then update this file in the same change.
   `history.json`, the site's snapshot without a full refresh) is covered by a daily copy kept a week as
   `refs/data-history/<date>`, and a publish that drops more than a tenth of the files is refused. The website
   editor is unaffected: its branches and pull requests carry only content. The site clones with `filter:
-  blob:none`, since its git-dates need only commits and paths. History made before the change is left as it is.
+  blob:none`, since its git-dates need only commits and paths. The data was also removed from the history made
+  before the change (2026-10-27), and the commits that held nothing else went with it.
 - **Heavy data** (file trees) stays on GitHub Releases. Release assets have no CORS headers, so the site fetches
   them through control's CORS gateway, with a loading state.
 - **Vulnerabilities** are shown on build pages, with backport-aware framing, for users who look for them; they

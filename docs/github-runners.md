@@ -86,13 +86,13 @@ By job, across the 30 Deploys: `build` 30 jobs and 68 minutes, `deploy` 30 and 2
 
 What changed (2026-10-27):
 
-- The hub's Deploy is one job (hub b5f0ee3). `deploy-pages` and the cache pruning are steps after the upload, in the
+- The hub's Deploy is one job (hub c169ba7). `deploy-pages` and the cache pruning are steps after the upload, in the
   `github-pages` environment; the pruning cannot fail the run, because control relays `hub-updated` only after a
   successful one.
 - The Unraid, Umbrel and Runtipi store repositories are pushed by the hourly `refresh.yml`, as the last steps of
   its one job (16 s), not by a three-job matrix after every Deploy. Store clients read them at most daily. The
   Pages copy under `/stores/<platform>/` is still rendered by every Deploy.
-- The site's Deploy is one job (site d2baa95): the Pages deploy is a step of the build job.
+- The site's Deploy is one job (site fcbf573): the Pages deploy is a step of the build job.
 
 | Same window, recounted | Before | After |
 | --- | --- | --- |
@@ -130,7 +130,7 @@ Fixed: **the site's snapshot refresh was rate-limited by Pages.** Every site Dep
 and every build's from the hub's Pages site, about 5,000 requests with up to a hundred in flight, and gave up after
 four retries (about 22 seconds). From 2026-10-27 08:17 Pages answered 429: 16 of 200 site Deploys failed, nine of
 the ten newest. Pages limits by IP, so two full refreshes run by hand from one machine locked it out of every hub
-URL for over half an hour. Since site `f9efc2d` the refresh fetches only the builds `src/data/builds/` lacks
+URL for over half an hour. Since site `328a11c` the refresh fetches only the builds `src/data/builds/` lacks
 (3 of 780 on the first Deploy after the fix, against 776 before), keeps at most 8 requests in flight, backs off on
 429 for up to about four minutes, and refetches every build only on the daily scheduled run, in place, so a run
 that fails halfway leaves a whole snapshot.

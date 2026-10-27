@@ -146,7 +146,7 @@ serial scan.
 | Repo | Commit | Problem | Fix |
 | --- | --- | --- | --- |
 | workflows (`v1`) | e0eab6a | GHCR answered `manifest unknown` to the pull right after a push it had accepted, and `retry_ghcr` gave up at once | `retry_ghcr` takes an extra pattern (`RETRY_ALSO`); the post-push pull retries `manifest unknown` with the usual backoff |
-| hub | 32e80c1 | grype scanned one SBOM at a time, about 11 s each, so a hub run with 66 new SBOMs spent 12 of its 22 minutes scanning, and the releases behind it missed the 30-minute publication deadline | scans run four at a time (`VULNS_WORKERS`). Measured locally with the pinned grype 0.121.0 on eight real SBOMs: 47 s serial, 19 s parallel, identical matches; 150 MB per process |
+| hub | 71fb99a | grype scanned one SBOM at a time, about 11 s each, so a hub run with 66 new SBOMs spent 12 of its 22 minutes scanning, and the releases behind it missed the 30-minute publication deadline | scans run four at a time (`VULNS_WORKERS`). Measured locally with the pinned grype 0.121.0 on eight real SBOMs: 47 s serial, 19 s parallel, identical matches; 150 MB per process |
 | control | d628874 | every release that missed the deadline got its own Discord warning; a burst produced one post per release | releases that cross the deadline (or reach the site after it, or expire) in the same check for the same reason share one post, split only at Discord's 2,000-character limit |
 | control | a8fede4 | a branch without a Release was rebuilt every two hours however its last build ended, so a broken or cancelled image kept coming back | when the newest run built the current head and failed or was cancelled, the initial build is retried after 24 hours; a new commit or a member dispatch still builds at once |
 
