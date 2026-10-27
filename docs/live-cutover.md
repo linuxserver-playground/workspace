@@ -46,6 +46,11 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   every existing page, including old Alpine versions the fleet no longer builds, and every legacy
   `wheels.linuxserver.io` link: keep the S3 bucket serving read-only rather than deleting or trimming
   anything. Only new wheels go to Release assets. The playground's trimmed pages are not a model for this.
+- **Jenkins External-Triggers.** Control's hourly mod check replaces the `mod-*-external-trigger` jobs for the
+  mods with an `upstream` block. Disable those jobs when the mods move, or both build every new version. The
+  check reads `ghcr.io/<org>/mods:<branch>-<version>`, the tag the Jenkins jobs looked for on Docker Hub, so
+  a mod version Jenkins already built on GHCR counts as built. `code-server-golang` built three Go lines
+  (each with its version, minor and major tags) upstream; the playground builds only the newest.
 
 ## Membership, permissions and review
 
