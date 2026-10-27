@@ -16,6 +16,10 @@ change one, ask the maintainers first, then update this file in the same change.
   branches (`docs/conversion-report.md`). Deprecated live branches are not converted. Names the schema
   rejects (a `.` or `_`) wait on a decision.
 - **riscv64 is out of scope.**
+- **Build what upstream builds.** The playground exists to show that 20 GitHub runners carry the whole
+  workload Jenkins carries today, so nothing upstream still builds is pruned to make it fit: the images, the
+  batch projects (wheelie, proot-apps, selkies-layers) and the mod upstream triggers. Only what upstream itself
+  no longer builds is left out. `docs/github-runners.md` holds the measurements.
 
 ## Image repos and the pipeline
 
