@@ -97,6 +97,9 @@ change one, ask the maintainers first, then update this file in the same change.
   playground org, not a separate build org. They are not images: their builds are capped so they always leave
   runner slots free for image, hub and site builds, and the site shows them apart from the image fleet.
   Control starts each run with its matrix width (`parallel`) worked out from the jobs already running.
+- **proot-apps stays forkable.** Its build logic follows the repository owner and name, and a fork with
+  Actions enabled builds on its own schedule with the default cap. Control-driven scheduling is opt-in, by a
+  repository variable only our org sets.
 - **wheelie only builds what PyPI lacks.** Most of its packages now ship musl and glibc wheels for both
   arches upstream, so it builds a wheel only when no compatible one exists (bluepy, and new CPython versions
   after an Alpine bump). Wheels go to GitHub Release assets and the index to Pages; no Jenkins, no S3. The
