@@ -126,11 +126,14 @@ What was left alone, and why:
 - **`refresh.yml` and Deploy.** They do not collide: separate concurrency groups, separate files in `data/`, and the
   Deploy that refresh asks for joins the pending one when a burst is already queuing.
 
-Open: **the site's snapshot refresh is rate-limited by Pages.** Every site Deploy reads every image's documents and
-every build's from the hub's Pages site, several thousand requests, and since 2026-10-27 08:17 Pages has answered
-some of them with 429 after the four retries `scripts/refresh-data.mjs` allows. 16 of the last 200 site Deploys
-failed, nine of the ten newest on a 429, and three of the four in the burst above. A failed run costs its job and leaves the static pages for the
-next one (the build pages still render from the hub). Reading only the builds the snapshot lacks would fix it.
+Fixed: **the site's snapshot refresh was rate-limited by Pages.** Every site Deploy read every image's documents
+and every build's from the hub's Pages site, about 5,000 requests with up to a hundred in flight, and gave up after
+four retries (about 22 seconds). From 2026-10-27 08:17 Pages answered 429: 16 of 200 site Deploys failed, nine of
+the ten newest. Pages limits by IP, so two full refreshes run by hand from one machine locked it out of every hub
+URL for over half an hour. Since site `f9efc2d` the refresh fetches only the builds `src/data/builds/` lacks
+(3 of 780 on the first Deploy after the fix, against 776 before), keeps at most 8 requests in flight, backs off on
+429 for up to about four minutes, and refetches every build only on the daily scheduled run, in place, so a run
+that fails halfway leaves a whole snapshot.
 
 ## Things the runners taught us
 
