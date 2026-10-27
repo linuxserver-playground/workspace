@@ -94,7 +94,8 @@ change one, ask the maintainers first, then update this file in the same change.
   `upstream.version` is the default line, the one `mods:<branch>` follows; `upstream.lines` names the others
   (code-server-golang: `previous`, Go's older supported release, and `unstable`, its release candidate), and
   `tags` (`major`, `minor`) are the floating `-X` and `-X.Y` tags a line moves. Control checks every line and
-  dispatches the first missing one with its `line`, one build of a mod at a time; a line's build never moves
+  dispatches the first missing one with its `line`, one build of a mod at a time (the next line goes out as soon
+  as the branch's run completes, not at the next hourly check); a line's build never moves
   `mods:<branch>`. Only a branch with lines has the `line` input in its generated `build.yml`, so the other
   mods' files stay identical.
 - **A push that touches `mod.yml` refreshes that mod in control at once,** as a push does for an image's
