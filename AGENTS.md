@@ -49,7 +49,7 @@ them without the maintainers.
 | `site` | Astro website: image pages, build pages, fleet board (live from control), docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
 | `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated | push to a live branch builds and releases; any other branch builds to `dev/` |
-| `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` (about 95 branches) | push to a mod branch builds the image; the hub's next scheduled or dispatched run reads the `mod.yml` |
+| `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` (about 95 branches) | push to a mod branch builds the image (and control's hourly mod check builds a new upstream version of a mod with an `upstream` block); the hub's next scheduled or dispatched run reads the `mod.yml` |
 | `unraid-store`, `umbrel-store`, `runtipi-store` | Generated store repos, pushed by the hub | never edit by hand; change the generator in hub |
 | `dot-github` | The org's `.github` repo: profile README, CONTRIBUTING, SECURITY, FUNDING | push to main |
 | `harness` | The guided entry point for team members and contributors running an AI agent: role detection, playbooks, the `./harness` CLI, guard hooks | push to main |
@@ -162,7 +162,9 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   code change. Only a new *secret* needs n97 (see Secrets).
 - **New mod.** Follow `repos/docker-mods/AGENTS.md`: a branch from `template` with `mod.yml`, then
   `builder render-mod`, `tools/check-branch.sh` and `tools/test-mod.sh`. List the other images it suits under
-  `images`. The hub refreshes the mods index only on scheduled or dispatched runs (control dispatches one
+  `images`. A mod that pins an upstream tool's version gets an `upstream` block (image.yml's source types, not
+  `os`, `command` or `deb_repo`) and `ARG MOD_VERSION`: control then rebuilds it on every new version
+  (CONVENTIONS §3, "Mods"). The hub refreshes the mods index only on scheduled or dispatched runs (control dispatches one
   hourly); `gh workflow run deploy.yml -R linuxserver-playground/hub` to see it sooner.
 - **Remove an image.** Check nothing depends on it first: no other image builds `FROM` it and no open PRs.
   Then delete the repo and its GHCR packages (`<name>`, `build/<name>`, and any `dev/<name>` or

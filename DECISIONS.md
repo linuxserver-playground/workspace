@@ -84,6 +84,12 @@ change one, ask the maintainers first, then update this file in the same change.
   universal mods curated for it, then the rest. Deprecated mods are left off image pages and labs.
 - **Every mod has a site page,** `/mods/<branch>/`, with its docs; the mods index, image pages and the
   config lab link it.
+- **Mods that pin an upstream tool are rebuilt by the central scheduler,** not by per-mod triggers. `mod.yml`
+  `upstream` reuses image.yml's version sources and resolver (`combined` joins two, for docker and compose);
+  the build passes the version as `MOD_VERSION` and tags `mods:<branch>-<version>`, and control checks hourly
+  and dispatches the branch's build when that tag does not exist. The GHCR tag is the record of what was
+  built, as Docker Hub's was for the Jenkins External-Triggers jobs. Triggers that were dead upstream
+  (nginx-proxy-confs, sabnzbd-par2cmdline-turbo, transmission-web-control) were not carried over.
 - **Helper repos** (`docker-*` without an `image.yml` on the default branch, such as `docker-mods`) are not
   images: the fleet board lists them apart with their branch build health and never links an image page.
 
