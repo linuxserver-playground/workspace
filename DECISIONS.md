@@ -93,6 +93,9 @@ change one, ask the maintainers first, then update this file in the same change.
   from releases is rendered by the hub on Pages or by the site.
 - **Work that is not a build runs on control, not on runners.** This covers registry copies, git mirroring and
   backups: the 20 concurrent job slots are for builds.
+- **Batch build projects share the org.** wheelie, proot-apps and selkies-layers are brought into the
+  playground org, not a separate build org. They are not images: their builds are capped so they always leave
+  runner slots free for image, hub and site builds, and the site shows them apart from the image fleet.
 - **Control holds every notification and GitHub App credential.** Image repos never hold a hub token or a
   Discord webhook.
 - **A release's Discord message is held until its site page is live** ("passed, publishing"), so it never
