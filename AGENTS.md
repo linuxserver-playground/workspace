@@ -199,6 +199,9 @@ PRs, issues or comments there.
 In this repo you may edit this file, `DECISIONS.md`, `README.md`, `docs/`, `bootstrap.sh` (shellcheck clean)
 and `.claude/`. When you learn something the next agent needs, a cross-repo rule or a recipe, add it here. Put
 anything specific to one repo in that repo's AGENTS.md instead.
+When you find something the move to the real `linuxserver` org will have to change (a playground
+shortcut, a hard-coded org name, a gap only real contributors would hit), add a bullet to
+`docs/live-cutover.md` rather than fixing it then and there.
 
 ## Rules for every repo
 
