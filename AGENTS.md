@@ -50,6 +50,9 @@ them without the maintainers.
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
 | `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated | push to a live branch builds and releases; any other branch builds to `dev/` |
 | `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` (about 95 branches) | push to a mod branch builds the image (and control's hourly mod check builds a new upstream version of a mod with an `upstream` block); the hub's next scheduled or dispatched run reads the `mod.yml` |
+| `wheelie` | Python wheel index for the images (`--find-links`): builds only the wheels PyPI lacks, as Release assets, index on Pages | control's hourly gap check dispatches `build.yml` when a wheel is missing; push to main redeploys Pages |
+| `proot-apps` | PRoot app images and the `proot-apps` CLI; built to be forked, every name follows the repository | control dispatches the nightly package check (00:00 UTC), which rebuilds the apps whose packages changed; a push builds the apps it changed |
+| `selkies-layers` | Compositor and input layers (kwin, labwc, wtype, xvfb) per distro, copied into baseimage-selkies | control dispatches the nightly build (04:30 UTC); push to main builds |
 | `unraid-store`, `umbrel-store`, `runtipi-store` | Generated store repos, pushed by the hub | never edit by hand; change the generator in hub |
 | `dot-github` | The org's `.github` repo: profile README, CONTRIBUTING, SECURITY, FUNDING | push to main |
 | `harness` | The guided entry point for team members and contributors running an AI agent: role detection, playbooks, the `./harness` CLI, guard hooks | push to main |
@@ -176,6 +179,13 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
 
   Archiving instead keeps it on the site with an `archived` flag.
 - **New `docker-*` repo that is not an image.** Leave out `image.yml`; discovery lists it as a helper repo.
+- **New batch build project** (a repo that fans out a big matrix, like proot-apps or selkies-layers). Give
+  every fanned-out workflow a `parallel` dispatch input that becomes `max-parallel` (clamp 1–16, default 4),
+  one `concurrency` group per workflow, `retry_ghcr` around every registry call (vendored from workflows'
+  `scripts/lib.sh`), and gate any cron on `vars.SCHEDULED_BY_CONTROL != 'true'`. Then add it to `PROJECTS` in
+  control's `batch.py` and to `batch_live` in `config.py`, and set the variable. Control sizes each run from
+  the free slots and posts its failures to Discord. Never dispatch one by hand without a `parallel` that leaves
+  the reserve free (`/api/batch.json` shows `parallel_now`).
 
 ## Secrets
 
@@ -225,7 +235,7 @@ shortcut, a hard-coded org name, a gap only real contributors would hit), add a 
   co-author lines included (CONVENTIONS §8). Disclose AI assistance in PR descriptions.
 - Nothing may contain a credential, and secrets are never printed, copied or committed.
 - Nothing may reference a namespace other than `linuxserver-playground`, except links to upstream docs and
-  images the playground does not build yet (selkies-layers, proot-apps). Images build `FROM` the playground's
+  images the playground does not build yet. Images build `FROM` the playground's
   own base images and build layers. `docs/playground-references.md` lists every such rewrite so it can be
   swapped back when this moves to `linuxserver`; add to it whenever you make one.
 - The site is the single pane of glass. New data lands on the site first; the hub and README follow.

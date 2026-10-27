@@ -67,12 +67,30 @@ Only the playground indexes whose legacy `wheels.linuxserver.io` entries were mo
 to point at; see wheelie's `scripts/migrate.py`. Every other image still uses `wheel-index.linuxserver.io`.
 At the cutover the playground index becomes `wheel-index.linuxserver.io` again, so revert these commits.
 
+## selkies-layers
+
+`linuxserver-playground/selkies-layers` carries two rewrite commits of its own:
+- `Build on the playground base images`: the 23 `Dockerfile.<distro>.<layer>` `FROM` lines, tags unchanged
+  (`baseimage-alpine:3.24`, `-arch:latest`, `-debian:trixie`, `-debian:kali`, `-fedora:44`, `-ubuntu:resolute`).
+- `Publish the layers to the playground namespace`: `LAYERS_IMAGE` in `.github/workflows/build.yml`, the
+  default `IMAGE` in `scripts/matrix.py`, and `README.md`.
+
+The six `Dockerfile.*.wtype` files still clone `https://github.com/linuxserver/waylandtyper.git` (a source
+checkout; the playground has no copy).
+
+proot-apps needs no entry: every name in it follows `GITHUB_REPOSITORY`, as upstream designed it for forks.
+
 ## Still pointing at linuxserver
 
 - tvheadend's `ghcr.io/linuxserver/picons-builder` stage: the playground has no picons-builder repo.
 - The images in the base-image exceptions above.
-- selkies-layers and proot-apps are not in the playground namespace yet. Leave references to them as they are
-  until they are.
+- Images that use `ghcr.io/linuxserver/selkies-layers`, which the playground now publishes with every tag they
+  use: docker-baseimage-selkies (master, alpine324, arch, fedora44, kali, ubunturesolute, dev), docker-kali-linux,
+  docker-lm-studio and docker-pelorus (master). Swapping baseimage-selkies rebuilds every selkies desktop image,
+  so it waits for a planned cascade.
+- The base images fetch the mod scripts (`docker-mods.v3`, `package-install.v1`, `lsiown.v1`,
+  `with-contenv.v1`) from `linuxserver/docker-mods` `mod-scripts`; the playground's docker-mods has no such
+  branch. Swapping them rebuilds the fleet, so it waits for a planned cascade too.
 
 ## Finding and swapping them back
 
