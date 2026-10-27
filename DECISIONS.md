@@ -177,13 +177,17 @@ change one, ask the maintainers first, then update this file in the same change.
   the base image's layers. Image builds may take a minute longer for it, so that the hub only indexes. The hub
   keeps the same code (`builder.derive`) for older releases and for rescans.
 - **The release path never waits for slow work.** The hub's Deploy only ingests and publishes; stars, GHCR tags,
-  the mods index, vulnerability rescans and the pushes to the store repositories are `refresh.yml`'s, hourly, and
+  the mods and PRoot Apps indexes, vulnerability rescans and the pushes to the store repositories are `refresh.yml`'s, hourly, and
   each writes only its own files in `data/` so both commit without conflicts. Each is one job, because every job
   waits for a runner slot on its own.
 - **The site renders a build it predates from the hub.** Pages answers a new build's URL with the 404 page,
   which renders the build page in the browser from the hub's API with the same components as the static page.
   A release is on the website once the hub serves it; the site's own rebuild only makes it static. Control's
   Discord hold treats the hub serving the build as live.
+- **PRoot Apps is the site's app catalogue,** as Flathub is Flatpak's: `/proot-apps/` shows how to install the CLI,
+  then every app proot-apps' `metadata/metadata.yml` does not mark `disabled`, with its install command, whether or not
+  the playground has built it yet. The hub indexes the file hourly (`/api/v1/proot-apps.json`), and the site keeps the
+  icons as small PNGs. Every Selkies image page says it supports PRoot Apps and links there.
 - **Heavy data** (file trees) stays on GitHub Releases. Release assets have no CORS headers, so the site fetches
   them through control's CORS gateway, with a loading state.
 - **Vulnerabilities** are shown on build pages, with backport-aware framing, for users who look for them; they

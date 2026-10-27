@@ -13,7 +13,7 @@ Live surfaces:
 
 | What | URL |
 | --- | --- |
-| Website (the single pane of glass: images, builds, fleet, docs, blog, and editing the docs and blog from their pages) | https://linuxserver-playground.github.io/site/ |
+| Website (the single pane of glass: images, builds, fleet, PRoot Apps, docs, blog, and editing the docs and blog from their pages) | https://linuxserver-playground.github.io/site/ |
 | Hub (static API and generated artefacts) | https://linuxserver-playground.github.io/hub/ |
 | Control plane (scheduler, webhooks, JSON API, member actions) | https://ci.thelamer.duckdns.org:8443 |
 | Images | `ghcr.io/linuxserver-playground/<name>` |
@@ -45,13 +45,13 @@ them without the maintainers.
 | `workflows` | The reusable `image-build.yml` and `mod-build.yml` plus one composite action per step | the floating tag `v1` moves to the new commit (image repos call `@v1`) |
 | `ci` | The container test harness: runs each built image, takes screenshots, emits the release bundle | push to main publishes `ghcr.io/linuxserver-playground/ci:latest`, which workflows pulls |
 | `dumper` | Rust static file-tree walker for the bundle (`dumper files`) | a GitHub Release; workflows fetch `releases/latest` |
-| `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index and build reports; `refresh.yml` hourly: stars, GHCR tags, mods, grype rescans, pushes to the store repos | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
-| `site` | Astro website: image pages, build pages, fleet board (live from control), docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
+| `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index, the PRoot Apps index and build reports; `refresh.yml` hourly: stars, GHCR tags, mods, PRoot Apps, grype rescans, pushes to the store repos | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
+| `site` | Astro website: image pages, build pages, fleet board (live from control), PRoot Apps catalogue, docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
 | `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated | push to a live branch builds and releases; any other branch builds to `dev/` |
 | `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` (about 95 branches) | push to a mod branch builds the image (and control's hourly mod check builds a new upstream version of a mod with an `upstream` block, per version line); control re-reads a pushed `mod.yml` at once; the hub's next scheduled or dispatched run reads the `mod.yml` |
 | `wheelie` | Python wheel index for the images (`--find-links`): builds only the wheels PyPI lacks, as Release assets, index on Pages | control's hourly gap check dispatches `build.yml` when a wheel is missing; push to main redeploys Pages |
-| `proot-apps` | PRoot app images and the `proot-apps` CLI; built to be forked, every name follows the repository | control dispatches the nightly package check (00:00 UTC), which rebuilds the apps whose packages changed; a push builds the apps it changed |
+| `proot-apps` | PRoot app images and the `proot-apps` CLI; built to be forked, every name follows the repository. `metadata/metadata.yml` is the site's PRoot Apps catalogue (`/proot-apps/`), through the hub | control dispatches the nightly package check (00:00 UTC), which rebuilds the apps whose packages changed; a push builds the apps it changed |
 | `selkies-layers` | Compositor and input layers (kwin, labwc, wtype, xvfb) per distro, copied into baseimage-selkies | control dispatches the nightly build (04:30 UTC); push to main builds |
 | `unraid-store`, `umbrel-store`, `runtipi-store` | Generated store repos, pushed by the hub | never edit by hand; change the generator in hub |
 | `dot-github` | The org's `.github` repo: profile README, CONTRIBUTING, SECURITY, FUNDING | push to main |
