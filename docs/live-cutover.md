@@ -17,6 +17,9 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   - the `linuxserver-playground` deny and allow rules in the harness and workspace `.claude/settings.json`.
 - **The builder image's base.** It builds `FROM ghcr.io/linuxserver/baseimage-alpine:3.22`. That is already
   the production name, but it breaks the playground's namespace rule today.
+- **The harness.** `./harness` defaults to the playground's org, control and hub URLs (`HARNESS_*`
+  overrides). Its guard hook and settings name `linuxserver-playground`. Its roles are member and contributor;
+  map them to LinuxServer's tiers (below).
 - **Labs.**
   - The playground demo uses `linuxserver-playground-labs`.
   - Production has `linuxserver-labs`, and may split into sub-orgs. Decide the org layout, the proposal
@@ -54,10 +57,10 @@ Each of these works for owners pushing directly, but would trip up real contribu
 
 - **Builder has no PR checks.** A merge ships `builder:latest` to the whole fleet at once. Add `check.yml`:
   ruff, mypy, pytest, the contracts examples and the golden render.
-- **New repo, first PR.** Two fixes:
-  - `update_generated.sh check` fails a PR that adds generated files. Exempt a base branch with no
-    `image.yml`.
-  - The placeholder default branch must carry `pr-report.yml`, or the first PR gets no report comment.
+- **New repo, first PR.** The harness works around this today. The placeholder default branch carries the
+  generic generated workflows and LICENSE (`[skip ci]`), and the first PR leaves README and AGENTS.md to the
+  live build. As a result, reviewers do not see the rendered README in the PR. To fix that properly, exempt a
+  base branch with no `image.yml` from `update_generated.sh check`, and let the first PR carry everything.
 - **Local rendering, the successor to jenkins-builder.** `builder:latest` renders only the files a repo
   commits. What it needs:
   - a `hub-preview` tool image, so anyone can see the stores, proxy confs, k8s, quadlet and catalog entry

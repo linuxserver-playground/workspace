@@ -1,9 +1,13 @@
 # workspace
 
-The way in for anyone, human or agent, working on the
+The maintainers' workbench for broad, fast changes to the
 [LinuxServer.io v2 playground](https://github.com/linuxserver-playground). Clone this repository, run the
 bootstrap and start your coding agent at its root. Every other repository lands in `repos/`, so the agent
 can follow a change from the builder contracts through the workflows, the hub and the website.
+
+For the guided path, with role-aware playbooks for team members and outside contributors, use
+[harness](https://github.com/linuxserver-playground/harness) instead. When an architecture change lands
+here, update the harness to match (AGENTS.md, "Keeping the harness in step").
 
 ```bash
 gh repo clone linuxserver-playground/workspace && cd workspace

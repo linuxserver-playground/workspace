@@ -20,6 +20,9 @@ image proposals for a labs org. It is written out here, but it matters less for 
 The harness sits beside the workspace; it does not replace it. The workspace stays the uncaged
 rapid-development repo for broad changes. The harness is the guided way in.
 
+**Status:** built as [linuxserver-playground/harness](https://github.com/linuxserver-playground/harness)
+(2026-10-27). This plan stays as the record of why it is shaped this way. The repo itself is the reference.
+
 This plan comes from four research passes over every repo in `repos/` and the live org (2026-10-27), plus the
 maintainers' answers to its first draft.
 

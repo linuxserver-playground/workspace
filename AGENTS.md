@@ -52,6 +52,7 @@ them without the maintainers.
 | `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` (about 95 branches) | push to a mod branch builds the image; the hub's next scheduled or dispatched run reads the `mod.yml` |
 | `unraid-store`, `umbrel-store`, `runtipi-store` | Generated store repos, pushed by the hub | never edit by hand; change the generator in hub |
 | `dot-github` | The org's `.github` repo: profile README, CONTRIBUTING, SECURITY, FUNDING | push to main |
+| `harness` | The guided entry point for team members and contributors running an AI agent: role detection, playbooks, the `./harness` CLI, guard hooks | push to main |
 
 `reference/` (from `--reference`, read-only): `linuxserver/docker-ci`, `docker-jenkins-builder`, `docker-mods`,
 `templates`, `docker-documentation` and `reverse-proxy-confs`, the Jenkins-era originals. Read them for intent; never copy their
@@ -83,6 +84,19 @@ generated output.
 
 Control finds the fleet on its own: every 30 minutes, and on the first push to a new repo, it reads `image.yml`
 from every `docker-*` repo. Adding an image needs no change to control, the hub or n97.
+
+## Keeping the harness in step
+
+`repos/harness` is the guided way in for the team and for outside contributors: what this file says tersely,
+it says step by step, per role. When a change made from here alters the architecture, update the harness in
+the same push or straight after. That covers a new repo or surface, a new data path or API, a changed recipe,
+a new rule, a new member action, or a moved URL. The places to check:
+
+- its guides: `guides/system-map.md`, `data-sources.md`, `rules.md`, `gotchas.md`;
+- the playbook for the affected request (`guides/playbooks/`);
+- the `./harness` CLI, when a command, URL or validation list changed.
+
+A harness that describes last week's system sends every agent the wrong way.
 
 ## Change recipes
 
