@@ -49,7 +49,7 @@ them without the maintainers.
 | `site` | Astro website: image pages, build pages, fleet board (live from control), docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
 | `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated | push to a live branch builds and releases; any other branch builds to `dev/` |
-| `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` (about 95 branches) | push to a mod branch builds the image (and control's hourly mod check builds a new upstream version of a mod with an `upstream` block); the hub's next scheduled or dispatched run reads the `mod.yml` |
+| `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` (about 95 branches) | push to a mod branch builds the image (and control's hourly mod check builds a new upstream version of a mod with an `upstream` block, per version line); control re-reads a pushed `mod.yml` at once; the hub's next scheduled or dispatched run reads the `mod.yml` |
 | `wheelie` | Python wheel index for the images (`--find-links`): builds only the wheels PyPI lacks, as Release assets, index on Pages | control's hourly gap check dispatches `build.yml` when a wheel is missing; push to main redeploys Pages |
 | `proot-apps` | PRoot app images and the `proot-apps` CLI; built to be forked, every name follows the repository | control dispatches the nightly package check (00:00 UTC), which rebuilds the apps whose packages changed; a push builds the apps it changed |
 | `selkies-layers` | Compositor and input layers (kwin, labwc, wtype, xvfb) per distro, copied into baseimage-selkies | control dispatches the nightly build (04:30 UTC); push to main builds |
@@ -169,7 +169,10 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   `builder render-mod`, `tools/check-branch.sh` and `tools/test-mod.sh`. List the other images it suits under
   `images`. A mod that pins an upstream tool's version gets an `upstream` block (image.yml's source types, not
   `os`, `command` or `deb_repo`) and `ARG MOD_VERSION`: control then rebuilds it on every new version
-  (CONVENTIONS §3, "Mods"). The hub refreshes the mods index only on scheduled or dispatched runs (control dispatches one
+  (CONVENTIONS §3, "Mods"). When upstream ships several version lines at once (Go's two supported releases and
+  its release candidate), list the others under `upstream.lines` and the floating `-X`/`-X.Y` tags under `tags`;
+  `render-mod` then adds the `line` input to that branch's `build.yml`, and control builds each line in turn
+  (`code-server-golang` is the worked example). Control re-reads a pushed `mod.yml` at once. The hub refreshes the mods index only on scheduled or dispatched runs (control dispatches one
   hourly); `gh workflow run deploy.yml -R linuxserver-playground/hub` to see it sooner.
 - **Remove an image.** Check nothing depends on it first: no other image builds `FROM` it and no open PRs.
   Then delete the repo and its GHCR packages (`<name>`, `build/<name>`, and any `dev/<name>` or

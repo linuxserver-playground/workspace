@@ -49,8 +49,10 @@ rewrites in image repos have their own list in [playground-references.md](playgr
 - **Jenkins External-Triggers.** Control's hourly mod check replaces the `mod-*-external-trigger` jobs for the
   mods with an `upstream` block. Disable those jobs when the mods move, or both build every new version. The
   check reads `ghcr.io/<org>/mods:<branch>-<version>`, the tag the Jenkins jobs looked for on Docker Hub, so
-  a mod version Jenkins already built on GHCR counts as built. `code-server-golang` built three Go lines
-  (each with its version, minor and major tags) upstream; the playground builds only the newest.
+  a mod version Jenkins already built on GHCR counts as built. `code-server-golang`'s three Go lines
+  (`upstream.lines`) reproduce upstream's tags but two oddities: release candidates are tagged `-1.28rc1`, not
+  also `-1.28rc1.0` (BuildImage.yml padded a one-dot version), and the floating `-X`/`-X.Y` tags get no
+  `-<sha>` twins. Nobody should pin either, but the old tags stay on GHCR; do not prune them.
 - **Mod names and modmanager.** `docker-mods.v3` sends `linuxserver/*` and `ghcr.io/linuxserver/*` mods
   through lscr.io, so playground mods only work by their full name, `ghcr.io/linuxserver-playground/mods:<branch>`,
   and go straight to ghcr.io. Back in `linuxserver` the short names and lscr routing apply again with no change.

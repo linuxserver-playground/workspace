@@ -90,6 +90,19 @@ change one, ask the maintainers first, then update this file in the same change.
   and dispatches the branch's build when that tag does not exist. The GHCR tag is the record of what was
   built, as Docker Hub's was for the Jenkins External-Triggers jobs. Triggers that were dead upstream
   (nginx-proxy-confs, sabnzbd-par2cmdline-turbo, transmission-web-control) were not carried over.
+- **A mod builds every version line upstream builds,** declared in `mod.yml`, not in a workflow.
+  `upstream.version` is the default line, the one `mods:<branch>` follows; `upstream.lines` names the others
+  (code-server-golang: `previous`, Go's older supported release, and `unstable`, its release candidate), and
+  `tags` (`major`, `minor`) are the floating `-X` and `-X.Y` tags a line moves. Control checks every line and
+  dispatches the first missing one with its `line`, one build of a mod at a time; a line's build never moves
+  `mods:<branch>`. Only a branch with lines has the `line` input in its generated `build.yml`, so the other
+  mods' files stay identical.
+- **A push that touches `mod.yml` refreshes that mod in control at once,** as a push does for an image's
+  `image.yml`; the 30-minute discovery stays the backstop.
+- **The mod page shows what a user pins:** the version built and when, `mods:<branch>-<version>` beside the
+  floating tag, and each line's version, date and tags. The hub's hourly refresh reads them from the GHCR
+  `mods` package into the mods index (`builds`), resolving the extra lines with workflows' own resolver
+  (`workflows@v1`, not a copy), so a new mod build shows on its page after the next refresh.
 - **Helper repos** (`docker-*` without an `image.yml` on the default branch, such as `docker-mods`) are not
   images: the fleet board lists them apart with their branch build health and never links an image page.
 
