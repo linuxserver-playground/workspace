@@ -188,6 +188,18 @@ change one, ask the maintainers first, then update this file in the same change.
   then every app proot-apps' `metadata/metadata.yml` does not mark `disabled`, with its install command, whether or not
   the playground has built it yet. The hub indexes the file hourly (`/api/v1/proot-apps.json`), and the site keeps the
   icons as small PNGs. Every Selkies image page says it supports PRoot Apps and links there.
+- **Generated data lives on a `data` branch with one commit,** never on `main`. The hub's `data/` and the site's
+  snapshots are rebuilt by CI all day (over a hundred commits a day each), and as commits on `main` they grew both
+  repositories by several megabytes a day without bound, buried the code history and rode along in every clone.
+  Each publish now replaces the branch's commit with a new root commit, pushed with a lease; a writer that loses
+  the race merges its own files onto the winner's three-way (the hub's Deploy and Refresh write different
+  files), and a conflict fails the run instead of dropping data. The data is mostly a cache: the Releases stay the
+  source of truth, the hub keeps the newest 10 builds per branch, and the site's refresh starts from the restored
+  snapshot so it stays incremental under the Pages rate limit. What cannot be rebuilt cheaply (the hub's full
+  `history.json`, the site's snapshot without a full refresh) is covered by a daily copy kept a week as
+  `refs/data-history/<date>`, and a publish that drops more than a tenth of the files is refused. The website
+  editor is unaffected: its branches and pull requests carry only content. The site clones with `filter:
+  blob:none`, since its git-dates need only commits and paths. History made before the change is left as it is.
 - **Heavy data** (file trees) stays on GitHub Releases. Release assets have no CORS headers, so the site fetches
   them through control's CORS gateway, with a loading state.
 - **Vulnerabilities** are shown on build pages, with backport-aware framing, for users who look for them; they

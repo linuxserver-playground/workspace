@@ -73,17 +73,23 @@ generated output.
 4. The workflow POSTs signed events to control `/events`. Control posts to Discord (held at "publishing" until
    the hub serves the build) and sends the hub `repository_dispatch image-released`.
 5. The hub's Deploy reconciles the organisation over GraphQL, ingests every release `data/` lacks (build.json
-   and record.json: two downloads each), commits `data/`, renders the API on every core and deploys Pages. From
-   then on the build's site page works: the site renders a build it predates from the hub's API on its 404
-   page (`LiveBuildPage`).
+   and record.json: two downloads each), publishes `data/` to its `data` branch, renders the API on every core
+   and deploys Pages. From then on the build's site page works: the site renders a build it predates from the
+   hub's API on its 404 page (`LiveBuildPage`).
 6. When the hub's Deploy succeeds, control sends `hub-updated` to the site, and the site rebuilds from the hub
    API, which makes the new build pages static. Nobody waits for this step.
 7. The site's fleet pages read control's JSON API live, with the session cookie, for anything that changes
    minute to minute.
 8. Hourly, the hub's `refresh.yml` reads stars and GHCR tags, rescans vulnerabilities when grype's database moved,
-   refreshes the mods index, commits and asks for a Deploy, then pushes the Unraid, Umbrel and Runtipi store repos.
+   refreshes the mods index, publishes to the `data` branch and asks for a Deploy, then pushes the Unraid, Umbrel
+   and Runtipi store repos.
 
 `docs/delivery-latency.md` measures this path and records why it is shaped this way.
+
+Generated data never goes on a `main` branch. The hub's `data/` and the site's snapshots are each the one commit
+of their repo's `data` branch, which CI replaces on every change (the hub's `scripts/commit_data.sh`, the site's
+`scripts/snapshot.sh`), so their history cannot grow and `main` holds only what people write. `bootstrap.sh` lays
+both into `repos/` after it updates them. A new repo that keeps generated data in git does the same.
 
 Control finds the fleet on its own: every 30 minutes, and on the first push to a new repo, it reads `image.yml`
 from every `docker-*` repo. Adding an image needs no change to control, the hub or n97.
@@ -153,8 +159,8 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   for only one of the first pushes, so check `gh run list` and dispatch the live branches that got no run
   (`gh workflow run build.yml -R linuxserver-playground/docker-<name> --ref <branch> -f reason=manual`).
 - **Site-only change** (layout, docs page, blog post). Edit `site` and validate with its AGENTS.md list
-  (check, build, a11y, overflow at 390px). Build from the committed `src/data/` snapshot; don't refresh it
-  from the live hub to test (`npm run data`, least of all `REFRESH_ALL=1`): GitHub Pages rate-limits by IP and
+  (check, build, a11y, overflow at 390px). Build from the snapshots `npm run snapshot` restores from the site's
+  `data` branch; don't refresh them from the live hub to test (`npm run data`, least of all `REFRESH_ALL=1`): GitHub Pages rate-limits by IP and
   locks the machine out of the hub for half an hour or more. Docs pages and posts are content collections; front matter is
   validated at build time. People edit them from the pages themselves (Edit, Delete, New post, New page, shown
   to people who can edit the site; control's `editor.py`): every change is one `edit/<login>/…` branch and one

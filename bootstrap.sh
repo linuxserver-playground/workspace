@@ -58,6 +58,11 @@ gh repo list "$ORG" --limit 500 --no-archived --json name --jq '.[].name' | sort
   sync "$ORG/$name" "$dir"
 done
 
+# Generated data is not on main: the hub's data/ and the site's snapshots are the one commit of each repo's data
+# branch. Lay them into the clones, so a build works straight away. Both only replace generated files.
+[[ -x "$repos_dir/hub/scripts/data.sh" ]] && { "$repos_dir/hub/scripts/data.sh" || echo "hub data/ not refreshed" >&2; }
+[[ -x "$repos_dir/site/scripts/snapshot.sh" ]] && { "$repos_dir/site/scripts/snapshot.sh" restore || echo "site snapshots not restored" >&2; }
+
 if $reference; then
   mkdir -p "$reference_dir"
   for name in "${REFERENCE[@]}"; do
