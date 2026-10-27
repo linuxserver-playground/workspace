@@ -188,7 +188,7 @@ change one, ask the maintainers first, then update this file in the same change.
   then every app proot-apps' `metadata/metadata.yml` does not mark `disabled`, with its install command, whether or not
   the playground has built it yet. The hub indexes the file hourly (`/api/v1/proot-apps.json`), and the site keeps the
   icons as small PNGs. Every Selkies image page says it supports PRoot Apps and links there. The page features
-  proot-next, the engine under every app, and invites people to work on it.
+  proot-next, the engine under every app, with links to its repository, docs, issues and Discord.
 - **The site asks for people, not money.** The project's shortage is contributors, so the header's button is
   Contribute (Donate stays in the footer and the mobile menu), the home page closes on a call for contributors,
   and `/contribute/` with the docs' Contribute section is the way in. It leads with the harness: an AI agent that
