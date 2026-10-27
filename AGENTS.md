@@ -103,7 +103,9 @@ a new rule, a new member action, or a moved URL. The places to check:
 
 - its guides: `guides/system-map.md`, `data-sources.md`, `rules.md`, `gotchas.md`;
 - the playbook for the affected request (`guides/playbooks/`);
-- the `./harness` CLI, when a command, URL or validation list changed.
+- the `./harness` CLI, when a command, URL or validation list changed;
+- the site's public half of the contributor path: `/contribute/` (`src/pages/contribute.astro`,
+  `src/lib/contribute.ts`) and the docs' Contribute section (`src/content/docs/contribute/`).
 
 A harness that describes last week's system sends every agent the wrong way.
 

@@ -24,6 +24,12 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   - The playground demo uses `linuxserver-playground-labs`.
   - Production has `linuxserver-labs`, and may split into sub-orgs. Decide the org layout, the proposal
     flow, and what graduating into `linuxserver` means.
+  - Until Labs exists, the site sends image proposals to issues on `harness` titled `Proposal:`
+    (`PROPOSALS_URL` in the site's `src/lib/contribute.ts`, `/docs/contribute/proposing-an-image/` and its "Coming:
+    Labs" panel). Repoint all three, and the harness's propose-image playbook, when Labs opens.
+- **New mods from outside.** A contributor cannot create a mod branch, so a new mod is an issue and a wait for a
+  member (`/docs/contribute/making-a-mod/`). Decide whether a fork PR can propose a new branch (an `incoming`
+  branch, or a bot that creates `<target>-<name>` from an approved issue).
 - **Image names with `.` or `_`.** Examples: `changedetection.io`, `your_spotify`, `doplarr_rs`. They wait
   on a schema decision (DECISIONS: Scope).
 

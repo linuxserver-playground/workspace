@@ -187,7 +187,16 @@ change one, ask the maintainers first, then update this file in the same change.
 - **PRoot Apps is the site's app catalogue,** as Flathub is Flatpak's: `/proot-apps/` shows how to install the CLI,
   then every app proot-apps' `metadata/metadata.yml` does not mark `disabled`, with its install command, whether or not
   the playground has built it yet. The hub indexes the file hourly (`/api/v1/proot-apps.json`), and the site keeps the
-  icons as small PNGs. Every Selkies image page says it supports PRoot Apps and links there.
+  icons as small PNGs. Every Selkies image page says it supports PRoot Apps and links there. The page features
+  proot-next, the engine under every app, and invites people to work on it.
+- **The site asks for people, not money.** The project's shortage is contributors, so the header's button is
+  Contribute (Donate stays in the footer and the mobile menu), the home page closes on a call for contributors,
+  and `/contribute/` with the docs' Contribute section is the way in. It leads with the harness: an AI agent that
+  knows the system lowers the bar to a first pull request. Image, mod, fleet, docs and PRoot Apps pages each carry
+  a "help with this" panel with prompts to hand an agent (`ContributeCallout`, `src/lib/contribute.ts`). The
+  rules stay the same for everyone: AI use disclosed, a person accountable for every line.
+- **Image pages lead with what the app looks like:** the latest build's CI screenshot (amd64 first) sits beside
+  the header, with a lightbox, and links the build's test report.
 - **Generated data lives on a `data` branch with one commit,** never on `main`. The hub's `data/` and the site's
   snapshots are rebuilt by CI all day (over a hundred commits a day each), and as commits on `main` they grew both
   repositories by several megabytes a day without bound, buried the code history and rode along in every clone.
