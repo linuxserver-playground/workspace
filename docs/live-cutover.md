@@ -51,6 +51,13 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   check reads `ghcr.io/<org>/mods:<branch>-<version>`, the tag the Jenkins jobs looked for on Docker Hub, so
   a mod version Jenkins already built on GHCR counts as built. `code-server-golang` built three Go lines
   (each with its version, minor and major tags) upstream; the playground builds only the newest.
+- **Mod names and modmanager.** `docker-mods.v3` sends `linuxserver/*` and `ghcr.io/linuxserver/*` mods
+  through lscr.io, so playground mods only work by their full name, `ghcr.io/linuxserver-playground/mods:<branch>`,
+  and go straight to ghcr.io. Back in `linuxserver` the short names and lscr routing apply again with no change.
+  Modmanager has no mod logic of its own (it runs its base's `/docker-mods` with `MODMANAGER_MODONLY`), so it
+  follows whichever mod scripts its base image fetched; swap the `mod-scripts` URL back with the base images
+  ([playground-references.md](playground-references.md)) and rebuild it after them. Imported blog posts and
+  docs keep their `linuxserver` names on purpose.
 
 ## Membership, permissions and review
 
