@@ -44,8 +44,8 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   `<org>.github.io/<repo>/` (CONVENTIONS §6, "Repo Pages"; the hub's `config.repo_pages()`). If the org's own
   Pages site gets a custom domain, every project site moves under it and shares a path namespace with whatever
   that domain serves, so give it a data domain (not the website's) or none. Enable Pages on every repo first
-  (control does it on discovery once the App has Pages and Administration write), then backfill with a
-  `reason: pages` dispatch per repo, paced, before the hub links them.
+  (a maintainer, as in the new-image recipe; control only reports repos without it and never gets
+  Administration write), then backfill with a `reason: pages` dispatch per repo before the hub links them.
 - **Docs URLs.** Point the site, hub and docs URLs baked into generated files (`builder.manifest.Settings`)
   at the production domains.
 - **Wheel index.** Point the `wheel-index.linuxserver.io` CNAME at wheelie's Pages (custom domain on the repo),

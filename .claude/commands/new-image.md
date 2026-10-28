@@ -14,7 +14,8 @@ image" recipe in AGENTS.md and the conversions in `docs/conversion-report.md`.
    `.github/`, and make the one conversion commit.
 4. Build and run it locally as the image repo's AGENTS.md describes, if Docker is available. Say plainly if
    it is not.
-5. Create the playground repo (public) and push only the converted live branches, with history, default branch
+5. Create the playground repo (public), turn on its Pages site as the AGENTS.md recipe shows (Actions build, no
+   branch rule on `github-pages`), and push only the converted live branches, with history, default branch
    first.
 6. GitHub runs a workflow for only one of a new repo's first pushes: dispatch the branches that got no run.
    Watch every first build to the end (`gh run watch`).

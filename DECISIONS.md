@@ -138,8 +138,11 @@ change one, ask the maintainers first, then update this file in the same change.
   Release is the one link to an old build that lasts. After the run completes, control attaches `run.json` (the
   run's jobs and steps from the API, never log text) and `logs.zip` (GitHub's log archive). The logs of a public
   repository are already public and masked when written, so this exposes nothing new; control still skips
-  `logs.zip` when a credential pattern matches. Control also turns Pages on for every new image repository, with
-  no branch rule on its `github-pages` environment, so every live branch can deploy.
+  `logs.zip` when a credential pattern matches.
+- **Control never changes repository settings.** It holds no Pages or Administration permission, which would
+  let a stolen App key delete repositories or lift their protections. Whoever creates an image repository turns
+  on its Pages (Actions build, no branch rule on `github-pages`, so every live branch can deploy), as the
+  new-image recipe says; control only reports an image repository without Pages.
 - **A release's Discord message is held until its site page is live** ("passed, publishing"), so it never
   links a 404. Past 30 minutes control posts where it is stuck (hub or site); it stops watching after 24 h.
 - **Discord follows the Jenkins colours:** green for a live success, dark green for a dev or PR success, red

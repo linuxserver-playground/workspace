@@ -137,7 +137,11 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   hand-edit generated files in an image repo: `builder check` fails the build.
 - **New image.** Clone `linuxserver/docker-<name>`, create the playground repo
   (`gh repo create linuxserver-playground/docker-<name> --public`) and push the original's branches to it,
-  history included. Then, per live branch:
+  history included. Turn on its Pages site, deployed from Actions with no branch rule on `github-pages`
+  (`gh api -X POST repos/<repo>/pages -f build_type=workflow`, then
+  `gh api -X PUT repos/<repo>/environments/github-pages --input - <<<'{"deployment_branch_policy":null}'`).
+  Control only reports an image repo without Pages; it holds no permission to change repo settings. Then, per
+  live branch:
   1. `builder migrate`, review the TODOs.
   2. `builder render`, then `builder check`.
   3. Delete `Jenkinsfile`, `jenkins-vars.yml`, `readme-vars.yml` and the old `.github/`.
