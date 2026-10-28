@@ -178,8 +178,9 @@ playground base image (see `docs/base-image-case-study.md`).
 - **Names with `.` or `_`.** changedetection.io, doplarr_rs and your_spotify fail the schema's `name` pattern
   and are not staged. This needs a maintainer decision (see the third batch).
 - **Unresolved versions.** intellij-idea prints nothing upstream too.
-- **53 branches still use a `command` version source** that migrate did not recognise; typed sources would be
-  better.
+- **`command` version sources.** Done on 2026-10-28, except four: 56 of the 60 live branches with one now use
+  a typed source, each checked against its command's output first (`live-cutover.md`, "Version sources and
+  triggers"). `builder migrate` now also recognises `echo` pins and the two Arch lookups.
 - **7 `external_artifact_check`s were dropped** because they read `${{ secrets.CR_PAT }}`. Those branches have
   no `require_assets` yet.
 - **The hub's subfolder sample cannot rewrite,** so many apps are subdomain only (see the second batch).

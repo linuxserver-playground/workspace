@@ -226,6 +226,9 @@ paste a secret into a chat, an issue or a file.
 
 - Fleet and scheduler state: the site's `/fleet/` pages, or `https://ci.thelamer.duckdns.org:8443/status`
   and `/api/*.json` (listed in `repos/control/README.md`).
+- Comparing build load with live `linuxserver`: count GHCR package versions by push time
+  (`orgs/<org>/packages/container/<name>/versions`), never Releases. A release's `created_at` (and GraphQL's
+  `createdAt`) is its tagged commit's date, and a triggered release tags an old head, so date filters miss it.
 - Runs: `gh run list -R linuxserver-playground/<repo>`. Logs are the only reason to leave the site.
 - A red build: before fixing anything, tell upstream rot and network flakes from pipeline bugs with
   `docs/build-failure-triage.md`.

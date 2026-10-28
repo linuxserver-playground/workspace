@@ -127,6 +127,20 @@ to `ghcr.io/linuxserver-playground/selkies-layers:<tag>` in `Dockerfile` and `Do
 
 Every other selkies desktop image gets the playground layers through baseimage-selkies on its next rebuild.
 
+## Version sources
+
+Commit subject: `Follow the playground's arch base image releases for the upstream version`. Not a Dockerfile:
+`image.yml` `upstream.version` reads `linuxserver-playground/docker-baseimage-selkies`'s `arch-*` releases, the
+base these branches build on. Upstream's commands read `linuxserver/docker-baseimage-selkies` (ardour,
+lm-studio) and `linuxserver/docker-baseimage-kasmvnc` (webtop, a base those branches no longer use). Swap the
+`repo:` back to `linuxserver/docker-baseimage-selkies` on all six.
+
+| Repo | Branches |
+| --- | --- |
+| docker-ardour | `master` |
+| docker-lm-studio | `master` |
+| docker-webtop | `arch-i3`, `arch-kde`, `arch-mate`, `arch-xfce` |
+
 ## Still pointing at linuxserver
 
 - tvheadend's `ghcr.io/linuxserver/picons-builder` stage: the playground has no picons-builder repo.

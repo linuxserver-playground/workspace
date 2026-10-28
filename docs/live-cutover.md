@@ -33,6 +33,29 @@ rewrites in image repos have their own list in [playground-references.md](playgr
 - **Image names with `.` or `_`.** Examples: `changedetection.io`, `your_spotify`, `doplarr_rs`. They wait
   on a schema decision (DECISIONS: Scope).
 
+## Version sources and triggers
+
+- **Typed sources replaced 56 `command` sources in the playground** (commit `Read the upstream version with a
+  typed source instead of a shell command`, and `Follow the playground's arch base image releases for the
+  upstream version` on six branches). Upstream's jenkins-vars still has the commands. Carry the playground's
+  `image.yml` over as it is. Each new source printed the same version as the command it replaced on 2026-10-28,
+  except two:
+  - darktable now leaves out the Arch epoch, so its tags go from `25.6.2-1` to `5.6.2-1`;
+  - webtop's `arch-*` branches follow the arch base image's releases instead of a stale kasmvnc tag.
+- **Four branches keep `command` sources:**
+  - baseimage-arch builds daily from `date`;
+  - nextcloud `previous` works out the previous major from the current one;
+  - python `ha` reads two of Home Assistant's Dockerfiles;
+  - intellij-idea, which is broken (below).
+- **intellij-idea is broken on live too.** Arch renamed `intellij-idea-community-edition` to `intellij-idea-oss`.
+  The Dockerfile and the version source both need the new name.
+- **Control's command sandbox depends on the LinuxServer container.** It needs doas,
+  `/usr/local/bin/run-version-command`, and the init script that closes `/run/s6/container_environment`.
+  Keep them if control moves off n97 or out of the image (control `AGENTS.md`).
+- **Comparing build load with live.** Count GHCR package versions, not Releases: a release's `created_at` is its
+  tagged commit's date, and a triggered release tags an old head. The playground's first count after the
+  change, 155 releases to live's 119 over 42 hours, was made that way.
+
 ## Hosting and distribution
 
 - **Control.** Move it from n97 to a data-centre server.

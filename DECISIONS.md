@@ -111,6 +111,13 @@ change one, ask the maintainers first, then update this file in the same change.
 
 - **A central scheduler** replaces every per-repo cron: hourly upstream checks, hourly release checks, and
   weekly package checks.
+- **Every upstream is checked hourly, as Jenkins' external triggers were,** so the playground carries live's
+  build load. Typed `upstream.version` sources come first (`github_release` reads GitHub's latest release, as
+  `github_stable` did; `deb_packages`, `alpine_apk`, `arch_package`, `json`, `regex`, `static`, `combined`), and
+  `command` stays for what none of them can say. Control runs a `command` as nobody through doas and a fixed
+  wrapper: empty environment, its own directory, ulimits, a kill at 120 s, and `/config` and s6's container
+  environment closed to it. Live branches are pushed only by the org, so that is enough; nothing more is
+  claimed for it. Only `os` (the package check) and `deb_repo` (docker) are not checked hourly.
 - **Control is a small always-on server** (n97, a mini PC, for the playground; a data-centre server in
   production) and stays light. It handles webhooks,
   live status, the queue, scheduler decisions, badges, member actions and notifications. Everything derived
