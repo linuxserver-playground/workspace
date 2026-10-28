@@ -45,7 +45,7 @@ them without the maintainers.
 | `workflows` | The reusable `image-build.yml` and `mod-build.yml` plus one composite action per step | the floating tag `v1` moves to the new commit (image repos call `@v1`) |
 | `ci` | The container test harness: runs each built image, takes screenshots, emits the release bundle | push to main publishes `ghcr.io/linuxserver-playground/ci:latest`, which workflows pulls |
 | `dumper` | Rust static file-tree walker for the bundle (`dumper files`) | a GitHub Release; workflows fetch `releases/latest` |
-| `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index, the PRoot Apps index and build reports; `refresh.yml` hourly: stars, GHCR tags, mods, PRoot Apps, grype rescans, pushes to the store repos | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
+| `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index, the PRoot Apps index and build reports; `refresh.yml` hourly: stars, GHCR tags, mods, PRoot Apps, pushes to the store repos | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
 | `site` | Astro website: image pages, build pages, fleet board (live from control), PRoot Apps catalogue, docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
 | `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated. Its Pages site (deployed from an artifact, nothing committed) serves its newest builds' heavy files | push to a live branch builds, releases and redeploys its Pages; any other branch builds to `dev/`; `reason=pages` only redeploys its Pages |
@@ -83,8 +83,7 @@ generated output.
    API, which makes the new build pages static. Nobody waits for this step.
 7. The site's fleet pages read control's JSON API live, with the session cookie, for anything that changes
    minute to minute.
-8. Hourly, the hub's `refresh.yml` reads stars and GHCR tags, rescans vulnerabilities when grype's database moved,
-   refreshes the mods index, publishes to the `data` branch and asks for a Deploy, then pushes the Unraid, Umbrel
+8. Hourly, the hub's `refresh.yml` reads stars and GHCR tags, refreshes the mods index, publishes to the `data` branch and asks for a Deploy, then pushes the Unraid, Umbrel
    and Runtipi store repos.
 
 `docs/delivery-latency.md` measures this path and records why it is shaped this way.

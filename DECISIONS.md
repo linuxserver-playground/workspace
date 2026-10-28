@@ -184,9 +184,9 @@ change one, ask the maintainers first, then update this file in the same change.
 - **Data about a build is made by the build.** The publish job derives `record.json` (`builder record`): the
   package tables, the diff against the previous release of the branch, a grype scan of both architectures and
   the base image's layers. Image builds may take a minute longer for it, so that the hub only indexes. The hub
-  keeps the same code (`builder.derive`) for older releases and for rescans.
+  keeps the same code (`builder.derive`) for older releases.
 - **The release path never waits for slow work.** The hub's Deploy only ingests and publishes; stars, GHCR tags,
-  the mods and PRoot Apps indexes, vulnerability rescans and the pushes to the store repositories are `refresh.yml`'s, hourly, and
+  the mods and PRoot Apps indexes and the pushes to the store repositories are `refresh.yml`'s, hourly, and
   each writes only its own files in `data/` so both commit without conflicts. Each is one job, because every job
   waits for a runner slot on its own.
 - **The site renders a build it predates from the hub.** Pages answers a new build's URL with the 404 page,
@@ -231,8 +231,10 @@ change one, ask the maintainers first, then update this file in the same change.
 - **The site shows the newest 5 builds per branch;** the hub keeps the same 5. An older release has no site page:
   the image page's older releases link its GitHub Release, its `run.json` and its run.
 - **Vulnerabilities** are shown on build pages, with backport-aware framing, for users who look for them; they
-  are never a headline and not on image pages. Every build scans itself (in its `record.json`); the hub rescans
-  the newest build of each branch when the vulnerability database changes, at most daily.
+  are never a headline and not on image pages. They are the state of the image when it was released, best
+  effort and informal, not a live security feed or an authority: every build scans itself once (in its
+  `record.json`), nothing is rescanned, and the scan is served as `vulns.json` from the image repo's Pages with
+  its database date.
 - **Every hub run reconciles the organisation.** A dispatch's payload is only a hint: GitHub drops all but one
   pending run per concurrency group, so each run reads every `image.yml` and the newest releases of every repo
   over GraphQL (about 15 seconds) and ingests every release `data/` lacks.

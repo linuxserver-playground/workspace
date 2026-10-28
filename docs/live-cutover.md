@@ -46,6 +46,8 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   that domain serves, so give it a data domain (not the website's) or none. Enable Pages on every repo first
   (a maintainer, as in the new-image recipe; control only reports repos without it and never gets
   Administration write), then backfill with a `reason: pages` dispatch per repo before the hub links them.
+- **The hub's website URL.** `config.WEBSITE` and `site_build()` in the hub hard-code the playground site; its
+  `/builds/<image>/<tag>/` redirect stubs and `links.test_report` follow them.
 - **Docs URLs.** Point the site, hub and docs URLs baked into generated files (`builder.manifest.Settings`)
   at the production domains.
 - **Wheel index.** Point the `wheel-index.linuxserver.io` CNAME at wheelie's Pages (custom domain on the repo),
