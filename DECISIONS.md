@@ -25,11 +25,14 @@ change one, ask the maintainers first, then update this file in the same change.
 
 - **One manifest per branch**, `image.yml`, validated by a JSON Schema. Everything else in an image repo is
   generated from it.
-- **Base images and internal tools are kinds, not categories.** `image.yml` `kind` is optional and defaults to
-  `app`; only the `baseimage-*` repos set `base` and the internal tools (xvfb, yq, unrar, build-agent…) set
-  `tool`. They build, test and release like any image, but the site lists them on their own tabs of the images
-  section, and the hub leaves them out of the stores, the install artefacts and the v1 image list. The
-  categories stay as LinuxServer curated them in readme-vars.
+- **Base images and tools are kinds, not categories.** `image.yml` `kind` is optional and defaults to
+  `app`, an application users deploy and leave running: that is what the stores, the install artefacts and the
+  v1 image list are for. Only the `baseimage-*` repos set `base`. Everything else that is not a long-running app
+  sets `tool`: images run once as a command (ffmpeg, qemu-static), the project's own helpers (xvfb, build-agent)
+  and binaries other images copy in (yq, unrar). They build, test and release like any image, but the site
+  lists them on their own tabs of the images section (a tool's page leads with its README usage), and the hub
+  leaves them out of the stores, the install artefacts and the v1 image list. Tools need no mod logic of their
+  own. The categories stay as LinuxServer curated them in readme-vars.
 - **Templating commits happen once, on the live branch.** PRs are only checked. A push made with
   `GITHUB_TOKEN` never triggers workflows, so the package check dispatches the release build itself. Bot
   commits use `[skip ci]`.
