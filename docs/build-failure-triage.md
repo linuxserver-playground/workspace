@@ -33,6 +33,12 @@ gh api repos/linuxserver/docker-<name>/commits/<branch> -q .commit.committer.dat
 
 ## 3. Rerun once if it looks like the network
 
+Control already re-runs a live build once by itself when every failed job failed on an infrastructure step
+(checkout, GHCR login, artifacts, publishing tags, the release, the events POST), and retries a failed Pages
+deploy with backoff (control README, "Self-healing"; its retries show on `/management` and as `heal` decisions on
+`/scheduler`). It never re-runs a failure inside the image build or the tests, because it cannot tell a network
+blip in a Dockerfile's `RUN` from upstream rot. Those are yours:
+
 ```bash
 gh run rerun <run> -R linuxserver-playground/docker-<name> --failed
 ```
