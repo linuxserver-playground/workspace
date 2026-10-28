@@ -60,6 +60,14 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   every existing page, including old Alpine versions the fleet no longer builds, and every legacy
   `wheels.linuxserver.io` link: keep the S3 bucket serving read-only rather than deleting or trimming
   anything. Only new wheels go to Release assets. The playground's trimmed pages are not a model for this.
+  - *Why the new index publishes so little.* The old wheelie dates from when PyPI had almost no musl or
+    aarch64 wheels, so building them centrally saved every Alpine and arm image a compile. Since then upstream
+    projects have published musllinux and manylinux wheels for both arches themselves, and wheelie went on
+    rebuilding what PyPI already had: of the 1,781 legacy entries on the ubuntu page (October 2026), 1,150
+    are byte-identical copies of PyPI files, 562 are armhf, about 60 are for Pythons no base ships, and 4 suit
+    a current image. The new wheelie builds only what pip would otherwise compile: sdist-only packages
+    (bluepy today) and the window after a CPython bump before upstream ships wheels for it. So the newest
+    entries on each page will be few, and that is expected.
 - **Jenkins External-Triggers.** Control's hourly mod check replaces the `mod-*-external-trigger` jobs for the
   mods with an `upstream` block. Disable those jobs when the mods move, or both build every new version. The
   check reads `ghcr.io/<org>/mods:<branch>-<version>`, the tag the Jenkins jobs looked for on Docker Hub, so
