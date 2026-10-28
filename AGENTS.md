@@ -48,7 +48,7 @@ them without the maintainers.
 | `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index, the PRoot Apps index and build reports; `refresh.yml` hourly: stars, GHCR tags, mods, PRoot Apps, grype rescans, pushes to the store repos | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
 | `site` | Astro website: image pages, build pages, fleet board (live from control), PRoot Apps catalogue, docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
-| `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated | push to a live branch builds and releases; any other branch builds to `dev/` |
+| `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated. Its Pages site (deployed from an artifact, nothing committed) serves its newest builds' heavy files | push to a live branch builds, releases and redeploys its Pages; any other branch builds to `dev/`; `reason=pages` only redeploys its Pages |
 | `docker-mods` | Mods: `master` holds tooling and the guarded `build.yml`, one branch per mod with `mod.yml` (about 95 branches) | push to a mod branch builds the image (and control's hourly mod check builds a new upstream version of a mod with an `upstream` block, per version line); control re-reads a pushed `mod.yml` at once; the hub's next scheduled or dispatched run reads the `mod.yml` |
 | `wheelie` | Python wheel index for the images (`--find-links`): builds only the wheels PyPI lacks, as Release assets, index on Pages | control's hourly gap check dispatches `build.yml` when a wheel is missing; push to main redeploys Pages |
 | `proot-apps` | PRoot app images and the `proot-apps` CLI; built to be forked, every name follows the repository. `metadata/metadata.yml` is the site's PRoot Apps catalogue (`/proot-apps/`), through the hub | control dispatches the nightly package check (00:00 UTC), which rebuilds the apps whose packages changed; a push builds the apps it changed |
@@ -71,7 +71,10 @@ generated output.
    attestation. `builder record` derives `record.json`: package tables, the diff against the previous release,
    a grype scan, base layers. The GitHub Release gets the bundle assets with it.
 4. The workflow POSTs signed events to control `/events`. Control posts to Discord (held at "publishing" until
-   the hub serves the build) and sends the hub `repository_dispatch image-released`.
+   the hub serves the build) and sends the hub `repository_dispatch image-released`. The Publish job then
+   deploys the image repo's own Pages from its Releases (newest 5 per live branch): screenshots, test logs,
+   file trees and package tables, which the site reads cross-origin (CONVENTIONS §6, "Repo Pages"). When the
+   run completes, control attaches `run.json` and `logs.zip` to the Release.
 5. The hub's Deploy reconciles the organisation over GraphQL, ingests every release `data/` lacks (build.json
    and record.json: two downloads each), publishes `data/` to its `data` branch, renders the API on every core
    and deploys Pages. From then on the build's site page works: the site renders a build it predates from the

@@ -40,6 +40,12 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   `SameSite=None` and member actions work in every browser (DECISIONS: Control plane).
 - **Other registries, git mirrors and backups.** A control-run phase (workspace #4, #5). lscr.io keeps
   proxying GHCR.
+- **Image repos' Pages.** Each `docker-*` repo serves its builds' heavy files from Pages at
+  `<org>.github.io/<repo>/` (CONVENTIONS §6, "Repo Pages"; the hub's `config.repo_pages()`). If the org's own
+  Pages site gets a custom domain, every project site moves under it and shares a path namespace with whatever
+  that domain serves, so give it a data domain (not the website's) or none. Enable Pages on every repo first
+  (control does it on discovery once the App has Pages and Administration write), then backfill with a
+  `reason: pages` dispatch per repo, paced, before the hub links them.
 - **Docs URLs.** Point the site, hub and docs URLs baked into generated files (`builder.manifest.Settings`)
   at the production domains.
 - **Wheel index.** Point the `wheel-index.linuxserver.io` CNAME at wheelie's Pages (custom domain on the repo),
@@ -114,7 +120,6 @@ Each of these works for owners pushing directly, but would trip up real contribu
   `docker-doplarr_rs`.
 - **Doc drift.**
   - The control README describes the member check wrongly and gives the wrong `HUB_CONSUMERS` default.
-  - DECISIONS names a control "CORS gateway" that does not exist.
   - The workspace recipe mentions "contracts models"; there are none.
   - The hub's fixtures README names `mod-list.yml`, but the file is `mods.yml`.
 - **Fork approvals.** Fork runs need a maintainer to approve them (`all_external_contributors`). Decide

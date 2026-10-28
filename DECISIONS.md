@@ -134,6 +134,12 @@ change one, ask the maintainers first, then update this file in the same change.
   cutover: mods and outside projects read it, so no page or legacy wheel is removed.
 - **Control holds every notification and GitHub App credential.** Image repos never hold a hub token or a
   Discord webhook.
+- **Control archives each live release's run on its Release.** GitHub deletes run logs after 90 days, and the
+  Release is the one link to an old build that lasts. After the run completes, control attaches `run.json` (the
+  run's jobs and steps from the API, never log text) and `logs.zip` (GitHub's log archive). The logs of a public
+  repository are already public and masked when written, so this exposes nothing new; control still skips
+  `logs.zip` when a credential pattern matches. Control also turns Pages on for every new image repository, with
+  no branch rule on its `github-pages` environment, so every live branch can deploy.
 - **A release's Discord message is held until its site page is live** ("passed, publishing"), so it never
   links a 404. Past 30 minutes control posts where it is stuck (hub or site); it stops watching after 24 h.
 - **Discord follows the Jenkins colours:** green for a live success, dark green for a dev or PR success, red
@@ -203,15 +209,24 @@ change one, ask the maintainers first, then update this file in the same change.
   Each publish now replaces the branch's commit with a new root commit, pushed with a lease; a writer that loses
   the race merges its own files onto the winner's three-way (the hub's Deploy and Refresh write different
   files), and a conflict fails the run instead of dropping data. The data is mostly a cache: the Releases stay the
-  source of truth, the hub keeps the newest 10 builds per branch, and the site's refresh starts from the restored
+  source of truth, the hub keeps the newest 5 builds per branch, and the site's refresh starts from the restored
   snapshot so it stays incremental under the Pages rate limit. What cannot be rebuilt cheaply (the hub's full
   `history.json`, the site's snapshot without a full refresh) is covered by a daily copy kept a week as
   `refs/data-history/<date>`, and a publish that drops more than a tenth of the files is refused. The website
   editor is unaffected: its branches and pull requests carry only content. The site clones with `filter:
   blob:none`, since its git-dates need only commits and paths. The data was also removed from the history made
   before the change (2026-10-27), and the commits that held nothing else went with it.
-- **Heavy data** (file trees) stays on GitHub Releases. Release assets have no CORS headers, so the site fetches
-  them through control's CORS gateway, with a loading state.
+- **Heavy data is served by each image repository's own Pages,** not by the hub. One hub Pages site holding every
+  build's screenshots, logs and file trees was 434 MB of a 1 GB cap and grew with the fleet; split across the
+  image repositories, storage grows with the number of images. The Publish job of every live release, and a
+  `reason: pages` dispatch, assembles the site from the newest 5 releases of each live branch and deploys it from
+  an artifact (CONVENTIONS §6, "Repo Pages"): test report files, `files.<arch>.json.gz` and
+  `packages.<arch>.json.gz`. Nothing is committed to the image repository and no state is kept between deploys,
+  so a lost deploy is repaired by the next. Pages answers every request with `access-control-allow-origin: *`,
+  so the site reads them from any domain; Release assets send no CORS headers, so the browser never fetches one
+  and they are only download links. Releases stay the archive of everything.
+- **The site shows the newest 5 builds per branch;** the hub keeps the same 5. An older release has no site page:
+  the image page's older releases link its GitHub Release, its `run.json` and its run.
 - **Vulnerabilities** are shown on build pages, with backport-aware framing, for users who look for them; they
   are never a headline and not on image pages. Every build scans itself (in its `record.json`); the hub rescans
   the newest build of each branch when the vulnerability database changes, at most daily.
