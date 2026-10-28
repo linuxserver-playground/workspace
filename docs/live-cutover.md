@@ -59,6 +59,11 @@ rewrites in image repos have their own list in [playground-references.md](playgr
 ## Hosting and distribution
 
 - **Control.** Move it from n97 to a data-centre server.
+- **triage.** Move it with control, as its own compose project beside it (`triage/deploy/`).
+- **Scrub the playground host.** Once nothing runs on n97, remove what names it from the public repos: n97,
+  `/home/thelamer/...` paths and `ci.thelamer.duckdns.org` in control (`deploy/n97/`, `config.py`, README), in
+  triage's `TRIAGE_CONTROL_URL` default, in the site's control URL, and in this workspace's AGENTS.md,
+  DECISIONS.md and docs.
 - **One domain.** Site and control share one registrable domain, so the session cookie no longer needs
   `SameSite=None` and member actions work in every browser (DECISIONS: Control plane).
 - **Other registries, git mirrors and backups.** A control-run phase (workspace #4, #5). lscr.io keeps
