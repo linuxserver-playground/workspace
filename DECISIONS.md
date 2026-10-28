@@ -192,8 +192,13 @@ change one, ask the maintainers first, then update this file in the same change.
   Control moves a thread's `updated_at` on every comment so the author's replies show. It reads the hub's
   `data` branch and the site's docs from hourly shallow clones, never the Pages API. The model gets read-only
   tools only and returns structured output; the bot's code posts one comment, marked as AI-written, and labels
-  from an allowlist. Thread text is untrusted: one core rule in the prompt, and nothing the model can call
-  writes. Sonnet 5.5, a self-imposed $100 a month cap under a workspace spend limit. No backfill; bots and
+  from an allowlist. When the answer depends on the upstream application, Sonnet hands up to three questions to a
+  research assistant, Haiku 5.5 at a twentieth of the price, with web search, web fetch and read-only GitHub over
+  any public repository (upstream code at the version we ship, releases, changes between versions, issues): it
+  reads much, Sonnet judges and writes. The comment is a short reply with the evidence and its links in a
+  collapsed section. Thread text and research findings are untrusted: one core rule in each prompt, nothing either
+  model can call writes, and GitHub reads are public repositories only. Sonnet 5.5, a self-imposed $100 a month
+  cap under a workspace spend limit, counting both models and the searches. No backfill; bots and
   `no-bot` threads are skipped; at most three follow-ups to the author. In the playground it answers members
   too, for demonstration (`TRIAGE_AUTHORS=all`); production answers only people outside the team. Discord is
   out of scope for now.
