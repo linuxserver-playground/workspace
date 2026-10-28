@@ -72,7 +72,7 @@ fi
 
 if $setup; then
   python=$(command -v python3.13 || command -v python3)
-  for name in builder workflows ci hub control; do
+  for name in builder workflows ci hub control triage; do
     [[ -f "$repos_dir/$name/pyproject.toml" ]] || continue
     echo "setup    $name (venv)"
     (cd "$repos_dir/$name" && "$python" -m venv .venv && .venv/bin/pip install -q -e '.[dev]')

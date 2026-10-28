@@ -155,5 +155,8 @@ Each of these works for owners pushing directly, but would trip up real contribu
   - The control README describes the member check wrongly and gives the wrong `HUB_CONSUMERS` default.
   - The workspace recipe mentions "contracts models"; there are none.
   - The hub's fixtures README names `mod-list.yml`, but the file is `mods.yml`.
+- **The triage bot needs its own App and key in the real org.** Create a `linuxserver` App from the prefilled form
+  in `triage/deploy/README.md`, an API key in a workspace with a spend limit, and set `TRIAGE_AUTHORS=external`,
+  `TRIAGE_ORG`, `TRIAGE_CONTROL_URL` and `TRIAGE_SITE_URL`. Its footer and prompt say "playground".
 - **Fork approvals.** Fork runs need a maintainer to approve them (`all_external_contributors`). Decide
   whether a contributor tier can approve.
