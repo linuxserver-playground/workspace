@@ -117,6 +117,11 @@ change one, ask the maintainers first, then update this file in the same change.
   from releases is rendered by the hub on Pages or by the site.
 - **Work that is not a build runs on control, not on runners.** This covers registry copies, git mirroring and
   backups: the 20 concurrent job slots are for builds.
+- **Nobody babysits GitHub's lapses.** Every network call in the workflows retries network-class failures with
+  backoff (`retry` and `retry_ghcr` in workflows' `scripts/lib.sh`, `netretry.py`) and fails fast on real errors.
+  What outlasts that, control heals: it repairs missed webhooks (`heal.py`), retries a failed Pages deploy with
+  backoff, and re-runs a live build once when every failed job failed on an infrastructure step, never on the
+  image build or the tests (`recover.py`). Discord hears only what control gave up on, grouped hourly.
 - **Batch build projects share the org.** wheelie, proot-apps and selkies-layers are brought into the
   playground org, not a separate build org. They are not images: their builds are capped so they always leave
   runner slots free for image, hub and site builds, and the site shows them apart from the image fleet.
@@ -185,7 +190,7 @@ change one, ask the maintainers first, then update this file in the same change.
   package tables, the diff against the previous release of the branch, a grype scan of both architectures and
   the base image's layers. Image builds may take a minute longer for it, so that the hub only indexes. The hub
   keeps the same code (`builder.derive`) for older releases.
-- **The release path never waits for slow work.** The hub's Deploy only ingests and publishes; stars, GHCR tags,
+- **The release path never waits for slow work.** The hub's Deploy only ingests and publishes; stars,
   the mods and PRoot Apps indexes and the pushes to the store repositories are `refresh.yml`'s, hourly, and
   each writes only its own files in `data/` so both commit without conflicts. Each is one job, because every job
   waits for a runner slot on its own.
