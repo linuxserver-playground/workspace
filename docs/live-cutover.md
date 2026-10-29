@@ -94,6 +94,14 @@ rewrites in image repos have their own list in [playground-references.md](playgr
 ## Hosting and distribution
 
 - **Control.** Move it from n97 to a data-centre server.
+- **Size control's storage for the new server.** n97's defaults keep a week of webhook deliveries and two daily
+  database snapshots (`CONTROL_DELIVERIES_KEEP_DAYS=7`, `CONTROL_SNAPSHOTS_KEEP=2`), because a week of the
+  playground's deliveries alone was 2.2 GB. The production server has hundreds of GB, so raise both in its `.env`,
+  for example a month or more of deliveries and a week of snapshots. Snapshots live on the same disk, so also copy
+  the data dir (snapshots and `github_app.json`) off the host (control `deploy/n97/README.md`).
+- **Create the production App without the check events.** The playground App subscribes to Check run and Check
+  suite, which nothing reads; control drops them unstored. A new App created from the manifest leaves them out;
+  untick them on any App created before 2026-10-29.
 - **triage.** Move it with control, as its own compose project beside it (`triage/deploy/`).
 - **Scrub the playground host.** Once nothing runs on n97, remove what names it from the public repos: n97,
   `/home/thelamer/...` paths and `ci.thelamer.duckdns.org` in control (`deploy/n97/`, `config.py`, README), in
