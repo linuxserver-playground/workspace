@@ -56,6 +56,41 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   tagged commit's date, and a triggered release tags an old head. The playground's first count after the
   change, 155 releases to live's 119 over 42 hours, was made that way.
 
+## Batch build projects
+
+- **Carry proot-apps' playground workflows over, not upstream's.** They were refactored on 2026-10-29 (commits
+  `Build, scan and publish each app in one pass and commit its package list without a second run` and
+  `Rebuild only the base images the apps being built use`; proot-apps `AGENTS.md` has the detail). This is what
+  upstream does:
+  - its nightly check builds every app on amd64 only to scan it, commits `package_versions.txt`, then dispatches
+    `build-on-commit`, which rebuilds every base image and builds the changed apps again for both arches;
+  - a push build never updates `package_versions.txt`, so the next night finds the drift and rebuilds the app
+    once more.
+
+  The playground instead:
+  - builds and scans amd64 once per app in `ci-scripts/build-app.sh`, then pushes every arch, with amd64 from
+    the builder's cache, so the image pushed is the image scanned;
+  - publishes from the nightly check (mode `check`) only the apps whose packages changed, and dispatches nothing;
+    a push or a dispatch (mode `push`) always publishes;
+  - commits `package_versions.txt` from both workflows as Package Bot with `GITHUB_TOKEN`, which starts no run,
+    and `build-on-commit`'s change detection ignores those files;
+  - refreshes all seven base images in the nightly check, while `build-on-commit` rebuilds only the bases its
+    apps build `FROM` (all of them for `build_all` or a change under `base-images/` other than one Dockerfile);
+  - drops `update-packages.sh`, and grants `build-on-commit` `contents: write` and the package check
+    `packages: write`.
+
+  Forks still need no secrets.
+- **Measure the proot-apps nights before the cutover.** Before the refactor, a night was the check (126 jobs,
+  about 220 runner-minutes) plus a `build changed` run (13 to 32 jobs, 53 to 124 runner-minutes). Compare the
+  nights from 2026-10-30 against those numbers, on control's `/api/batch.json` or the runs' jobs.
+- **solidcraft is broken on live too.** SolidCraft renamed its desktop file and icon from
+  `ai.storyteller.solidcraft` to `io.tangencylabs.solidcraft`, so live's Dockerfile and `install` fail. The
+  playground's fix (`Follow SolidCraft's rename of its desktop file and icon to io.tangencylabs`) carries over
+  with the workflows.
+- **Set `SCHEDULED_BY_CONTROL=true` on the live batch repos** (proot-apps, selkies-layers) when control takes
+  over their nightly runs. It is a repository variable, so a git push does not carry it, and until it is set
+  their own crons run beside control's dispatches.
+
 ## Hosting and distribution
 
 - **Control.** Move it from n97 to a data-centre server.
