@@ -159,9 +159,13 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   - the proxy block, from `reference/reverse-proxy-confs`;
   - categories on branches other than the default;
   - `# shellcheck shell=bash` headers on s6 scripts;
-  - `#!/command/with-contenv` shebangs.
+  - `#!/command/with-contenv` shebangs;
+  - `require_assets` under `upstream.version` when the Dockerfiles download a release asset: one entry per
+    asset (`{asset: <regex>}` on the file name for GitHub, Codeberg and Gitea releases, a `${VERSION}` URL
+    template elsewhere), so control waits for the upload instead of building against an empty release; and a
+    Dockerfile that reads `releases/latest` for its assets looks the release up by the version arg instead.
 
-  `builder check` rejects the last two. `docs/conversion-report.md` and the converted repos are worked
+  `builder check` rejects the shellcheck and shebang gaps. `docs/conversion-report.md` and the converted repos are worked
   examples. The GHCR package is created
   public on the first publish (an org setting); nothing else needs doing. Push only the live branches
   (where `jenkins-vars.yml` `ls_branch` names the branch). On a brand-new repo GitHub runs a workflow

@@ -181,6 +181,7 @@ playground base image (see `docs/base-image-case-study.md`).
 - **`command` version sources.** Done on 2026-10-28, except four: 56 of the 60 live branches with one now use
   a typed source, each checked against its command's output first (`live-cutover.md`, "Version sources and
   triggers"). `builder migrate` now also recognises `echo` pins and the two Arch lookups.
-- **7 `external_artifact_check`s were dropped** because they read `${{ secrets.CR_PAT }}`. Those branches have
-  no `require_assets` yet.
+- **7 `external_artifact_check`s were dropped** at conversion because they read `${{ secrets.CR_PAT }}`. On
+  2026-10-30 `require_assets` gained the `{asset: <regex>}` form and was set on every branch that downloads a
+  release asset, 67 in all (`live-cutover.md`, "Required release assets"); migrate now translates the grep form.
 - **The hub's subfolder sample cannot rewrite,** so many apps are subdomain only (see the second batch).

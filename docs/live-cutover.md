@@ -56,6 +56,101 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   tagged commit's date, and a triggered release tags an old head. The playground's first count after the
   change, 155 releases to live's 119 over 42 hours, was made that way.
 
+### Required release assets
+
+- **`require_assets` replaces `external_artifact_check`, and the playground set it on 67 live branches on
+  2026-10-30**, not only on the 10 repos whose jenkins-vars had the shell check (bambustudio, blender, emby,
+  obsidian, orcaslicer, scummvm, shotcut, ungoogled-chromium, vscodium, yaak). Every branch whose Dockerfiles
+  download a release asset got one entry per asset, an `{asset: <regex>}` on the resolved release for GitHub
+  sources and a URL template elsewhere (CONVENTIONS §3). Control then waits ("assets not ready", hourly) instead
+  of dispatching a build against a release whose asset is still uploading, and posts an amber Discord embed after
+  six such checks and daily after that. Carry the playground's `image.yml` over as it is; upstream's bash checks
+  are superseded. rpcs3's failed build of 2026-10-30 14:15 UTC (run 41070239583, `.assets` empty) is the case.
+- **Nine Dockerfiles changed with it.** They fetched the asset list of `releases/latest` at build time, so a
+  build dispatched for version X could download X+1, and the asset check and the build looked at different
+  releases. They now look the release up by the version build arg (`releases/tags/${ARG}`, with the usual
+  fallback to latest when the arg is unset) and otherwise match the same asset name as before. Upstream's
+  Dockerfiles still read latest; keep the playground's on cutover or the check guards the wrong release.
+- **Left without a check, on purpose:** emby (already had the URL form), xemu (`static` version: nothing to
+  wait for), duplicati `development` and blender (the asset name or folder cannot be derived from the version
+  with a template), calibre `v4` (static), scummvm (its release tag keeps a `v` the download URL drops; a
+  `transform` would rename every tag), sonarr (its own update service publishes the version and the file
+  together), piwigo (a download counter), ffmpeg (static, a dozen source tarballs). Secondary downloads that
+  take another project's latest release at build time (s6-overlay in the base images, kepubify, go2rtc,
+  freedoom, umu-launcher, shadps4's pkg extractor, craft-apps' other apps) are not guarded either: they are not
+  what the version check follows. A `require_assets` on them would need its own version source.
+- **The branches and their entries** (the pattern form is a Python regex on the asset file name):
+
+| Image | Branch | `require_assets` | Dockerfile |
+| --- | --- | --- | --- |
+| adguardhome-sync | main | asset `^adguardhome\-sync_.*_linux_amd64\.tar\.gz$`; asset `^adguardhome\-sync_.*_linux_arm64\.tar\.gz$` |  |
+| airsonic-advanced | master | asset `^airsonic\.war$` |  |
+| altus | master | asset `^Altus\-.*\.AppImage$` |  |
+| audacity | main | asset `^audacity\-linux\-.*\-x86_64\.AppImage$` |  |
+| audiosilo | main | asset `^audiosilo_.*_linux_amd64\.tar\.gz$`; asset `^audiosilo_.*_linux_arm64\.tar\.gz$` |  |
+| bambustudio | master | asset `BambuStudio_ubu24.*\.AppImage$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`) |
+| bazarr | development | asset `^bazarr\.zip$` |  |
+| bazarr | master | asset `^bazarr\.zip$` |  |
+| calibre | master | asset `^calibre-.*-x86_64\.txz$`; asset `^calibre-.*-arm64\.txz$` |  |
+| code-server | master | asset `^code\-server\-.*\-linux\-amd64\.tar\.gz$`; asset `^code\-server\-.*\-linux\-arm64\.tar\.gz$` |  |
+| craft-apps | master | asset `^photocraft\-.*\-linux\-x86_64\.deb$`; asset `^photocraft\-.*\-linux\-aarch64\.deb$` |  |
+| cura | main | asset `^UltiMaker\-Cura\-.*\-linux\-X64\.AppImage$` |  |
+| d2-builder | main | asset `^d2\-.*\-linux\-amd64\.tar\.gz$`; asset `^d2\-.*\-linux\-arm64\.tar\.gz$` |  |
+| digikam | master | `https://mirrors.mit.edu/kde/stable/digikam/${VERSION}/digiKam-${VERSION}-Qt6-x86-64.appimage` |  |
+| dokuwiki | master | `https://download.dokuwiki.org/src/dokuwiki/dokuwiki-${VERSION}.tgz` |  |
+| dosbox-staging | master | asset `^dosbox\-staging\-linux\-x86_64\-.*\.tar\.xz$` |  |
+| duckstation | master | asset `-x64\.AppImage$`; asset `-arm64\.AppImage$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`) |
+| duplicati | master | asset `linux-x64-gui\.zip$`; asset `linux-arm64-gui\.zip$` |  |
+| ferdium | master | asset `^Ferdium\-linux\-.*\-amd64\.deb$`; asset `^Ferdium\-linux\-.*\-arm64\.deb$` |  |
+| flycast | master | asset `\.AppImage$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`) |
+| freecad | master | asset `Linux-x86_64-py311\.AppImage$`; asset `Linux-aarch64-py311\.AppImage$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`) |
+| github-desktop | master | asset `^GitHubDesktop\-linux\-amd64\-.*\.deb$`; asset `^GitHubDesktop\-linux\-arm64\-.*\.deb$` |  |
+| grav | main | asset `^grav\-admin\-v.*\.zip$` |  |
+| gzdoom | master | asset `amd64\.deb$`; asset `arm64\.deb$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`) |
+| habridge | master | asset `^ha-bridge-[0-9][0-9.]*\.jar$` |  |
+| hedgedoc | main | asset `^hedgedoc\-.*\.tar\.gz$` |  |
+| helium | master | asset `^helium\-bin_.*\-1_amd64\.deb$`; asset `^helium\-bin_.*\-1_arm64\.deb$` |  |
+| jackett | master | asset `^Jackett\.Binaries\.LinuxMuslAMDx64\.tar\.gz$`; asset `^Jackett\.Binaries\.LinuxMuslARM64\.tar\.gz$` |  |
+| joplin | master | asset `^Joplin\-.*\.deb$` |  |
+| kavita | main | asset `^kavita\-linux\-x64\.tar\.gz$`; asset `^kavita\-linux\-arm64\.tar\.gz$` |  |
+| lychee | master | asset `^Lychee\.zip$`; asset `^Lychee\.zip\.sigstore\.json$` |  |
+| mediaelch | master | asset `MediaElch_linux.*\.AppImage$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`) |
+| melonds | master | asset `^melonDS\-.*\-ubuntu\-x86_64\.zip$`; asset `^melonDS\-.*\-ubuntu\-aarch64\.zip$` |  |
+| mullvad-browser | main | asset `^mullvad\-browser\-linux\-x86_64\-.*\.tar\.xz$`; asset `^mullvad\-browser\-linux\-x86_64\-.*\.tar\.xz\.asc$` |  |
+| nextcloud | develop | `https://download.nextcloud.com/server/prereleases/nextcloud-${VERSION}.tar.bz2` |  |
+| nextcloud | master | `https://download.nextcloud.com/server/releases/nextcloud-${VERSION}.tar.bz2` |  |
+| nextcloud | previous | `https://download.nextcloud.com/server/releases/nextcloud-${VERSION}.tar.bz2` |  |
+| nomacs | main | asset `^nomacs\-linux\-x86_64\.AppImage$`; asset `^nomacs\-linux\-aarch64\.AppImage$` |  |
+| nzbhydra2 | dev | asset `^nzbhydra2\-.*\-amd64\-linux\.zip$`; asset `^nzbhydra2\-.*\-arm64\-linux\.zip$` |  |
+| nzbhydra2 | master | asset `^nzbhydra2\-.*\-amd64\-linux\.zip$`; asset `^nzbhydra2\-.*\-arm64\-linux\.zip$` |  |
+| ombi | development | asset `^linux\-x64\.tar\.gz$`; asset `^linux\-arm64\.tar\.gz$` |  |
+| ombi | master | asset `^linux\-x64\.tar\.gz$`; asset `^linux\-arm64\.tar\.gz$` |  |
+| onlyoffice | master | asset `^onlyoffice\-desktopeditors_amd64\.deb$` |  |
+| orcaslicer | master | asset `Ubuntu2404_V.*\.AppImage$`; asset `Ubuntu2404_aarch64.*\.AppImage$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`) |
+| projectsend | master | asset `^projectsend(-.*)?\.zip$` |  |
+| qbittorrent | libtorrentv1 | asset `^x86_64\-qbittorrent\-nox$`; asset `^aarch64\-qbittorrent\-nox$` |  |
+| qbittorrent | master | asset `^x86_64\-qbittorrent\-nox$`; asset `^aarch64\-qbittorrent\-nox$` |  |
+| rawtherapee | main | asset `^RawTherapee_.*_x86_64_release\.AppImage$`; asset `^RawTherapee_.*_arm64_release\.AppImage$` |  |
+| rpcs3 | master | asset `_linux64\.AppImage$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`); `Dockerfile.aarch64` still takes the latest release of `RPCS3/rpcs3-binaries-linux-arm64`, a repo the version source does not read |
+| rustdesk | master | asset `^rustdesk-.*-x86_64\.deb$`; asset `^rustdesk-.*-aarch64\.deb$` |  |
+| sabnzbd | master | asset `^SABnzbd\-.*\-src\.tar\.gz$` |  |
+| sealskin | master | asset `^sealskin_server\-.*\-py3\-none\-any\.whl$` |  |
+| shadps4 | master | asset `^shadPS4QtLauncher-linux-qt-.*\.zip$` |  |
+| shotcut | main | asset `x86_64.*\.txz$` |  |
+| spotube | master | asset `^Spotube\-linux\-x86_64\.deb$`; asset `^Spotube\-linux\-aarch64\.deb$` |  |
+| ubooquity | master | `https://vaemendis.net/ubooquity/downloads/Ubooquity-${VERSION}.zip` |  |
+| ungoogled-chromium | master | asset `-x86_64_linux\.tar\.xz$`; asset `-arm64_linux\.tar\.xz$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`) |
+| vscodium-web | main | asset `^vscodium\-reh\-web\-linux\-x64\-.*\.tar\.gz$`; asset `^vscodium\-reh\-web\-linux\-arm64\-.*\.tar\.gz$` |  |
+| vscodium | master | asset `^codium_.*_amd64\.deb$`; asset `^codium_.*_arm64\.deb$` |  |
+| webcord | master | asset `^webcord_.*_amd64\.deb$`; asset `^webcord_.*_arm64\.deb$` |  |
+| webgrabplus | master | `https://webgrabplus.com/download/sw/v${VERSION}` |  |
+| wikijs | master | asset `^wiki\-js\.tar\.gz$` |  |
+| winegui | master | asset `^WineGUI\-.*\-trixie\.deb$` |  |
+| xbackbone | main | asset `^release\-v.*\.zip$` |  |
+| yaak | main | asset `^(?!.*cef).*amd64.*\.deb$`; asset `^(?!.*cef).*arm64.*\.deb$` |  |
+| zen | master | asset `^zen\.linux\-x86_64\.tar\.xz$`; asset `^zen\.linux\-aarch64\.tar\.xz$` |  |
+| zotero | master | `https://download.zotero.org/client/release/${VERSION}/Zotero-${VERSION}_linux-x86_64.tar.xz` |  |
+
 ## Batch build projects
 
 - **Carry proot-apps' playground workflows over, not upstream's.** They were refactored on 2026-10-29 (commits
