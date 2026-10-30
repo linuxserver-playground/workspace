@@ -284,7 +284,10 @@ change one, ask the maintainers first, then update this file in the same change.
   its database date.
 - **Every hub run reconciles the organisation.** A dispatch's payload is only a hint: GitHub drops all but one
   pending run per concurrency group, so each run reads every `image.yml` and the newest releases of every repo
-  over GraphQL (about 15 seconds) and ingests every release `data/` lacks.
+  over GraphQL (about 15 seconds) and ingests every release `data/` lacks, and every held release whose
+  `build.json` was uploaded an hour or more after the held record was built: a rebuild of an already released
+  head republishes under the same tag (workflows' `head_already_released`), and the hub, then the site's refresh,
+  take the new record. The dispatch's tag is forced in the same run so a quicker rebuild is not missed.
 - **Stores.** The hub generates Unraid, Portainer, CasaOS, Umbrel, Runtipi, Cosmos and Arcane templates, with
   the store id prefix `lsio`. Unraid, Umbrel and Runtipi read a git repo, so the hub pushes them to
   `unraid-store`, `umbrel-store` and `runtipi-store`. The site's stores page lists only these stores;
