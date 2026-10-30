@@ -62,7 +62,8 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   2026-10-30**, not only on the 10 repos whose jenkins-vars had the shell check (bambustudio, blender, emby,
   obsidian, orcaslicer, scummvm, shotcut, ungoogled-chromium, vscodium, yaak). Every branch whose Dockerfiles
   download a release asset got one entry per asset, an `{asset: <regex>}` on the resolved release for GitHub
-  sources and a URL template elsewhere (CONVENTIONS §3). Control then waits ("assets not ready", hourly) instead
+  sources and a URL template elsewhere, and `{asset, repo}` for an architecture built from a sibling repository's
+  latest release (CONVENTIONS §3). Control then waits ("assets not ready", hourly) instead
   of dispatching a build against a release whose asset is still uploading, holds the branch's release and package
   checks for the same reason (a held package check keeps its weekly slot and is tried again next hour), and posts
   a Discord embed on every such check, amber for the first four and red from the fifth, naming the pattern and the
@@ -133,7 +134,7 @@ rewrites in image repos have their own list in [playground-references.md](playgr
 | qbittorrent | libtorrentv1 | asset `^x86_64\-qbittorrent\-nox$`; asset `^aarch64\-qbittorrent\-nox$` |  |
 | qbittorrent | master | asset `^x86_64\-qbittorrent\-nox$`; asset `^aarch64\-qbittorrent\-nox$` |  |
 | rawtherapee | main | asset `^RawTherapee_.*_x86_64_release\.AppImage$`; asset `^RawTherapee_.*_arm64_release\.AppImage$` |  |
-| rpcs3 | master | asset `_linux64\.AppImage$` | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`); `Dockerfile.aarch64` still takes the latest release of `RPCS3/rpcs3-binaries-linux-arm64`, a repo the version source does not read |
+| rpcs3 | master | asset `_linux64\.AppImage$`; asset `\.AppImage$` in the latest release of `RPCS3/rpcs3-binaries-linux-arm64` (`repo`) | Dockerfile looks the release up by `${VERSION_ARG}` (was `releases/latest`); `Dockerfile.aarch64` takes the latest release of the arm64 repo, as upstream does, and the `repo` entry waits for that asset |
 | rustdesk | master | asset `^rustdesk-.*-x86_64\.deb$`; asset `^rustdesk-.*-aarch64\.deb$` |  |
 | sabnzbd | master | asset `^SABnzbd\-.*\-src\.tar\.gz$` |  |
 | sealskin | master | asset `^sealskin_server\-.*\-py3\-none\-any\.whl$` |  |
