@@ -1,0 +1,1736 @@
+{
+  "adguardhome-sync": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "AdGuardHome Sync",
+        "url": "https://github.com/sponsors/bakito"
+      }
+    ]
+  },
+  "airsonic-advanced": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "README only links the EFF"
+  },
+  "altus": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Altus (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/amanharwara"
+      },
+      {
+        "name": "Altus (Ko-fi)",
+        "url": "https://ko-fi.com/amanharwara"
+      }
+    ]
+  },
+  "apprise-api": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Apprise",
+        "url": "https://www.paypal.me/lead2gold"
+      }
+    ]
+  },
+  "ardour": {
+    "status": "skipped",
+    "sponsor": [],
+    "notes": "subscription, not a donation page"
+  },
+  "audacity": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "Open source (GPL) but owned and funded by Muse Group since 2021; the old https://www.audacityteam.org/donate/ returns 404, the homepage has no donate link and audacity/audacity has no FUNDING.yml. Only merch (merch.audacityteam.org)."
+  },
+  "audiosilo": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "AudioSilo (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/KodeStar"
+      }
+    ]
+  },
+  "azahar": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "Homepage, README and FUNDING.yml carry no donation path; the only 'AZAHAR' donation page in search is an unrelated foundation."
+  },
+  "babybuddy": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "BabyBuddy",
+        "url": "https://github.com/sponsors/cdubz"
+      }
+    ]
+  },
+  "bambustudio": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial 3D-printer vendor's slicer; no donation path."
+  },
+  "baseimage-alpine": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "baseimage-alpine-nginx": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "baseimage-arch": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "baseimage-debian": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "baseimage-fedora": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "baseimage-selkies": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "baseimage-ubuntu": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "bazarr": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Bazarr",
+        "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XHHRWXT9YB7WE&source=url"
+      }
+    ]
+  },
+  "beets": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "README has no donation link, no FUNDING.yml, no Sponsor button."
+  },
+  "bitcoin-knots": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "Neither bitcoinknots.org nor the bitcoinknots/bitcoin README advertise a donation path; the maintainer's personal https://github.com/sponsors/luke-jr exists but does not mention Knots and is not linked from the project."
+  },
+  "blade-of-agony": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Realm667 PayPal donate",
+        "url": "https://www.paypal.com/donate?hosted_button_id=MCGC2LCJ5FHN6"
+      },
+      {
+        "name": "Realm667 'Why donating?'",
+        "url": "https://www.realm667.com/about/support-via-paypal"
+      }
+    ]
+  },
+  "blender": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Blender Development Fund",
+        "url": "https://fund.blender.org/"
+      },
+      {
+        "name": "Blender one-time donation",
+        "url": "https://fund.blender.org/donate-once/"
+      }
+    ]
+  },
+  "boinc": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "boinc.berkeley.edu says BOINC is NSF-funded and only asks for computing time; no FUNDING.yml and no donate page found (SETI@home's donate page is a separate project)."
+  },
+  "bookstack": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Bookstack",
+        "url": "https://www.bookstackapp.com/donate/"
+      }
+    ]
+  },
+  "brave": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "Brave Software is a company; Brave Rewards/BAT tipping funds creators, not the project. No donation path found."
+  },
+  "build-agent": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "calibre": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "calibre",
+        "url": "https://calibre-ebook.com/donate"
+      },
+      {
+        "name": "calibre (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/kovidgoyal"
+      },
+      {
+        "name": "calibre (Patreon)",
+        "url": "https://www.patreon.com/kovidgoyal"
+      }
+    ]
+  },
+  "calibre-web": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Calibre-Web",
+        "url": "https://paypal.me/calibreweb"
+      }
+    ]
+  },
+  "calligra": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate to KDE e.V.",
+        "url": "https://kde.org/donate/"
+      }
+    ]
+  },
+  "chrome": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Google product, no donation path."
+  },
+  "chromium": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "Google-run open-source project; the Linux Foundation's 'Supporters of Chromium-Based Browsers' fund is for corporate members, not a public donation page."
+  },
+  "code-server": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Open source but developed by Coder, a venture-backed company selling Coder Enterprise; no donation path."
+  },
+  "cops": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "README has no donation link (only thanks JetBrains for free licences), no FUNDING.yml, no Sponsor button."
+  },
+  "craft-apps": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Subscription product with credit packs; no donation path."
+  },
+  "cura": {
+    "status": "skipped",
+    "sponsor": [],
+    "notes": "a company's GitHub Sponsors page"
+  },
+  "d2-builder": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Terrastruct is a company; no FUNDING.yml (404) and no donation path."
+  },
+  "darktable": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donate link on darktable.org or its About page and no FUNDING.yml; the footer only credits pixls.us for hosting. Forum threads point to individual developer Liberapay pages (Aurelien Pierre), which are not a project channel."
+  },
+  "davos": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "ddclient": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No FUNDING.yml on ddclient/ddclient and nothing in the README; a GitHub Sponsors link exists only on the rrthomas fork."
+  },
+  "deluge": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Patreon (Calum Lind, lead developer)",
+        "url": "https://www.patreon.com/deluge_cas"
+      }
+    ]
+  },
+  "digikam": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "digiKam donate",
+        "url": "https://www.digikam.org/donate/"
+      }
+    ]
+  },
+  "diskover": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Diskover Data sells Pro/Enterprise editions; the community repo has no donation path."
+  },
+  "dogwalk": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Blender Studio subscription",
+        "url": "https://studio.blender.org/join/"
+      },
+      {
+        "name": "Blender Development Fund",
+        "url": "https://fund.blender.org/"
+      }
+    ]
+  },
+  "dokuwiki": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "One-time donation via PayPal",
+        "url": "http://donate.dokuwiki.org"
+      },
+      {
+        "name": "Patreon",
+        "url": "https://www.patreon.com/dokuwiki"
+      },
+      {
+        "name": "GitHub Sponsors (Andreas Gohr, splitbrain)",
+        "url": "https://github.com/sponsors/splitbrain"
+      }
+    ]
+  },
+  "dolphin": {
+    "status": "skipped",
+    "sponsor": [],
+    "notes": "collective not linked from the project's site"
+  },
+  "dosbox-staging": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "DOSBox Staging (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/dosbox-staging"
+      },
+      {
+        "name": "DOSBox Staging (Open Collective)",
+        "url": "https://opencollective.com/dosbox-staging"
+      }
+    ]
+  },
+  "doublecommander": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donation mention on the homepage or the doublecmd/doublecmd README, and no FUNDING.yml."
+  },
+  "duckdns": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "DuckDNS",
+        "url": "https://www.patreon.com/user?u=3209735"
+      }
+    ]
+  },
+  "duckstation": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "The project deliberately takes no donations: neither the site nor the repo offers any path, and third-party lists (RetroDECK wiki) record none."
+  },
+  "duplicati": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "duplicati.com is now Duplicati Inc. with per-machine pricing; the old https://www.duplicati.com/donate/ page returns 404 and the Open Collective is labelled Inactive, though it still shows recent contributions."
+  },
+  "eden": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Contribute page (Liberapay, PayPal, Bitcoin)",
+        "url": "https://eden-emu.dev/contribute"
+      },
+      {
+        "name": "Liberapay (crueter, Eden developer)",
+        "url": "https://liberapay.com/crueter"
+      }
+    ]
+  },
+  "emby": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial product (Emby Premiere); no donation path."
+  },
+  "fail2ban": {
+    "status": "skipped",
+    "sponsor": [],
+    "notes": "maintainer's personal links"
+  },
+  "faster-whisper": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "SYSTRAN-maintained; no FUNDING.yml (404) and the README has no donation or sponsor link."
+  },
+  "ferdium": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Ferdium",
+        "url": "https://opencollective.com/ferdium"
+      }
+    ]
+  },
+  "ffmpeg": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "FFmpeg donations",
+        "url": "https://ffmpeg.org/donations.html"
+      },
+      {
+        "name": "GitHub Sponsors",
+        "url": "https://github.com/sponsors/FFmpeg"
+      }
+    ]
+  },
+  "filezilla": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Open Collective",
+        "url": "https://opencollective.com/filezilla"
+      }
+    ]
+  },
+  "firefox": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate to the Mozilla Foundation",
+        "url": "https://www.mozillafoundation.org/en/donate/"
+      }
+    ]
+  },
+  "flexget": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "FlexGet",
+        "url": "https://github.com/sponsors/gazpachoking/"
+      }
+    ]
+  },
+  "flycast": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Flycast",
+        "url": "https://www.paypal.com/paypalme/FlycastEmu"
+      },
+      {
+        "name": "Flycast (Buy Me a Coffee)",
+        "url": "https://www.buymeacoffee.com/hhwtpernwq"
+      }
+    ]
+  },
+  "foldingathome": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Folding@home",
+        "url": "https://foldingathome.org/donate/"
+      }
+    ],
+    "notes": "corrected"
+  },
+  "freecad": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "FreeCAD",
+        "url": "https://wiki.freecad.org/Donate"
+      },
+      {
+        "name": "FreeCAD (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/FreeCAD"
+      },
+      {
+        "name": "FreeCAD (Open Collective)",
+        "url": "https://opencollective.com/freecad"
+      }
+    ]
+  },
+  "freshrss": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "FreshRSS (Liberapay)",
+        "url": "https://liberapay.com/FreshRSS"
+      }
+    ]
+  },
+  "gimp": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "GIMP donating page",
+        "url": "https://www.gimp.org/donating/"
+      },
+      {
+        "name": "GIMP on Liberapay",
+        "url": "https://liberapay.com/GIMP/"
+      }
+    ]
+  },
+  "github-desktop": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "GitHub Sponsors (shiftkey)",
+        "url": "https://github.com/sponsors/shiftkey"
+      }
+    ]
+  },
+  "gitqlient": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "Open source (LGPL), single maintainer, no donation channel advertised."
+  },
+  "grav": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Grav",
+        "url": "https://opencollective.com/grav/donate"
+      }
+    ]
+  },
+  "grocy": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "grocy",
+        "url": "https://grocy.info/#say-thanks"
+      }
+    ]
+  },
+  "gzdoom": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donation path on the repo; a ZDoom forum staff answer says the project has no means of donation."
+  },
+  "habridge": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donate or sponsor link in the 1354-line README or any FUNDING.yml."
+  },
+  "handbrake": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "Deliberately accepts no money: 'The HandBrake and HandBrake Documentation projects are not accepting monetary donations' and suggests VideoLAN (https://www.videolan.org/videolan/) or the Blender Foundation instead."
+  },
+  "healthchecks": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "GitHub Sponsors",
+        "url": "https://github.com/sponsors/healthchecks"
+      }
+    ]
+  },
+  "hedgedoc": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donate/sponsor link on hedgedoc.org, docs.hedgedoc.org, the README or any FUNDING.yml; opencollective.com/hedgedoc is a 404."
+  },
+  "heimdall": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "helium": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Sponsor Helium",
+        "url": "https://helium.computer/sponsor"
+      }
+    ]
+  },
+  "hishtory-server": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donate or sponsor link on hishtory.dev or in the 349-line README."
+  },
+  "homeassistant": {
+    "status": "skipped",
+    "sponsor": [],
+    "notes": "FUNDING.yml points at the Open Home Foundation home page, not a donate page"
+  },
+  "htpcmanager": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donation link in README or repo; not archived but barely alive (last commit 2025-08-09, README asks for hands to finish Python 3 compatibility)."
+  },
+  "inkscape": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate to Inkscape",
+        "url": "https://inkscape.org/support-us/donate/"
+      }
+    ]
+  },
+  "intellij-idea": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial IDE with a free Community Edition; no donation path."
+  },
+  "jackett": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "README has no donation link, no .github/FUNDING.yml and no Sponsor button; it asks for development help, not money."
+  },
+  "jellyfin": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Jellyfin",
+        "url": "https://opencollective.com/jellyfin"
+      }
+    ]
+  },
+  "joplin": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Joplin",
+        "url": "https://joplinapp.org/donate/"
+      },
+      {
+        "name": "Joplin (Patreon)",
+        "url": "https://www.patreon.com/joplin"
+      },
+      {
+        "name": "Joplin (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/laurent22"
+      }
+    ]
+  },
+  "kali-linux": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "kasm": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial product with a free tier; no donation path."
+  },
+  "kavita": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Kavita",
+        "url": "https://opencollective.com/kavita"
+      }
+    ]
+  },
+  "kdenlive": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Kdenlive fund",
+        "url": "https://kdenlive.org/fund/"
+      }
+    ]
+  },
+  "keepassxc": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "KeePassXC donate",
+        "url": "https://keepassxc.org/donate/"
+      },
+      {
+        "name": "Open Collective",
+        "url": "https://opencollective.com/keepassxc"
+      },
+      {
+        "name": "Liberapay",
+        "url": "https://liberapay.com/keepassxc"
+      }
+    ]
+  },
+  "kicad": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "KiCad donate",
+        "url": "https://www.kicad.org/donate/"
+      },
+      {
+        "name": "KiCad on Linux Foundation crowdfunding",
+        "url": "https://crowdfunding.linuxfoundation.org/projects/kicad"
+      }
+    ]
+  },
+  "kimai": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Kimai",
+        "url": "https://www.kimai.org/donate/"
+      },
+      {
+        "name": "Kimai (Open Collective)",
+        "url": "https://opencollective.com/kimai"
+      },
+      {
+        "name": "Kimai (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/kevinpapst"
+      }
+    ],
+    "notes": "corrected"
+  },
+  "kometa": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Kometa",
+        "url": "https://github.com/sponsors/meisnate12"
+      }
+    ]
+  },
+  "krita": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Krita donations",
+        "url": "https://krita.org/en/donations/"
+      },
+      {
+        "name": "Krita Development Fund",
+        "url": "https://fund.krita.org/"
+      },
+      {
+        "name": "Krita on Liberapay",
+        "url": "https://liberapay.com/Krita"
+      }
+    ]
+  },
+  "lazylibrarian": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Buy Me a Coffee",
+        "url": "https://buymeacoffee.com/philbormang"
+      }
+    ]
+  },
+  "ldap-auth": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "An NGINX Inc. (F5) reference implementation; the README points to NGINX Plus and NGINX Professional Services, no donation path."
+  },
+  "libreoffice": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Support LibreOffice",
+        "url": "https://www.libreoffice.org/donate/"
+      },
+      {
+        "name": "LibreOffice via SPI (US tax-deductible)",
+        "url": "https://www.spi-inc.org/donations/"
+      }
+    ]
+  },
+  "librespeed": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "LibreSpeed (Liberapay)",
+        "url": "https://liberapay.com/fdossena/donate"
+      },
+      {
+        "name": "LibreSpeed (Paypal)",
+        "url": "https://www.paypal.me/sineisochronic"
+      }
+    ]
+  },
+  "librewolf": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "LibreWolf deliberately does not accept donations; contributions are welcome as merge requests."
+  },
+  "lidarr": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Lidarr",
+        "url": "https://opencollective.com/lidarr"
+      }
+    ]
+  },
+  "limnoria": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donate or sponsor link in the README, FUNDING.yml or search results."
+  },
+  "lm-studio": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Proprietary; no donation path."
+  },
+  "lollypop": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Patreon (Cédric Bellegarde, gnumdk)",
+        "url": "https://www.patreon.com/gnumdk"
+      }
+    ]
+  },
+  "lsio-api": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "luanti": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Luanti",
+        "url": "https://www.luanti.org/donate/"
+      },
+      {
+        "name": "Luanti (Open Collective)",
+        "url": "https://opencollective.com/luanti"
+      }
+    ]
+  },
+  "lychee": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Lychee (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/LycheeOrg"
+      },
+      {
+        "name": "Lychee (Open Collective)",
+        "url": "https://opencollective.com/LycheeOrg"
+      }
+    ]
+  },
+  "mame": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "MAME takes no direct donations; individual devs and ROM-dumping groups (Dumping Union) have their own Patreon/PayPal, none of which is MAME's official path."
+  },
+  "manyfold": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Manyfold (Open Collective)",
+        "url": "https://opencollective.com/manyfold"
+      }
+    ]
+  },
+  "mariadb": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "MariaDB Foundation",
+        "url": "https://mariadb.org/donate/"
+      }
+    ]
+  },
+  "mastodon": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Mastodon",
+        "url": "https://joinmastodon.org/sponsors#donate"
+      }
+    ]
+  },
+  "mediaelch": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donate or sponsor link on the site, the docs or the README."
+  },
+  "medusa": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "The wiki FAQ and sidebar link a 'Donations and support' page (wiki/Donations) that does not exist in the wiki repo; README has no link and no FUNDING.yml; pymedusa.com returns 403."
+  },
+  "melonds": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "melonDS",
+        "url": "http://melonds.kuribo64.net/donate.php"
+      },
+      {
+        "name": "melonDS (Patreon)",
+        "url": "https://www.patreon.com/Arisotura"
+      },
+      {
+        "name": "melonDS (PayPal)",
+        "url": "https://paypal.me/Arisotura"
+      }
+    ]
+  },
+  "minisatip": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "minisatip",
+        "url": "https://paypal.me/minisatip"
+      },
+      {
+        "name": "minisatip (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/catalinii"
+      }
+    ]
+  },
+  "modmanager": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "modrinth": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Company-run platform (ads and creator monetisation); no donation path for the project itself."
+  },
+  "msedge": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Microsoft product, no donation path."
+  },
+  "mstream": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "mStream (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/IrosTheBeggar"
+      }
+    ]
+  },
+  "mullvad-browser": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Funded by Mullvad VPN; no donation path. Co-developed with the Tor Project, which has its own donate page but is not this project."
+  },
+  "mylar3": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "README thanks people for 'financial donations' but gives no link; no FUNDING.yml, no Sponsor button, and the docs' contributing page lists only non-financial ways to help."
+  },
+  "mysql-workbench": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Oracle product; no donation path."
+  },
+  "netbox": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "No FUNDING.yml or donation link; the README funnels to NetBox Labs' paid Cloud and Enterprise editions (netboxlabs.com)."
+  },
+  "nextcloud": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "FUNDING.yml custom link is nextcloud.com/include/, a contribute page; Nextcloud GmbH sells support"
+  },
+  "nginx": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "nginx.org offers no donation path; it links F5's enterprise distributions and commercial support (enterprise.html)."
+  },
+  "ngircd": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donation link on the project site, support page, README or GitHub org. A Liberapay profile https://liberapay.com/ngIRCd exists (member: alexbarton, the author; 0 patrons) but the project does not advertise it anywhere; not listed as a link for that reason."
+  },
+  "nomacs": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "Weak: the collective is run by the nomacs maintainers (Stefan Fiel, Markus Diem) and links nomacs.org, but it is dormant ($0.56 raised since 2020) and neither nomacs.org nor the GitHub README advertises it; no FUNDING.yml."
+  },
+  "nzbget": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "NZBGet",
+        "url": "https://nzbget.com/donate/"
+      }
+    ]
+  },
+  "nzbhydra2": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "NZBHydra 2",
+        "url": "https://github.com/sponsors/theotherp"
+      }
+    ],
+    "notes": "corrected"
+  },
+  "obsidian": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial, closed source. The only support-style purchase is the Catalyst license (plus Sync/Publish subscriptions and the commercial license); no donate link, reported as commercial with no link."
+  },
+  "ombi": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Ombi - Patreon",
+        "url": "https://patreon.com/tidusjar"
+      },
+      {
+        "name": "Ombi - PayPal",
+        "url": "https://paypal.me/PlexRequestsNet"
+      }
+    ]
+  },
+  "onlyoffice": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Open source desktop editors from a commercial vendor; no donation path."
+  },
+  "openshot": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "OpenShot",
+        "url": "https://www.openshot.org/donate/"
+      }
+    ]
+  },
+  "openssh-server": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "OpenSSH donations",
+        "url": "https://www.openssh.org/donations.html"
+      },
+      {
+        "name": "OpenBSD Foundation donations",
+        "url": "https://www.openbsdfoundation.org/donations.html"
+      }
+    ]
+  },
+  "opera": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Opera Software product, no donation path."
+  },
+  "orcaslicer": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "OrcaSlicer",
+        "url": "https://paypal.me/softfever3d"
+      },
+      {
+        "name": "OrcaSlicer (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/SoftFever"
+      },
+      {
+        "name": "OrcaSlicer (Ko-fi)",
+        "url": "https://ko-fi.com/SoftFever"
+      }
+    ]
+  },
+  "oscam": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "streamboard.tv front page has no donation link; git.streamboard.tv is behind Anubis and board.streamboard.tv returns 403; web search finds no donation path."
+  },
+  "pairdrop": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "PairDrop",
+        "url": "https://www.buymeacoffee.com/pairdrop"
+      }
+    ]
+  },
+  "pcsx2": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "GitHub Sponsors",
+        "url": "https://github.com/sponsors/PCSX2"
+      },
+      {
+        "name": "Liberapay",
+        "url": "https://liberapay.com/PCSX2"
+      }
+    ]
+  },
+  "pelorus": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "phpmyadmin": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "phpMyAdmin",
+        "url": "https://www.phpmyadmin.net/donate/"
+      }
+    ]
+  },
+  "pidgin": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate to Instant Messaging Freedom",
+        "url": "https://imfreedom.org/donate/"
+      },
+      {
+        "name": "Patreon (Gary Kramlich, Pidgin lead developer)",
+        "url": "https://patreon.com/rw_grim"
+      }
+    ]
+  },
+  "piper": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No FUNDING.yml on OHF-Voice/piper1-gpl or rhasspy/piper; the READMEs of piper1-gpl, rhasspy/piper and wyoming-piper advertise no donation path, only an Open Home Foundation badge and a call for maintainers."
+  },
+  "piwigo": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "only a contact form for donations"
+  },
+  "planka": {
+    "status": "skipped",
+    "sponsor": [],
+    "notes": "maintainer's personal page beside a paid product"
+  },
+  "plex": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial product (Plex Pass); no donation path."
+  },
+  "ppsspp": {
+    "status": "skipped",
+    "sponsor": [],
+    "notes": "a purchase, not a donation"
+  },
+  "projectsend": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "ProjectSend (Patreon)",
+        "url": "https://www.patreon.com/ignacionelson"
+      },
+      {
+        "name": "ProjectSend (Open Collective)",
+        "url": "https://opencollective.com/projectsend"
+      }
+    ]
+  },
+  "prowlarr": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Prowlarr",
+        "url": "https://opencollective.com/prowlarr"
+      }
+    ]
+  },
+  "pwndrop": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Pwndrop - Patreon",
+        "url": "https://patreon.com/mrgretzky"
+      },
+      {
+        "name": "Pwndrop - Ko-fi",
+        "url": "https://ko-fi.com/mrgretzky"
+      },
+      {
+        "name": "Pwndrop - Liberapay",
+        "url": "https://liberapay.com/mrgretzky"
+      }
+    ]
+  },
+  "pycharm": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial IDE with a free Community Edition; no donation path."
+  },
+  "pydio-cells": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial product by Pydio (Enterprise edition); no donation path in the README or repo."
+  },
+  "pyload-ng": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "pyLoad",
+        "url": "https://PayPal.Me/nitzo2001/0usd"
+      }
+    ]
+  },
+  "python": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "PSF donations",
+        "url": "https://www.python.org/psf/donations/"
+      }
+    ]
+  },
+  "qbittorrent": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "qBittorrent",
+        "url": "https://www.qbittorrent.org/donate"
+      }
+    ]
+  },
+  "qdirstat": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "QDirStat",
+        "url": "https://www.paypal.me/shundhammer"
+      }
+    ],
+    "notes": "corrected"
+  },
+  "qemu-static": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "QEMU donations",
+        "url": "https://www.qemu.org/donations/"
+      },
+      {
+        "name": "Donate via PayPal (Software Freedom Conservancy)",
+        "url": "https://paypal.com/donate/?hosted_button_id=YN74TZRMBBM6U"
+      }
+    ]
+  },
+  "radarr": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Radarr",
+        "url": "https://opencollective.com/radarr"
+      }
+    ]
+  },
+  "raneto": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No donate/sponsor link on raneto.com or in the README; docs.raneto.com could not be fetched (expired TLS certificate)."
+  },
+  "rawtherapee": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "RawTherapee",
+        "url": "https://www.paypal.com/paypalme/rawtherapee"
+      }
+    ]
+  },
+  "remmina": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Remmina donations",
+        "url": "https://remmina.org/donations/"
+      },
+      {
+        "name": "Liberapay",
+        "url": "https://liberapay.com/Remmina/donate"
+      },
+      {
+        "name": "Open Collective",
+        "url": "https://opencollective.com/remmina"
+      }
+    ]
+  },
+  "resilio-sync": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial product (Sync Home Pro licences); no donation path."
+  },
+  "retroarch": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate page",
+        "url": "https://retroarch.com/donate.html"
+      },
+      {
+        "name": "Patreon",
+        "url": "https://www.patreon.com/libretro"
+      },
+      {
+        "name": "GitHub Sponsors",
+        "url": "https://github.com/sponsors/libretro"
+      }
+    ]
+  },
+  "rpcs3": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Patreon (Nekotekina)",
+        "url": "https://www.patreon.com/Nekotekina"
+      }
+    ]
+  },
+  "rsnapshot": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No FUNDING.yml, nothing on rsnapshot.org or the README; the only funding links found belong to linuxserver's docker-rsnapshot, not upstream."
+  },
+  "rustdesk": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "RustDesk (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/rustdesk"
+      },
+      {
+        "name": "RustDesk (Ko-fi)",
+        "url": "https://ko-fi.com/rustdesk"
+      }
+    ]
+  },
+  "sabnzbd": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "SABnzbd",
+        "url": "https://sabnzbd.org/donate"
+      }
+    ]
+  },
+  "scummvm": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "ScummVM",
+        "url": "https://www.scummvm.org/donate-with-paypal"
+      }
+    ]
+  },
+  "sealskin": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No FUNDING.yml on sealskin, selkies or the selkies-project .github repo; neither README mentions sponsorship. A personal GitHub Sponsors page for founder Dan Isla (github.com/sponsors/danisla) exists but the project does not advertise it."
+  },
+  "shadps4": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "shadPS4 (Ko-fi)",
+        "url": "https://ko-fi.com/shadps4"
+      }
+    ]
+  },
+  "shotcut": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Shotcut PayPal donate",
+        "url": "https://www.paypal.com/donate?hosted_button_id=XD364WFCHD46N"
+      }
+    ]
+  },
+  "sickgear": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "README has no donation link, no FUNDING.yml, no Sponsor button; web search finds nothing."
+  },
+  "signal": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate to Signal",
+        "url": "https://signal.org/donate/"
+      }
+    ]
+  },
+  "smokeping": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "The project's 'become a Sponsor' link redirects to www.oetiker.ch/monitoring/sponsoring.var which returns 404; no other donation path is advertised, only sponsor logos and personal wish lists."
+  },
+  "socket-proxy": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No FUNDING.yml and no donation mention in the README; Tecnativa is a company."
+  },
+  "sonarr": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Sonarr",
+        "url": "https://sonarr.tv/donate"
+      }
+    ]
+  },
+  "speedtest-tracker": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "speedtest-tracker",
+        "url": "https://github.com/sponsors/alexjustesen"
+      }
+    ]
+  },
+  "spotube": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Spotube",
+        "url": "https://opencollective.com/spotube"
+      }
+    ]
+  },
+  "sqlitebrowser": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "DB Browser for SQLite",
+        "url": "https://www.patreon.com/db4s"
+      }
+    ]
+  },
+  "steam": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial storefront; no donation path."
+  },
+  "swag": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Certbot",
+        "url": "https://supporters.eff.org/donate/support-work-on-certbot"
+      }
+    ]
+  },
+  "synclounge": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "SyncLounge",
+        "url": "http://docs.synclounge.tv/contributing/donating/"
+      }
+    ]
+  },
+  "syncthing": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Syncthing",
+        "url": "https://syncthing.net/donations/"
+      },
+      {
+        "name": "Syncthing (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/syncthing"
+      }
+    ]
+  },
+  "syslog-ng": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "No FUNDING.yml; README's Sponsors section lists companies (Balabit/One Identity, Axoflow) and asks only for a GitHub star; syslog-ng.com is the One Identity vendor site."
+  },
+  "tautulli": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Tautulli",
+        "url": "https://tautulli.com/#donate"
+      }
+    ]
+  },
+  "telegram": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Commercial messenger, no donation path."
+  },
+  "thelounge": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "has an Open Collective but asks people not to donate any more"
+  },
+  "thunderbird": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate to Thunderbird",
+        "url": "https://www.thunderbird.net/en-US/donate/"
+      },
+      {
+        "name": "Thunderbird giving FAQ",
+        "url": "https://give.thunderbird.net/"
+      }
+    ]
+  },
+  "transmission": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate (PayPal, one-time or monthly)",
+        "url": "https://transmissionbt.com/donate/"
+      }
+    ]
+  },
+  "tvheadend": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Tvheadend (Open Collective)",
+        "url": "https://opencollective.com/tvheadend"
+      }
+    ]
+  },
+  "ubooquity": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate (PayPal)",
+        "url": "https://vaemendis.net/ubooquity/static8/donate"
+      }
+    ]
+  },
+  "ungoogled-chromium": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "The main project has no donation path; only individual platform packagers (macOS, Portapps) take personal sponsorships."
+  },
+  "unifi-network-application": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Proprietary hardware vendor software; no donation path."
+  },
+  "unrar": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Source-available freeware from RARLAB, the WinRAR vendor; one search found no donation mechanism."
+  },
+  "vivaldi": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate to Vivaldi",
+        "url": "https://vivaldi.com/donate/"
+      },
+      {
+        "name": "Contribute to Vivaldi",
+        "url": "https://vivaldi.net/contribute/"
+      }
+    ]
+  },
+  "vlc": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate to VideoLAN",
+        "url": "https://www.videolan.org/contribute.html#money"
+      }
+    ]
+  },
+  "vscode": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Microsoft product; MIT-licensed Code-OSS base, proprietary binaries. No donate page."
+  },
+  "vscodium": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "No project donation page: vscodium.com has no donate section (checked the HTML), no .github/FUNDING.yml, only a root FUNDING.json with a Drips Ethereum address; recurring-donation issue #1870 closed not planned. Ko-fi returned 403 to curl (bot block), so unverified."
+  },
+  "vscodium-web": {
+    "status": "none_found",
+    "sponsor": [],
+    "notes": "Same result as vscodium."
+  },
+  "webcord": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "GitHub Sponsors (SpacingBat3)",
+        "url": "https://github.com/sponsors/SpacingBat3"
+      }
+    ]
+  },
+  "webgrabplus": {
+    "status": "skipped",
+    "sponsor": [],
+    "notes": "partly a paid tier"
+  },
+  "webstation": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "webtop": {
+    "status": "own",
+    "sponsor": [],
+    "notes": "LinuxServer.io project"
+  },
+  "weixin": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Tencent product, no donation path."
+  },
+  "wikijs": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Wiki.js (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/NGPixel"
+      },
+      {
+        "name": "Wiki.js (Patreon)",
+        "url": "https://www.patreon.com/requarks"
+      },
+      {
+        "name": "Wiki.js (Open Collective)",
+        "url": "https://opencollective.com/wikijs"
+      }
+    ]
+  },
+  "winegui": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "WineGUI",
+        "url": "https://melroy.org/donate.html"
+      },
+      {
+        "name": "WineGUI (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/melroy89"
+      },
+      {
+        "name": "WineGUI (Patreon)",
+        "url": "https://www.patreon.com/Melroy"
+      }
+    ]
+  },
+  "wireguard": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "WireGuard",
+        "url": "https://www.wireguard.com/donations/"
+      }
+    ]
+  },
+  "wireshark": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Wireshark Foundation donate",
+        "url": "https://wiresharkfoundation.org/donate/"
+      }
+    ]
+  },
+  "wps-office": {
+    "status": "commercial",
+    "sponsor": [],
+    "notes": "Proprietary; no donation path."
+  },
+  "xbackbone": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "XBackBone (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/SergiX44"
+      }
+    ]
+  },
+  "xemu": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "xemu (Patreon)",
+        "url": "https://www.patreon.com/mborgerson"
+      }
+    ]
+  },
+  "yaak": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Yaak",
+        "url": "https://github.com/sponsors/gschier"
+      }
+    ],
+    "notes": "corrected"
+  },
+  "yq": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "yq (GitHub Sponsors)",
+        "url": "https://github.com/sponsors/kislyuk"
+      }
+    ]
+  },
+  "zen": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "Donate to Zen",
+        "url": "https://zen-browser.app/donate"
+      },
+      {
+        "name": "Patreon",
+        "url": "https://www.patreon.com/zen_browser"
+      },
+      {
+        "name": "Ko-fi",
+        "url": "https://ko-fi.com/zen_browser"
+      }
+    ]
+  },
+  "znc": {
+    "status": "found",
+    "sponsor": [
+      {
+        "name": "PayPal donation",
+        "url": "https://www.paypal.com/donate?hosted_button_id=X64ZH85FWE8SJ"
+      }
+    ]
+  },
+  "zotero": {
+    "status": "skipped",
+    "sponsor": [],
+    "notes": "storage plans, not a donation page"
+  }
+}
