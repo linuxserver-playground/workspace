@@ -30,6 +30,16 @@ gh api repos/linuxserver/docker-<name>/commits/<branch> -q .commit.committer.dat
 - `failure`: Jenkins fails on the same commit, so it is upstream's problem. Note it and move on.
 - `pending` with no status, on an old head: Jenkins never built that commit. Treat the branch as stale upstream.
 - `success`, recent, with the same source: the cause is ours or the network's. Keep going.
+- `success` but older than a helper image the Dockerfile pulls: the rot is in that image, and Jenkins has simply
+  not built since. `no match for platform in manifest: not found` on a `FROM` that is only used for `COPY --from`
+  (tvheadend's `ghcr.io/linuxserver/picons-builder`, 2026-10-30) means the helper is published for one
+  architecture, and buildx, which asks for the target platform, refuses what the classic builder accepted. A
+  plain single manifest (no platform list) passes on any architecture; the moment the publisher's `docker build`
+  starts attaching provenance, the same image becomes an index with one platform, and every other-arch build that
+  pulls it breaks. Remedy: `FROM --platform=linux/amd64 <image>` for a stage that only supplies files (the one
+  that would work on Jenkins too), or the publisher builds the files once and pushes a multi-arch index
+  (`FROM --platform=$BUILDPLATFORM` for the builder stage, `--platform linux/amd64,linux/arm64` for the `scratch`
+  final stage).
 
 ## 3. Rerun once if it looks like the network
 
