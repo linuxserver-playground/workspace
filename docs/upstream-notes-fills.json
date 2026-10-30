@@ -1,0 +1,284 @@
+{
+  "_readme": "upstream.notes blocks to add to image.yml, keyed image@branch. 'ready' works with workflows v1 as of 2026-10-30; 'needs_contract' needs builder (notes transform, json whole output) pushed and workflows v1 moved first, or builder check rejects the transform key. Every block was verified against the live upstream with the newest build's version.",
+  "ready": {
+    "apprise-api@main": {
+      "type": "github_release",
+      "repo": "caronc/apprise-api"
+    },
+    "audacity@main": {
+      "type": "github_release",
+      "repo": "audacity/audacity",
+      "tag": "Audacity-${VERSION}"
+    },
+    "beets@master": {
+      "type": "github_release",
+      "repo": "beetbox/beets",
+      "tag": "v${VERSION}"
+    },
+    "brave@master": {
+      "type": "github_release",
+      "repo": "brave/brave-browser",
+      "tag": "v${VERSION}"
+    },
+    "brave@borigin": {
+      "type": "github_release",
+      "repo": "brave/brave-browser",
+      "tag": "v${VERSION}"
+    },
+    "duplicati@development": {
+      "type": "github_release",
+      "repo": "duplicati/duplicati"
+    },
+    "eden@master": {
+      "type": "gitea_release",
+      "base_url": "https://git.eden-emu.dev",
+      "repo": "eden-emu/eden"
+    },
+    "handbrake@master": {
+      "type": "github_release",
+      "repo": "HandBrake/HandBrake"
+    },
+    "intellij-idea@master": {
+      "type": "github_release",
+      "repo": "JetBrains/intellij-community",
+      "tag": "idea/${VERSION}"
+    },
+    "luanti@main": {
+      "type": "github_release",
+      "repo": "luanti-org/luanti"
+    },
+    "nzbget@testing": {
+      "type": "github_commit",
+      "repo": "nzbgetcom/nzbget",
+      "branch": "develop"
+    },
+    "obsidian@main": {
+      "type": "github_release",
+      "repo": "obsidianmd/obsidian-releases"
+    },
+    "pairdrop@main": {
+      "type": "github_release",
+      "repo": "schlagmichdoch/PairDrop"
+    },
+    "pcsx2@master": {
+      "type": "github_release",
+      "repo": "PCSX2/pcsx2",
+      "tag": "v${VERSION}"
+    },
+    "phpmyadmin@main": {
+      "type": "rss",
+      "url": "https://www.phpmyadmin.net/news/feed/",
+      "title": "phpMyAdmin ${VERSION} is released"
+    },
+    "piper@main": {
+      "type": "github_release",
+      "repo": "OHF-Voice/wyoming-piper",
+      "tag": "v${VERSION}"
+    },
+    "qbittorrent@libtorrentv1": {
+      "type": "command",
+      "run": "curl -H \"Authorization: token ${GITHUB_TOKEN}\" -s \"https://api.github.com/repos/qbittorrent/qbittorrent/releases/tags/release-${VERSION%%_v1*}\" | jq -r '. |.body' | sed -e 's| #\\([0-9]*\\)| [#\\1](https://github.com/qbittorrent/qBittorrent/pull/\\1)|g'"
+    },
+    "signal@master": {
+      "type": "github_release",
+      "repo": "signalapp/Signal-Desktop",
+      "tag": "v${VERSION}"
+    },
+    "synclounge@master": {
+      "type": "github_release",
+      "repo": "synclounge/synclounge",
+      "tag": "v${VERSION}"
+    },
+    "telegram@master": {
+      "type": "github_release",
+      "repo": "telegramdesktop/tdesktop",
+      "tag": "v${VERSION}"
+    },
+    "vscode@master": {
+      "type": "github_release",
+      "repo": "microsoft/vscode"
+    },
+    "xemu@master": {
+      "type": "github_release",
+      "repo": "xemu-project/xemu"
+    },
+    "yaak@main": {
+      "type": "github_release",
+      "repo": "mountain-loop/yaak"
+    },
+    "yq@master": {
+      "type": "github_release",
+      "repo": "kislyuk/yq",
+      "tag": "v${VERSION}"
+    }
+  },
+  "needs_contract": {
+    "azahar@master": {
+      "type": "github_release",
+      "repo": "azahar-emu/azahar",
+      "transform": [
+        {
+          "regex": "^\\d+:",
+          "replace": ""
+        },
+        {
+          "regex": "-\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "bitcoin-knots@master": {
+      "type": "github_release",
+      "repo": "bitcoinknots/bitcoin",
+      "tag": "v${VERSION}",
+      "transform": [
+        {
+          "regex": "(\\.\\d+)?-resolute\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "boinc@master": {
+      "type": "github_release",
+      "repo": "BOINC/boinc",
+      "transform": [
+        {
+          "regex": "^(\\d+\\.\\d+)\\.(\\d+).*$",
+          "replace": "client_release/\\1/\\1.\\2"
+        }
+      ]
+    },
+    "darktable@master": {
+      "type": "github_release",
+      "repo": "darktable-org/darktable",
+      "tag": "release-${VERSION}",
+      "transform": [
+        {
+          "regex": "-\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "fail2ban@main": {
+      "type": "github_release",
+      "repo": "fail2ban/fail2ban",
+      "transform": [
+        {
+          "regex": "-r\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "keepassxc@master": {
+      "type": "github_release",
+      "repo": "keepassxreboot/keepassxc",
+      "transform": [
+        {
+          "regex": "-r\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "kicad@master": {
+      "type": "github_release",
+      "repo": "KiCad/kicad-source-mirror",
+      "transform": [
+        {
+          "regex": "-r\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "nginx@master": {
+      "type": "github_release",
+      "repo": "nginx/nginx",
+      "tag": "release-${VERSION}",
+      "transform": [
+        {
+          "regex": "-r\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "ngircd@master": {
+      "type": "github_release",
+      "repo": "ngircd/ngircd",
+      "tag": "rel-${VERSION}",
+      "transform": [
+        {
+          "regex": "-r\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "openshot@main": {
+      "type": "github_release",
+      "repo": "OpenShot/openshot-qt",
+      "tag": "v${VERSION}",
+      "transform": [
+        {
+          "regex": "\\+.*$",
+          "replace": ""
+        }
+      ]
+    },
+    "ppsspp@master": {
+      "type": "github_release",
+      "repo": "hrydgard/ppsspp",
+      "tag": "v${VERSION}",
+      "transform": [
+        {
+          "regex": "-\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "rsnapshot@master": {
+      "type": "github_release",
+      "repo": "rsnapshot/rsnapshot",
+      "transform": [
+        {
+          "regex": "-r\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "sqlitebrowser@master": {
+      "type": "github_release",
+      "repo": "sqlitebrowser/sqlitebrowser",
+      "tag": "v${VERSION}",
+      "transform": [
+        {
+          "regex": "-r\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "syslog-ng@main": {
+      "type": "github_release",
+      "repo": "syslog-ng/syslog-ng",
+      "tag": "syslog-ng-${VERSION}",
+      "transform": [
+        {
+          "regex": "-r\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "transmission@master": {
+      "type": "github_release",
+      "repo": "transmission/transmission",
+      "transform": [
+        {
+          "regex": "-r\\d+$",
+          "replace": ""
+        }
+      ]
+    },
+    "plex@master": {
+      "type": "json",
+      "url": "https://plex.tv/api/downloads/5.json",
+      "jq": ".computer.Linux | select(.version == \"${VERSION}\") | \"### Added\\n\\(.items_added)\\n\\n### Fixed\\n\\(.items_fixed)\""
+    }
+  }
+}
