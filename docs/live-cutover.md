@@ -65,7 +65,8 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   sources and a URL template elsewhere (CONVENTIONS §3). Control then waits ("assets not ready", hourly) instead
   of dispatching a build against a release whose asset is still uploading, holds the branch's release and package
   checks for the same reason (a held package check keeps its weekly slot and is tried again next hour), and posts
-  an amber Discord embed after six such checks and daily after that. Carry the playground's `image.yml` over as it is; upstream's bash checks
+  a Discord embed on every such check, amber for the first four and red from the fifth, naming the pattern and the
+  assets that were uploaded. Carry the playground's `image.yml` over as it is; upstream's bash checks
   are superseded. rpcs3's failed build of 2026-10-30 14:15 UTC (run 41070239583, `.assets` empty) is the case.
 - **Nine Dockerfiles changed with it.** They fetched the asset list of `releases/latest` at build time, so a
   build dispatched for version X could download X+1, and the asset check and the build looked at different
