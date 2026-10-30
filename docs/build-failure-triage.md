@@ -53,6 +53,10 @@ These cleared on a rerun:
 
 If the same network-shaped error comes back twice, it is not a flake.
 
+When GitHub itself is degraded (check `https://www.githubstatus.com/api/v2/incidents/unresolved.json` first), read
+`docs/github-outage-2026-10-30.md` before touching anything: it lists what control repairs on its own during an
+incident, how long each repair takes, and what only looks broken.
+
 ## 4. Signs that the pipeline is at fault
 
 - It fails in one of our steps, not in the Dockerfile's `RUN`: prepare (manifest, version, shellcheck and s6
