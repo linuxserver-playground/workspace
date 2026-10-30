@@ -266,6 +266,17 @@ change one, ask the maintainers first, then update this file in the same change.
   and they are only download links. Releases stay the archive of everything.
 - **The site shows the newest 5 builds per branch;** the hub keeps the same 5. An older release has no site page:
   the image page's older releases link its GitHub Release, its `run.json` and its run.
+- **An init unit belongs to the repository that ships it, and its script is read where it belongs.** ci mounts the
+  repository's `root/` (`IMAGE_ROOT`): the units under its `etc/s6-overlay/s6-rc.d` are the image's own and carry
+  their run script in `init_graph`; every other unit is a base image's, at any depth, with no script (a root base
+  built from scratch owns everything, s6-overlay's `user` bundles included). The build page links each inherited
+  unit to the build of the base that defines it and reads the script from there, walking the chain of bases
+  (selkies on ubuntu) through the hub: the exact base build by its `index_digest`, else the newest build of the
+  floating tag, marked as such. Chosen over copying every base's scripts into every build because a copy cannot
+  say which base a unit came from once bases stack, and would repeat the same scripts in a thousand records. The
+  comparison against the base image inside ci was never reached in practice (the base is not in the runner's
+  daemon), which is why records made before 2026-10-30 list an intermediate base's units as the image's own; the
+  site reattributes those when the base owns a byte-identical script.
 - **Vulnerabilities** are shown on build pages, with backport-aware framing, for users who look for them; they
   are never a headline and not on image pages. They are the state of the image when it was released, best
   effort and informal, not a live security feed or an authority: every build scans itself once (in its
