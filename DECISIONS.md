@@ -129,6 +129,9 @@ change one, ask the maintainers first, then update this file in the same change.
   backups: the 20 concurrent job slots are for builds.
 - **Nobody babysits GitHub's lapses.** Every network call in the workflows retries network-class failures with
   backoff (`retry` and `retry_ghcr` in workflows' `scripts/lib.sh`, `netretry.py`) and fails fast on real errors.
+  The third-party steps that cannot use those (checkout, the artifact uploads and downloads) get a second attempt
+  inside the run instead: a retry twin of each checkout step and the `artifact-upload` and `artifact-download`
+  composites, never the image build or the tests, which may fail for real.
   What outlasts that, control heals: it repairs missed webhooks (`heal.py`), retries a failed Pages deploy with
   backoff, and re-runs a live build once when every failed job failed on an infrastructure step, never on the
   image build or the tests (`recover.py`). Discord hears only what control gave up on, grouped hourly.
