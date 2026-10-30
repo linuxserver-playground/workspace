@@ -125,7 +125,12 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   `./scripts/check.sh`, push, then move `v1`:
   `git tag -f v1 && git push -f origin v1`. Verify with a dispatched build of a small image
   (`gh workflow run build.yml -R linuxserver-playground/docker-heimdall`). A change that breaks the
-  inputs, outputs or ci interface is a new major tag, not `v1`.
+  inputs, outputs or ci interface is a new major tag, not `v1`. When the workflow change needs a new builder
+  too (a step calls a builder command or names a generated file the old image lacks), push builder first and
+  move `v1` only once the `builder` package's `latest` tag carries the new commit
+  (`gh api orgs/linuxserver-playground/packages/container/builder/versions`), not when its Publish run
+  reports success: the retag lands about a minute later, and a build that starts in between pulls the old
+  builder with the new workflow and fails its Prepare job (docker-modrinth, 2026-10-30).
 - **Change to per-build data** (a diff field, the package table, the scan). Edit `builder/builder/derive/`, bump
   `record.schema.json` and `contracts_version` if the shape changes, and push builder: every build from then on
   writes it into `record.json`, and the hub uses the same code for releases without one. Then the hub's models
