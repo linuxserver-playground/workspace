@@ -105,7 +105,9 @@ however the last attempt ended. baseimage-kasmvnc, broken upstream, was dispatch
 webstation, which a maintainer had cancelled as too heavy, was dispatched again at 01:52 (cancelled by hand) and
 would have been again at 03:52. The weekly package checks also landed during the window as they are spread over
 the week: qbittorrent and gimp found new package lists (their base had just changed) and dispatched a second
-release each. That is by design: `package_versions.txt` is only committed by the package check.
+release each. That was by design then: `package_versions.txt` was only committed by the package check. Since
+2026-10-31 a package check releases from its own run and every live release commits the table afterwards, so
+these second builds no longer happen.
 
 ### Hub
 

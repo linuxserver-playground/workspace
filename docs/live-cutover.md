@@ -306,3 +306,7 @@ Each of these works for owners pushing directly, but would trip up real contribu
   `TRIAGE_ORG`, `TRIAGE_CONTROL_URL` and `TRIAGE_SITE_URL`. Its footer and prompt say "playground".
 - **Fork approvals.** Fork runs need a maintainer to approve them (`all_external_contributors`). Decide
   whether a contributor tier can approve.
+- The generated `build.yml` of every image repository (builder `templates/build.yml.j2`, mirrored in workflows'
+  `templates/build.yml`) still grants the shared workflow `actions: write`, which only the old two-build package
+  check needed to dispatch its follow-up. Dropping it changes a workflow file in every repository, which
+  `GITHUB_TOKEN` cannot push, so it is left for the cutover render.

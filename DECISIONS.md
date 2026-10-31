@@ -33,9 +33,22 @@ change one, ask the maintainers first, then update this file in the same change.
   lists them on their own tabs of the images section (a tool's page leads with its README usage), and the hub
   leaves them out of the stores, the install artefacts and the v1 image list. Tools need no mod logic of their
   own. The categories stay as LinuxServer curated them in readme-vars.
-- **Templating commits happen once, on the live branch.** PRs are only checked. A push made with
-  `GITHUB_TOKEN` never triggers workflows, so the package check dispatches the release build itself. Bot
-  commits use `[skip ci]`.
+- **Templating commits happen once, on the live branch.** PRs are only checked. Both bot commits carry
+  `[skip ci]` and neither starts a build: `Update generated files` is made before the build that continues on
+  it, `Update package versions` after a successful release.
+- **A package check is one build, never two.** The weekly `reason: packages` run compares the fresh package
+  table with the committed one before anything is published and releases from the same run when it changed,
+  with a new `-lsN`; when nothing changed it publishes nothing. Every successful live release then commits the
+  amd64 table as `Update package versions [skip ci]`, so the committed table never lags the released image and
+  an upstream or push build that also moved packages needs no second build. Control's release check and the
+  workflow's `next-tag` both look through that commit, so a rebuild from the new head still republishes the
+  released tag. Jenkins committed the table in the check and let that push start a second full build
+  (2026-10-31).
+- **A build page says why the build exists.** The record carries the commits between the two builds (from
+  GitHub's compare: subject, author, whether the pipeline made it, and the areas touched: image.yml, the
+  Dockerfiles, root/, generated files, the package table), and the site composes one sentence from the trigger,
+  the diff and those commits, with the package changes that came with the base image attributed to the base
+  builds in between. A push whose commits reach nothing in the image is not a LinuxServer change.
 - **`package_versions.txt` stays in the repos,** and the hub also keeps structured SBOMs with a stronger
   package diff.
 - **Namespaces.**
