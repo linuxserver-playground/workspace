@@ -164,7 +164,7 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   - the proxy block, from `reference/reverse-proxy-confs`;
   - categories on branches other than the default;
   - `# shellcheck shell=bash` headers on s6 scripts;
-  - `#!/command/with-contenv` shebangs;
+  - `#!/usr/bin/with-contenv bash` shebangs (what `builder check` requires);
   - `require_assets` under `upstream.version` when the Dockerfiles download a release asset: one entry per
     asset (`{asset: <regex>}` on the file name for GitHub, Codeberg and Gitea releases, a `${VERSION}` URL
     template elsewhere), so control waits for the upload instead of building against an empty release; and a

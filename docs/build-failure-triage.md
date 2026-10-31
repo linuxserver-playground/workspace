@@ -9,11 +9,14 @@ pipeline itself is wrong. Only the last is ours to fix. Find out which it is bef
 ```bash
 gh run view <run> -R linuxserver-playground/docker-<name> --json jobs \
   -q '.jobs[] | select(.conclusion=="failure") | .name + ": " + ([.steps[] | select(.conclusion=="failure") | .name] | join(","))'
-gh run view <run> -R linuxserver-playground/docker-<name> --log-failed | grep -B8 'Process completed with exit code'
+gh run view <run> -R linuxserver-playground/docker-<name> --log-failed | grep -B12 'Process completed with exit code'
+gh run view <run> -R linuxserver-playground/docker-<name> --log | grep -E 'curl: \(|E: |apk: |ERROR: failed to solve|no match for platform'
 ```
 
 Grepping for `ERROR` alone misleads, because package names like `liberror-perl` match. The lines just before
-`Process completed` are the real reason.
+`Process completed` are usually the real reason, but a buildx `RUN` that failed on a download prints the cause
+(`curl: (28) Failed to connect to downloads.scummvm.org port 443`, 2026-10-31) forty lines above the marker, after
+the Dockerfile echo: the second grep finds it.
 
 ## 2. Is the source already broken upstream?
 
@@ -21,6 +24,7 @@ The playground's converted branch is one commit on top of upstream's branch head
 moved, then read Jenkins's status on that commit. These are read-only GETs; `linuxserver/*` is never written to.
 
 ```bash
+git -C repos/docker-<name> remote add upstream https://github.com/linuxserver/docker-<name>.git 2>/dev/null  # the harness adds it as `linuxserver`
 git -C repos/docker-<name> fetch -q upstream
 git -C repos/docker-<name> rev-list --count <branch>^..upstream/<branch>    # 0: same source as ours
 gh api repos/linuxserver/docker-<name>/commits/<branch>/status -q '.state + " " + (.statuses[0].updated_at // "-")'
@@ -57,6 +61,8 @@ These cleared on a rerun:
 
 - GHCR `token ... EOF`;
 - `curl: (22) ... 502`;
+- `curl: (28) Failed to connect to <the project's download host> port 443` when the host answers again minutes
+  later (scummvm, 2026-10-31);
 - uv or pip `Failed to download`;
 - apk `unable to select packages`, for packages that exist. Check with
   `docker run --rm <base> apk add --no-cache <pkg>`.

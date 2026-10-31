@@ -37,6 +37,7 @@ Each row was verified: the block below, fed the newest build's upstream version,
 | eden@master | v0.2.1 | `gitea_release` base_url https://git.eden-emu.dev, repo eden-emu/eden | 6.6 kB |
 | handbrake@master | 1.11.2 | `github_release` HandBrake/HandBrake | 1.7 kB |
 | intellij-idea@master | 2026.2.3 | `github_release` JetBrains/intellij-community, tag `idea/${VERSION}` | link to YouTrack notes |
+| pycharm@master | 2026.2.3 | `github_release` JetBrains/intellij-community, tag `pycharm/${VERSION}` | link to YouTrack notes (missed on 2026-10-30; found by the harness evals on 2026-10-31, not yet applied) |
 | luanti@main | 5.18.0 | `github_release` luanti-org/luanti | link to changelog |
 | nzbget@testing | 82e07f0 | `github_commit` nzbgetcom/nzbget, branch develop | commit message |
 | obsidian@main | v1.14.5 | `github_release` obsidianmd/obsidian-releases | link to changelog |
