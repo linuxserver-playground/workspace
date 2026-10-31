@@ -52,6 +52,18 @@ rewrites in image repos have their own list in [playground-references.md](playgr
 - **Control's command sandbox depends on the LinuxServer container.** It needs doas,
   `/usr/local/bin/run-version-command`, and the init script that closes `/run/s6/container_environment`.
   Keep them if control moves off n97 or out of the image (control `AGENTS.md`).
+- **Every live repository starts with Jenkins' `package_versions.txt`.** Its layout and sort order differ from
+  the playground's table (the playground's also lists the `UnknownPackage` entries syft finds in binaries), so
+  the committed file never matches the first fresh table. The weekly package check therefore treats the previous
+  release's `package_versions.amd64.txt` asset as the authority and the committed file as a fast path: a stale
+  file under an unchanged image publishes nothing and commits the table (workflows commit `Release nothing when
+  only the branch's package table is stale`, 2026-10-31). Before that change, craft-apps v0.18.0-ls5 was
+  released as a copy of ls4 for this reason, and 53 playground branches were still in that state. After the
+  cutover, expect the first package check of every branch to commit `Update package versions [skip ci]` and
+  release nothing; a branch's first check that releases with "no package changed" on its build page means the
+  comparison regressed. Jenkins-era Releases carry no `package_versions.amd64.txt` asset, so a branch whose
+  newest release predates the playground's workflow falls back to the committed file and releases once; a live
+  build before its first check avoids that.
 - **Comparing build load with live.** Count GHCR package versions, not Releases: a release's `created_at` is its
   tagged commit's date, and a triggered release tags an old head. The playground's first count after the
   change, 155 releases to live's 119 over 42 hours, was made that way.

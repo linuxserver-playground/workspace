@@ -43,7 +43,11 @@ change one, ask the maintainers first, then update this file in the same change.
   an upstream or push build that also moved packages needs no second build. Control's release check and the
   workflow's `next-tag` both look through that commit, so a rebuild from the new head still republishes the
   released tag. Jenkins committed the table in the check and let that push start a second full build
-  (2026-10-31).
+  (2026-10-31). The previous release's `package_versions.amd64.txt` asset is the authority, the committed file
+  only a fast path: when the file differs but the previous release's table does not, nothing changed, nothing is
+  published, and the run commits the table to catch the branch up. A converted repository carries Jenkins'
+  table, laid out and sorted differently, until its first live release, and comparing against the file alone
+  released craft-apps v0.18.0-ls5, ls4's image again, for nothing (2026-10-31).
 - **A build page says why the build exists.** The record carries the commits between the two builds (from
   GitHub's compare: subject, author, whether the pipeline made it, and the areas touched: image.yml, the
   Dockerfiles, root/, generated files, the package table), and the site composes one sentence from the trigger,
