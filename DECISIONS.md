@@ -278,7 +278,10 @@ change one, ask the maintainers first, then update this file in the same change.
   `reason: pages` dispatch, assembles the site from the newest 5 releases of each live branch and deploys it from
   an artifact (CONVENTIONS §6, "Repo Pages"): test report files, `files.<arch>.json.gz` and
   `packages.<arch>.json.gz`. Nothing is committed to the image repository and no state is kept between deploys,
-  so a lost deploy is repaired by the next. Pages answers every request with `access-control-allow-origin: *`,
+  so a lost deploy is repaired by the next. Two branches releasing together can overlap
+  without either deploy being refused, and the one that assembled first and deployed last removes the other's
+  build (webtop fedora-kde, 2026-11-01), so after each deploy the workflow compares the site with the Releases and
+  deploys again, up to three deploys in all. Pages answers every request with `access-control-allow-origin: *`,
   so the site reads them from any domain; Release assets send no CORS headers, so the browser never fetches one
   and they are only download links. Releases stay the archive of everything.
 - **The site shows the newest 5 builds per branch;** the hub keeps the same 5. An older release has no site page:
