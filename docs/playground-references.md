@@ -20,6 +20,8 @@ Commit subject: `Build on the playground base images`. Rewrites
   base images: baseimage-selkies (on alpine and debian) and baseimage-alpine-nginx (on alpine).
 - **With the selkies-layers swap (below):** baseimage-selkies' other six live branches, `alpine324`, `arch`,
   `fedora44`, `kali`, `ubunturesolute` and `dev`, which the follow-up had missed.
+- **Labs:** `linuxserverlabs-playground/docker-photocraft` (`main`) was written on `baseimage-selkies:ubunturesolute`
+  from the start, so it has no rewrite commit: swap its two `FROM` lines by hand.
 
 Every live branch is now on the playground bases except:
 
