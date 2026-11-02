@@ -182,7 +182,9 @@ no fix archives the image; 12 months with no upstream release flags it.
 Built on 2026-11-02: the org, Labs control, the Labs hub and site, `proposals` (form and check), `docker-template`
 (starter kit and `pending`), builder's `maintainers` and Labs profile, the harness's Labs path (`labs form`,
 `labs scaffold`, `labs try`, `labs accept`), and `docker-photocraft` as the worked example, built and released
-through the whole path. Still to build: staying and leaving (flags and archiving in Labs control, the scorecard,
+through the whole path. Example data, kept to show the team each stage (do not merge or close it): proposals#4 (WordCraft) is an open
+proposal, proposals#3 (FilmCraft) is in review as `docker-filmcraft` with its first pull request left open, and
+`docker-photocraft` is published. Still to build: staying and leaving (flags and archiving in Labs control, the scorecard,
 `labs graduate`) and a Labs `.github` repository.
 
 ## Build-out order
