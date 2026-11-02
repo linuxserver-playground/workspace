@@ -81,6 +81,8 @@ LinuxServer Labs publishes newer, less proven images in its own org on the same 
   `GITHUB_REPOSITORY` and keeps the shared repos in `pipeline_org`; the workflows pass the org's `SITE_URL` and
   `HUB_URL` variables to it. Labs control is its own instance with its own App and settings.
 - **Labs names are unique across both orgs and live `linuxserver`,** so either site can key images by name.
+- **Base images are the pipeline org's.** Anything that follows an image to its base (the init graph, "why this
+  build") reads it from the main hub and links the main site, also on the Labs site (the site's `init-chain.ts`).
 - **A new Labs image** starts as an issue in `linuxserverlabs-playground/proposals`; a member runs
   `./harness labs try` and `./harness labs accept` (the harness's labs-accept playbook), which create the repo from
   `docker-template` with the `labs-pending` topic and open its first pull request. Outsiders never get push access.
