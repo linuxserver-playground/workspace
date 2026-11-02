@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Clones every repository of linuxserver-playground into repos/ (or fast-forwards the ones already there), so an
-# agent started at the root of this workspace can read and change all of them. Safe to re-run.
+# Clones every repository of linuxserver-playground into repos/, and of the Labs org (linuxserverlabs-playground) into
+# repos/labs/, or fast-forwards the ones already there, so an agent started at the root of this workspace can read and
+# change all of them. Safe to re-run.
 #
 #   ./bootstrap.sh              clone or update every repo
 #   ./bootstrap.sh --setup      also install each repo's dev environment (venvs, npm, cargo); slow
@@ -10,6 +11,7 @@
 set -euo pipefail
 
 ORG=linuxserver-playground
+LABS_ORG=${LABS_ORG:-linuxserverlabs-playground}
 REFERENCE=(docker-ci docker-jenkins-builder docker-mods templates docker-documentation reverse-proxy-confs)
 here=$(cd "$(dirname "$0")" && pwd)
 repos_dir=${REPOS_DIR:-$here/repos}
@@ -56,6 +58,14 @@ gh repo list "$ORG" --limit 500 --no-archived --json name --jq '.[].name' | sort
   dir=$repos_dir/$name
   [[ "$name" == ".github" ]] && dir=$repos_dir/dot-github
   sync "$ORG/$name" "$dir"
+done
+
+# LinuxServer Labs (docs/labs.md): every repo of the Labs org, under repos/labs/.
+mkdir -p "$repos_dir/labs"
+gh repo list "$LABS_ORG" --limit 500 --no-archived --json name --jq '.[].name' | sort | while read -r name; do
+  dir=$repos_dir/labs/$name
+  [[ "$name" == ".github" ]] && dir=$repos_dir/labs/dot-github
+  sync "$LABS_ORG/$name" "$dir"
 done
 
 # Generated data is not on main: the hub's data/ and the site's snapshots are the one commit of each repo's data

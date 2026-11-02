@@ -17,6 +17,10 @@ Live surfaces:
 | Hub (static API and generated artefacts) | https://linuxserver-playground.github.io/hub/ |
 | Control plane (scheduler, webhooks, JSON API, member actions) | https://ci.thelamer.duckdns.org:8443 |
 | Images | `ghcr.io/linuxserver-playground/<name>` |
+| Labs site (the same site code in Labs mode: Labs images, builds, fleet, how to propose) | https://linuxserverlabs-playground.github.io/site/ |
+| Labs hub | https://linuxserverlabs-playground.github.io/hub/ |
+| Labs control plane | https://labs-ci.thelamer.duckdns.org:8443 |
+| Labs images | `ghcr.io/linuxserverlabs-playground/<name>` |
 
 ## Getting started
 
@@ -57,10 +61,29 @@ them without the maintainers.
 | `unraid-store`, `umbrel-store`, `runtipi-store` | Generated store repos, pushed by the hub | never edit by hand; change the generator in hub |
 | `dot-github` | The org's `.github` repo: profile README, CONTRIBUTING, SECURITY, FUNDING | push to main |
 | `harness` | The guided entry point for team members and contributors running an AI agent: role detection, playbooks, the `./harness` CLI, guard hooks | push to main |
+| `labs/*` | The Labs org, `linuxserverlabs-playground` (below, "Labs"): `docker-<name>` image repos, `hub` and `site` (thin callers of the main hub's and site's workflows), `proposals` (the proposal form and its check), `docker-template` (a pending repo's first `main`) | as for their main-org counterparts |
 
 `reference/` (from `--reference`, read-only): `linuxserver/docker-ci`, `docker-jenkins-builder`, `docker-mods`,
 `templates`, `docker-documentation` and `reverse-proxy-confs`, the Jenkins-era originals. Read them for intent; never copy their
 generated output.
+
+## Labs
+
+LinuxServer Labs publishes newer, less proven images in its own org on the same pipeline: the design is
+`docs/labs.md`, the settled points are DECISIONS' "Labs". What crosses repos:
+
+- **One codebase, two orgs.** Labs repos call the main org's workflows, builder, ci and base images. The Labs hub
+  and site hold only workflows that call the main hub's and site's `deploy-run.yml` (and `refresh-run.yml`); the
+  site's Labs mode is `PUBLIC_SITE_MODE=labs`. A change to how Labs builds, indexes or renders is a change in the
+  main repo, and it reaches Labs on the Labs hub's or site's next run.
+- **Nothing is inherited across the org boundary.** The generated `build.yml` and `pr-report.yml` pass secrets by
+  name, because `secrets: inherit` passes nothing to another org's workflow. builder takes the image's org from
+  `GITHUB_REPOSITORY` and keeps the shared repos in `pipeline_org`; the workflows pass the org's `SITE_URL` and
+  `HUB_URL` variables to it. Labs control is its own instance with its own App and settings.
+- **Labs names are unique across both orgs and live `linuxserver`,** so either site can key images by name.
+- **A new Labs image** starts as an issue in `linuxserverlabs-playground/proposals`; a member runs
+  `./harness labs try` and `./harness labs accept` (the harness's labs-accept playbook), which create the repo from
+  `docker-template` with the `labs-pending` topic and open its first pull request. Outsiders never get push access.
 
 ## How data flows
 
