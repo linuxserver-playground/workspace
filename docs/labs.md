@@ -27,7 +27,6 @@ The settled points are in [DECISIONS.md](../DECISIONS.md) under "Labs". This pag
 | Control | Its own instance: the same image as a second container on n97, with `GITHUB_ORG`, its own GitHub App, OAuth App and Discord webhook (a Labs builds channel) | A Labs key or webhook can only reach Labs. |
 | Hub | Its own deploy of the same code, with mods, PRoot Apps and stores off | Labs data never mixes with the main fleet's stores, v1 image list or health. |
 | Runners | The Labs org's own 20 concurrent jobs | Labs builds can never take the main fleet's slots. |
-| Triage | The same bot, installed on the Labs org and polling Labs control too | It runs the first check of every proposal (below). |
 | Workflows, builder, ci, dumper, base images | Shared | Labs repositories call `linuxserver-playground/workflows@v1`. The workflow already derives the image path from the repository owner. |
 | Site, harness | Shared | One pane of glass with a Labs section, one guided entry point with a Labs path. |
 
@@ -38,7 +37,7 @@ rebuilds make it static.
 
 ## The bar
 
-Each rule is something the triage bot or `builder check` can verify.
+Each rule is something the proposal check or `builder check` can verify.
 
 - **The upstream is owned by an organisation,** on GitHub (preferred) or any git host, never a personal account.
   No exceptions. An organisation is free to create, and a project that grows moves out of a personal account
@@ -80,9 +79,12 @@ Each rule is something the triage bot or `builder check` can verify.
      - supported architectures.
    - **Try it in a sandbox:** the first-run steps (default login or setup wizard, and what working looks like),
      and a screenshot.
-2. **First check, by the triage bot.** It checks each box against the real upstream: the owner's account type,
-   the licence file, the latest release and its asset names, name collisions. It replies with what is missing,
-   so no member spends time on a proposal that fails the bar.
+2. **First check, by a workflow in `proposals`.** On every opened or edited issue it reads the form and checks
+   it against the real upstream with `GITHUB_TOKEN` only, no AI and no other secret: the owner's account type,
+   the licence, the latest stable release and its asset names, name collisions with Labs, the main org and live
+   `linuxserver`. It keeps one comment up to date with what passes and what is missing, and labels the issue
+   `meets-bar` or `needs-info`, so no member spends time on a proposal that fails the bar. Upstreams off GitHub
+   get the checks their host's API allows, and a member checks the rest in the trial.
 3. **Trial, by a member.** `./harness labs try <issue>` builds an image from the issue and runs it in a throwaway
    container: no host mounts, no credentials, and no network beyond what the app needs. It runs the ci smoke tests
    and takes screenshots locally, and opens the UI on localhost. This is where an app that is not really
@@ -161,7 +163,6 @@ no fix archives the image; 12 months with no upstream release flags it.
    - the hub's `ORG` constant (`lsio_hub/config.py`) and the names built from it come from the environment, and
      its deploy and refresh become reusable workflows with an `org` input;
    - the site reads a list of hubs (`src/lib/site.ts`, `src/lib/hub.ts`) and routes `/labs/` to the Labs one;
-   - triage polls a list of control URLs;
    - check that every workflow step takes the org from the repository owner, as the image path does. Control
      (`GITHUB_ORG`) and builder (`BUILDER_*`) already take it from the environment.
 2. **Builder:**

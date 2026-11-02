@@ -213,10 +213,9 @@ rewrites in image repos have their own list in [playground-references.md](playgr
 - **Create the production App without the check events.** The playground App subscribes to Check run and Check
   suite, which nothing reads; control drops them unstored. A new App created from the manifest leaves them out;
   untick them on any App created before 2026-10-29.
-- **triage.** Move it with control, as its own compose project beside it (`triage/deploy/`).
 - **Scrub the playground host.** Once nothing runs on n97, remove what names it from the public repos: n97,
   `/home/thelamer/...` paths and `ci.thelamer.duckdns.org` in control (`deploy/n97/`, `config.py`, README), in
-  triage's `TRIAGE_CONTROL_URL` default, in the site's control URL, and in this workspace's AGENTS.md,
+  the site's control URL, and in this workspace's AGENTS.md,
   DECISIONS.md and docs.
 - **One domain.** Site and control share one registrable domain, so the session cookie no longer needs
   `SameSite=None` and member actions work in every browser (DECISIONS: Control plane).
@@ -314,9 +313,6 @@ Each of these works for owners pushing directly, but would trip up real contribu
   - The control README describes the member check wrongly and gives the wrong `HUB_CONSUMERS` default.
   - The workspace recipe mentions "contracts models"; there are none.
   - The hub's fixtures README names `mod-list.yml`, but the file is `mods.yml`.
-- **The triage bot needs its own App and key in the real org.** Create a `linuxserver` App from the prefilled form
-  in `triage/deploy/README.md`, an API key in a workspace with a spend limit, and set `TRIAGE_AUTHORS=external`,
-  `TRIAGE_ORG`, `TRIAGE_CONTROL_URL` and `TRIAGE_SITE_URL`. Its footer and prompt say "playground".
 - **Fork approvals.** Fork runs need a maintainer to approve them (`all_external_contributors`). Decide
   whether a contributor tier can approve.
 - The generated `build.yml` of every image repository (builder `templates/build.yml.j2`, mirrored in workflows'
