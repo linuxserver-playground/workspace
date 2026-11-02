@@ -24,7 +24,7 @@ The settled points are in [DECISIONS.md](../DECISIONS.md) under "Labs". This pag
 | Piece | Labs | Why |
 | --- | --- | --- |
 | Org, GHCR namespace (`ghcr.io/linuxserverlabs-playground/<name>`), org secrets | Its own | The namespace tells users the image is unreviewed software. |
-| Control | Its own instance: the same image as a second container on n97, with `GITHUB_ORG`, its own GitHub App, OAuth App and Discord webhook (a Labs builds channel) | A Labs key or webhook can only reach Labs. |
+| Control | Its own instance of the same image, with `GITHUB_ORG`, its own GitHub App, OAuth App and Discord webhook (a Labs builds channel) | A Labs key or webhook can only reach Labs. |
 | Hub | Its own deploy of the same code, with mods, PRoot Apps and stores off | Labs data never mixes with the main fleet's stores, v1 image list or health. |
 | Runners | The Labs org's own 20 concurrent jobs | Labs builds can never take the main fleet's slots. |
 | Workflows, builder, ci, dumper, base images | Shared | Labs repositories call `linuxserver-playground/workflows@v1`. The workflow already derives the image path from the repository owner. |
