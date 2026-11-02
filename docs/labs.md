@@ -92,11 +92,13 @@ Each rule is something the proposal check or `builder check` can verify.
    container: no host mounts, no credentials, and no network beyond what the app needs. It runs the ci smoke tests
    and takes screenshots locally, and opens the UI on localhost. This is where an app that is not really
    self-hosted shows.
-4. **Elevate, by a member.** `./harness labs accept <issue>`:
+4. **Elevate, by a member.** `./harness labs accept <issue>` writes the commands (`accept.sh`) and runs nothing; the
+   member or their agent runs them:
    - creates `docker-<name>` in the Labs org, turns on its Pages (control cannot change repo settings), and adds
      the `labs-pending` topic;
-   - pushes an "Image pending approval" `main` branch: a short README and the generated `pr-report.yml`, but no
-     `image.yml`. Discovery treats a `docker-*` repository without `image.yml` as a helper repo, so nothing builds
+   - pushes `docker-template`'s `pending` branch as its `main`: the "Image pending approval" README linked to the
+     proposal, the generated `pr-report.yml` and `build.yml` (in a `[skip ci]` commit, so the first PR adds no
+     generated file), but no `image.yml`. Discovery treats a `docker-*` repository without `image.yml` as a helper repo, so nothing builds
      on `main`. `pr-report.yml` has to be there, because its `workflow_run` and `pull_request_target` triggers
      only run from the default branch.
    - pushes the scaffold built from the issue to a branch and opens the pull request. The PR body links the
@@ -109,6 +111,15 @@ Each rule is something the proposal check or `builder check` can verify.
    repository runs a workflow for only one of its first pushes. Remove `labs-pending`; Labs control discovers the
    image, and the Labs hub and site follow.
 
+## Building it locally first
+
+`linuxserverlabs-playground/docker-template` is the developer's starter kit: "Use this template" copies it into
+their own organisation, `GETTING-STARTED.md` walks through filling it in (a web app on an s6 service, or the selkies
+variant in `variants/selkies/`), building and running it locally and checking it with builder's Labs profile. No
+workflow runs in a copy; the local run is the evidence, and the proposal links it as its "Working repository", which
+the check inspects and `./harness labs scaffold` starts from. Its `pending` branch is the other use: a new Labs repo's
+first `main`.
+
 ## The Labs site
 
 The same site code, built with `PUBLIC_SITE_MODE=labs` and the Labs hub as `HUB_URL`, deployed from
@@ -117,17 +128,19 @@ The same site code, built with `PUBLIC_SITE_MODE=labs` and the Labs hub as `HUB_
 layout only: a notice under the header on every page, a Labs badge, its own navigation and footer, and no docs, blog,
 mods, PRoot Apps or stores (those link to the main site). The main site links to it from its footer.
 
-- **Home page:** what Labs is, the bar, the steps above, and the button to the proposal form, then the images in
-  Labs.
-- **Pending approval, public:** repositories with `labs-pending`, each linking its PR and report. A member has
+- **Home page:** what Labs is and the images in Labs, with links to the two pages below.
+- **`/propose/`, "Get your app into Labs":** the full guide for developers: what qualifies and why, building it
+  locally from the starter kit, using the harness, the form field by field, what happens after proposing,
+  contributing, staying in Labs and graduating. The main site's contribute section links it.
+- **`/proposals/`, pending approval, public:** repositories with `labs-pending`, each linking its PR and report. A member has
   tried each one and put it forward, so they are worth showing.
-- **Proposals, only for signed-in team members:** the open issues in `proposals`, read from Labs control's public
+- **`/proposals/`, open proposals, only for signed-in team members:** the open issues in `proposals`, read from Labs control's public
   issues API. Anyone can file one, so the site does not advertise them. Hiding them from signed-out visitors is
   only presentation: the issues are public on GitHub.
-- **Image and build pages:** the main site's, under the Labs notice, with no store templates; later the
-  maintainers in the header and the graduation scorecard.
-- **Fleet:** the Labs board from Labs control (it allows the Labs site's origin), read-only. Member actions on Labs wait until Labs control has its own
-  sign-in; Labs admins act on GitHub meanwhile.
+- **Image and build pages:** the main site's, under the Labs notice, with the maintainers in the header and no
+  store templates; later the graduation scorecard.
+- **Fleet:** the Labs board from Labs control (it allows the Labs site's origin), without the non-image repos
+  section. Members of the Labs org sign in with Labs control's own OAuth App.
 
 ## Staying in Labs
 
@@ -163,6 +176,14 @@ no fix archives the image; 12 months with no upstream release flags it.
    the `image:` line.
 
 `./harness labs graduate <name>` should do steps 3 and 4 for a member.
+
+## Status
+
+Built on 2026-11-02: the org, Labs control, the Labs hub and site, `proposals` (form and check), `docker-template`
+(starter kit and `pending`), builder's `maintainers` and Labs profile, the harness's Labs path (`labs form`,
+`labs scaffold`, `labs try`, `labs accept`), and `docker-photocraft` as the worked example, built and released
+through the whole path. Still to build: staying and leaving (flags and archiving in Labs control, the scorecard,
+`labs graduate`) and a Labs `.github` repository.
 
 ## Build-out order
 

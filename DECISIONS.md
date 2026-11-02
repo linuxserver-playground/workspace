@@ -337,6 +337,9 @@ Design and plan: [docs/labs.md](docs/labs.md).
   sandbox, so the bot and a member weed proposals out before any repository exists. A member elevates a
   proposal by creating `docker-<name>` with an "Image pending approval" `main` branch and opening the first pull
   request from the issue. That PR's build posts the report comment the team reviews from.
+- **docker-template is the developer's starter kit.** Its `main` is what a developer copies to build and run their
+  app locally before or while proposing (no workflows run in a copy); its `pending` branch is a new Labs repo's
+  first `main`. The Labs site's `/propose/` is the public guide, and the main site's contribute section links it.
 - **The site shows pending images, not proposals.** Repositories a member has elevated are listed publicly as
   pending approval. Open proposals are shown only to signed-in team members, since anyone can file one.
 
