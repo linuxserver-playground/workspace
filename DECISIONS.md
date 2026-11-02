@@ -314,9 +314,11 @@ Design and plan: [docs/labs.md](docs/labs.md).
 - **Docker images only.** No Labs mods or PRoot Apps: too much machinery for what they add.
 - **Separate control and hub, shared pipeline and site.** Labs has its own org secrets, GHCR namespace, control
   instance (own App and Discord builds channel), hub deploy (no stores, mods or PRoot Apps) and the org's own 20
-  runner slots. It calls the main org's workflows, builder, ci and base images, and the one site renders it under
-  `/labs/`. No credential crosses between the orgs: the site renders new Labs builds live from the Labs hub
-  instead of being dispatched from Labs control.
+  runner slots. It calls the main org's workflows, builder, ci and base images.
+- **The Labs site is its own build of the site's code,** not a section of the main site: Labs mode
+  (`PUBLIC_SITE_MODE=labs`) changes the layout, the Labs hub is its data, and a thin `linuxserverlabs-playground/site`
+  deploys it with its own snapshots and Pages. Labs refreshes and failures never touch the main site, and Labs
+  control dispatches `hub-updated` inside its own org. No credential crosses between the orgs.
 - **GHCR only, after the cutover too.** Labs never pushes to Docker Hub or other registries.
 - **The bar:**
   - the upstream is owned by an organisation on any git host (GitHub preferred), never a personal account, with

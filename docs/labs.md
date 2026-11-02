@@ -28,12 +28,15 @@ The settled points are in [DECISIONS.md](../DECISIONS.md) under "Labs". This pag
 | Hub | Its own deploy of the same code, with mods, PRoot Apps and stores off | Labs data never mixes with the main fleet's stores, v1 image list or health. |
 | Runners | The Labs org's own 20 concurrent jobs | Labs builds can never take the main fleet's slots. |
 | Workflows, builder, ci, dumper, base images | Shared | Labs repositories call `linuxserver-playground/workflows@v1`. The workflow already derives the image path from the repository owner. |
-| Site, harness | Shared | One pane of glass with a Labs section, one guided entry point with a Labs path. |
+| Site | Its own build and deploy of the same code (`linuxserverlabs-playground/site`, Labs mode), with its own data snapshots and Pages | Labs refreshes and failures never touch the main site's, and Labs control rebuilds it inside its own org. |
+| Harness | Shared | One guided entry point with a Labs path. |
 
-No credential crosses between the two orgs, and the site never needs one. When Labs control posts `hub-updated`,
-it cannot dispatch to the main org's site. The site's 404 page already renders a build it predates from a hub's
-API, so pointing it at the Labs hub for `/labs/` paths makes a new Labs build live at once, and the site's own
-rebuilds make it static.
+No credential crosses between the two orgs. The Labs hub and the Labs site are thin repositories whose workflows
+call the main hub's and the main site's (`deploy-run.yml`), so there is one codebase; their data branches, Pages
+and dispatches stay in the Labs org.
+
+Secrets are passed to the shared workflows by name (builder's generated `build.yml` and `pr-report.yml`), because
+GitHub's `secrets: inherit` passes nothing to a workflow in another organisation.
 
 ## The bar
 
@@ -106,20 +109,24 @@ Each rule is something the proposal check or `builder check` can verify.
    repository runs a workflow for only one of its first pushes. Remove `labs-pending`; Labs control discovers the
    image, and the Labs hub and site follow.
 
-## On the site
+## The Labs site
 
-- **`/labs/` landing:** what Labs is, the bar, the steps above, and the button to the proposal form. Below it,
-  the images live in Labs.
+The same site code, built with `PUBLIC_SITE_MODE=labs` and the Labs hub as `HUB_URL`, deployed from
+`linuxserverlabs-playground/site` to `https://linuxserverlabs-playground.github.io/site/` (production:
+`labs.linuxserver.io`). The image, build and live-build pages are the main site's, unchanged. Labs mode changes the
+layout only: a notice under the header on every page, a Labs badge, its own navigation and footer, and no docs, blog,
+mods, PRoot Apps or stores (those link to the main site). The main site links to it from its footer.
+
+- **Home page:** what Labs is, the bar, the steps above, and the button to the proposal form, then the images in
+  Labs.
 - **Pending approval, public:** repositories with `labs-pending`, each linking its PR and report. A member has
   tried each one and put it forward, so they are worth showing.
 - **Proposals, only for signed-in team members:** the open issues in `proposals`, read from Labs control's public
   issues API. Anyone can file one, so the site does not advertise them. Hiding them from signed-out visitors is
   only presentation: the issues are public on GitHub.
-- **Labs image and build pages:** the main org's components, with a banner on every page saying the software is
-  community-maintained and not reviewed by LinuxServer, a different accent colour, the maintainers in the
-  header, no store templates, and the graduation scorecard.
-- **Search:** Labs results are marked and ranked below the main fleet's.
-- **Fleet:** a read-only Labs board from Labs control. Member actions on Labs wait until Labs control has its own
+- **Image and build pages:** the main site's, under the Labs notice, with no store templates; later the
+  maintainers in the header and the graduation scorecard.
+- **Fleet:** the Labs board from Labs control (it allows the Labs site's origin), read-only. Member actions on Labs wait until Labs control has its own
   sign-in; Labs admins act on GitHub meanwhile.
 
 ## Staying in Labs
@@ -150,7 +157,7 @@ no fix archives the image; 12 months with no upstream release flags it.
    URL. Turn on Pages as in the new-image recipe and run a live build. Then, with no further steps:
    - main control discovers it;
    - the Labs hub drops it on its next reconcile;
-   - the site redirects `/labs/images/<name>/` to `/images/<name>/`;
+   - the main site gains the image's pages, and the Labs site loses them, on their next builds;
    - Discord announces it.
 4. **The Labs image stays published** with a moved notice. The container design is the same, so users only change
    the `image:` line.
@@ -162,7 +169,6 @@ no fix archives the image; 12 months with no upstream release flags it.
 1. **No hard-coded org:**
    - the hub's `ORG` constant (`lsio_hub/config.py`) and the names built from it come from the environment, and
      its deploy and refresh become reusable workflows with an `org` input;
-   - the site reads a list of hubs (`src/lib/site.ts`, `src/lib/hub.ts`) and routes `/labs/` to the Labs one;
    - check that every workflow step takes the org from the repository owner, as the image path does. Control
      (`GITHUB_ORG`) and builder (`BUILDER_*`) already take it from the environment.
 2. **Builder:**
@@ -177,7 +183,7 @@ no fix archives the image; 12 months with no upstream release flags it.
    - a `.github` repository with the Labs rules and contributing guide.
 
    Then take two or three apps through the whole path.
-4. **Site `/labs/`.**
+4. **The Labs site:** Labs mode in the site, its callable deploy, and `linuxserverlabs-playground/site`.
 5. **Harness:** the Labs developer role, the playbook that helps a developer make their app easy to self-host and
    publish releases from their own repository, then package it; `labs try`, `labs accept`; the propose-image
    playbook and the site's "Coming: Labs" panels repointed.

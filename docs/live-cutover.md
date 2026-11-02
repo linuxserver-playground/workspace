@@ -23,7 +23,8 @@ rewrites in image repos have their own list in [playground-references.md](playgr
 - **Labs** ([labs.md](labs.md)).
   - The playground org `linuxserverlabs-playground` becomes `linuxserverlabs`, and its images move to
     `ghcr.io/linuxserverlabs`. The existing `linuxserver-labs` is an old experiment: leave it alone.
-  - Labs control's org, URLs and Discord webhook, the Labs hub's org, and the site's Labs hub URL all change with it.
+  - Labs control's org, URLs and Discord webhook, the Labs hub's org, and the Labs site's address change with it: the
+    Labs site moves to `labs.linuxserver.io` (`LABS_SITE_URL` and `MAIN_SITE_URL` in the site's `src/lib/site.ts`).
   - Labs images stay GHCR only. Whatever registries, mirrors or Scarf the main org adds at cutover, Labs gets none.
   - Until Labs exists, the site sends image proposals to issues on `harness` titled `Proposal:`
     (`PROPOSALS_URL` in the site's `src/lib/contribute.ts`, `/docs/contribute/proposing-an-image/` and its "Coming:
