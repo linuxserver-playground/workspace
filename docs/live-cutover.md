@@ -20,10 +20,11 @@ rewrites in image repos have their own list in [playground-references.md](playgr
 - **The harness.** `./harness` defaults to the playground's org, control and hub URLs (`HARNESS_*`
   overrides). Its guard hook and settings name `linuxserver-playground`. Its roles are member and contributor;
   map them to LinuxServer's tiers (below).
-- **Labs.**
-  - The playground demo uses `linuxserver-playground-labs`.
-  - Production has `linuxserver-labs`, and may split into sub-orgs. Decide the org layout, the proposal
-    flow, and what graduating into `linuxserver` means.
+- **Labs** ([labs.md](labs.md)).
+  - The playground org `linuxserverlabs-playground` becomes `linuxserverlabs`, and its images move to
+    `ghcr.io/linuxserverlabs`. The existing `linuxserver-labs` is an old experiment: leave it alone.
+  - Labs control's org, URLs and Discord webhook, the Labs hub's org, and the site's Labs hub URL all change with it.
+  - Labs images stay GHCR only. Whatever registries, mirrors or Scarf the main org adds at cutover, Labs gets none.
   - Until Labs exists, the site sends image proposals to issues on `harness` titled `Proposal:`
     (`PROPOSALS_URL` in the site's `src/lib/contribute.ts`, `/docs/contribute/proposing-an-image/` and its "Coming:
     Labs" panel). Repoint all three, and the harness's propose-image playbook, when Labs opens.

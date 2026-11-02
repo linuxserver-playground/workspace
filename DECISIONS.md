@@ -316,6 +316,43 @@ change one, ask the maintainers first, then update this file in the same change.
 - **SWAG proxy confs** are generated from each image's `proxy` block by the hub, and SWAG pulls the generated
   repo. Non-LinuxServer apps keep their hand-maintained confs.
 
+## Labs
+
+Design and plan: [docs/labs.md](docs/labs.md).
+
+- **Labs lowers the bar for the software, not for the process.** `linuxserverlabs-playground` (production
+  `linuxserverlabs`; the old `linuxserver-labs` is left alone) is where unproven projects publish and get known
+  before they could earn a place in the main org. Outside developers never get push access: they propose, and
+  they contribute by pull request from a fork. Team members create repositories, merge, and decide what goes
+  live. Labs admins and moderators are a GitHub team in the Labs org. A Labs image's `maintainers` are credit
+  and who gets mentioned, never access.
+- **Docker images only.** No Labs mods or PRoot Apps: too much machinery for what they add.
+- **Separate control and hub, shared pipeline and site.** Labs has its own org secrets, GHCR namespace, control
+  instance (own App and Discord builds channel), hub deploy (no stores, mods or PRoot Apps) and the org's own 20
+  runner slots. It calls the main org's workflows, builder, ci and base images, and the one site renders it under
+  `/labs/`. No credential crosses between the orgs: the site renders new Labs builds live from the Labs hub
+  instead of being dispatched from Labs control.
+- **GHCR only, after the cutover too.** Labs never pushes to Docker Hub or other registries.
+- **The bar:**
+  - the upstream is owned by an organisation on any git host (GitHub preferred), never a personal account, with
+    no exceptions;
+  - an approved open-source licence;
+  - stable, versioned releases with stable asset names we can ingest, release assets preferred, building from
+    the release's source allowed;
+  - a self-hosted web app in the LinuxServer container design on a playground base image;
+  - the app works with just the container: an embedded database must be an option, or the image bakes in its
+    own fallback, and no companion containers are required;
+  - no apps whose main function is a vendor's paywalled hosted service, while an open-source app that calls a
+    hosted API with a configurable endpoint qualifies;
+  - amd64 only is allowed.
+- **Proposals are a structured issue form** in Labs' `proposals` repository, linked from the site's Labs page and
+  filled in by the harness. The form carries everything a member needs to build the image and try it in a
+  sandbox, so the bot and a member weed proposals out before any repository exists. A member elevates a
+  proposal by creating `docker-<name>` with an "Image pending approval" `main` branch and opening the first pull
+  request from the issue. That PR's build posts the report comment the team reviews from.
+- **The site shows pending images, not proposals.** Repositories a member has elevated are listed publicly as
+  pending approval. Open proposals are shown only to signed-in team members, since anyone can file one.
+
 ## Working in the org
 
 - Repos, commits, branches and tags in `linuxserver-playground` need no sign-off. The real `linuxserver` org
