@@ -152,6 +152,9 @@ change one, ask the maintainers first, then update this file in the same change.
   What outlasts that, control heals: it repairs missed webhooks (`heal.py`), retries a failed Pages deploy with
   backoff, and re-runs a live build once when every failed job failed on an infrastructure step, never on the
   image build or the tests (`recover.py`). Discord hears only what control gave up on, grouped hourly.
+  A deploy GitHub calls successful is checked, not trusted: the hub's Deploy fails unless its Pages site then
+  serves the run's `deploy.json` (three deploys at most), and control redeploys the hub like any Pages site. On
+  2026-11-04 GitHub reported five hub deploys successful in an hour while the site kept serving an older one.
 - **Batch build projects share the org.** wheelie, proot-apps and selkies-layers are brought into the
   playground org, not a separate build org. They are not images: their builds are capped so they always leave
   runner slots free for image, hub and site builds, and the site shows them apart from the image fleet.
