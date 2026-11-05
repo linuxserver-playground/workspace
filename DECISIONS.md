@@ -36,6 +36,9 @@ change one, ask the maintainers first, then update this file in the same change.
 - **Templating commits happen once, on the live branch.** PRs are only checked. Both bot commits carry
   `[skip ci]` and neither starts a build: `Update generated files` is made before the build that continues on
   it, `Update package versions` after a successful release.
+- **Every upstream version is a new release.** Whatever the upstream version does (moves forward, goes back to an
+  older one, or takes a name that sorts nowhere), the build tags it as it resolves and releases it with the next
+  `-lsN`. An existing tag is republished only by a rebuild of the same commit for the same upstream version.
 - **A package check is one build, never two.** The weekly `reason: packages` run compares the fresh package
   table with the committed one before anything is published and releases from the same run when it changed,
   with a new `-lsN`; when nothing changed it publishes nothing. Every successful live release then commits the
@@ -294,7 +297,7 @@ change one, ask the maintainers first, then update this file in the same change.
   pending run per concurrency group, so each run reads every `image.yml` and the newest releases of every repo
   over GraphQL (about 15 seconds) and ingests every release `data/` lacks, and every held release whose
   `build.json` was uploaded an hour or more after the held record was built: a rebuild of an already released
-  head republishes under the same tag (workflows' `head_already_released`), and the hub, then the site's refresh,
+  head for the same upstream version republishes under the same tag (workflows' `head_already_released`), and the hub, then the site's refresh,
   take the new record. The dispatch's tag is forced in the same run so a quicker rebuild is not missed.
 - **Stores.** The hub generates Unraid, Portainer, CasaOS, Umbrel, Runtipi, Cosmos and Arcane templates, with
   the store id prefix `lsio`. Unraid, Umbrel and Runtipi read a git repo, so the hub pushes them to
