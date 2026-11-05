@@ -103,10 +103,10 @@ LinuxServer Labs publishes newer, less proven images in its own org on the same 
    run completes, control attaches `run.json` and `logs.zip` to the Release.
 5. The hub's Deploy reconciles the organisation over GraphQL, ingests every release `data/` lacks (build.json
    and record.json: two downloads each), publishes `data/` to its `data` branch, renders the API on every core
-   and deploys Pages. From then on the build's site page works: the site renders a build it predates from the
-   hub's API on its 404 page (`LiveBuildPage`).
+   and deploys Pages. From then on the build's site page works: the site renders every build page in the
+   browser from the hub's API (`LiveBuildPage`, on its 404 page).
 6. When the hub's Deploy succeeds, control sends `hub-updated` to the site, and the site rebuilds from the hub
-   API, which makes the new build pages static. Nobody waits for this step.
+   API: the image pages, lists and search pick up the build. Nobody waits for this step.
 7. The site's fleet pages read control's JSON API live, with the session cookie, for anything that changes
    minute to minute.
 8. Hourly, the hub's `refresh.yml` reads stars, refreshes the mods index, publishes to the `data` branch and asks for a Deploy, then pushes the Unraid, Umbrel

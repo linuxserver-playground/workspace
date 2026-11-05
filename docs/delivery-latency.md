@@ -63,7 +63,7 @@ control ──── image-released ──▶ hub ingest (hot): fetch the precom
                                  render that image's routes and the fleet indexes, deploy Pages
                                      │
                                      ▼  the build's data is on the hub
-site page for the build ◀─────── rendered from the hub's JSON in the browser when the static site predates it
+site page for the build ◀─────── rendered from the hub's JSON in the browser (no file per build)
                                      │
 hub refresh (cold, hourly) ──────── reconcile, observe, mods, vulnerability rescans, stores
 site rebuild (coalesced) ────────── new images, content, static pages for builds that arrived since

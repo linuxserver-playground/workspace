@@ -221,10 +221,9 @@ change one, ask the maintainers first, then update this file in the same change.
   hub says is a gap in the site. The separate docs site is archived; non-image docs and the blog live in the
   site as content collections. The fleet dashboard lives in the site too.
 - **Release notes render as GitHub does.** Both sections (LinuxServer and upstream) are GitHub-flavoured
-  Markdown with raw HTML allowed, rendered at site build time and sanitised to an allowlist (no scripts, styles,
-  frames, forms, event handlers or non-http(s) URLs). Upstream notes may be HTML from a feed (`upstream.notes`
-  type `rss`); they are stored verbatim and only sanitised where they are shown. A build page rendered live
-  from the hub (below) shows the notes as plain text until the next site build renders them.
+  Markdown with raw HTML allowed, rendered in the browser on the build page and sanitised to an allowlist (no
+  scripts, styles, frames, forms, event handlers or non-http(s) URLs). Upstream notes may be HTML from a feed
+  (`upstream.notes` type `rss`); they are stored verbatim and only sanitised where they are shown.
 - **Data about a build is made by the build.** The publish job derives `record.json` (`builder record`): the
   package tables, the diff against the previous release of the branch, a grype scan of both architectures and
   the base image's layers. Image builds may take a minute longer for it, so that the hub only indexes. The hub
@@ -233,10 +232,12 @@ change one, ask the maintainers first, then update this file in the same change.
   the mods and PRoot Apps indexes and the pushes to the store repositories are `refresh.yml`'s, hourly, and
   each writes only its own files in `data/` so both commit without conflicts. Each is one job, because every job
   waits for a runner slot on its own.
-- **The site renders a build it predates from the hub.** Pages answers a new build's URL with the 404 page,
-  which renders the build page in the browser from the hub's API with the same components as the static page.
-  A release is on the website once the hub serves it; the site's own rebuild only makes it static. Control's
-  Discord hold treats the hub serving the build as live.
+- **Build and run pages are rendered in the browser.** The site emits no file per build or per workflow run: they
+  are the newest five per branch, short-lived, and not meant as landing pages or for search engines (image pages
+  are). Pages answers a build's URL with the 404 page, which renders the build page from the hub's API and the
+  image repository's own Pages; a run's URL is sent to the runs page, which renders it from the control plane and
+  shows the run's own URL. Static, they were 1,364 build pages and 1,406 run pages, 576 of the site's 814 MB
+  (2026-11-05). A release is on the website once the hub serves it; control's Discord hold treats it so.
 - **PRoot Apps is the site's app catalogue,** as Flathub is Flatpak's: `/proot-apps/` shows how to install the CLI,
   then every app proot-apps' `metadata/metadata.yml` does not mark `disabled`, with its install command, whether or not
   the playground has built it yet. The hub indexes the file hourly (`/api/v1/proot-apps.json`), and the site keeps the
