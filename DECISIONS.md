@@ -156,8 +156,15 @@ change one, ask the maintainers first, then update this file in the same change.
   backoff, and re-runs a live build once when every failed job failed on an infrastructure step, never on the
   image build or the tests (`recover.py`). Discord hears only what control gave up on, grouped hourly.
   A deploy GitHub calls successful is checked, not trusted: the hub's Deploy fails unless its Pages site then
-  serves the run's `deploy.json` (three deploys at most), and control redeploys the hub like any Pages site. On
+  serves the run's `deploy.json` (two deploys at most), and control redeploys the hub like any Pages site. On
   2026-11-04 GitHub reported five hub deploys successful in an hour while the site kept serving an older one.
+  On 2026-11-06 the hub's Pages stopped publishing altogether: a deploy of a commit it had seen came back
+  "successful" in seconds with nothing synced, and one of a new commit hung in syncing for ten minutes, while a
+  scratch repository deployed the same site in under two. Deleting and recreating the hub's Pages site
+  (`gh api -X DELETE repos/<repo>/pages`, then `POST … -f build_type=workflow`, then a Deploy) cleared it at
+  once; the `github-pages` environment and its branch policy survive the reset. The stale deploys came mostly in
+  busy hours, so the hub's Deploy also keeps its Pages deploys at least 330 s apart (waiting before its ingest,
+  so releases arriving meanwhile join the same deploy) and deploys at most twice a run.
 - **Batch build projects share the org.** wheelie, proot-apps and selkies-layers are brought into the
   playground org, not a separate build org. They are not images: their builds are capped so they always leave
   runner slots free for image, hub and site builds, and the site shows them apart from the image fleet.
