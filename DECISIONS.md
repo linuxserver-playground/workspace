@@ -167,7 +167,7 @@ change one, ask the maintainers first, then update this file in the same change.
   busy hours, which is why the hub and the site now publish from a branch on control's slots (below).
 - **Control paces the hub's and the site's deploys, and both publish from `gh-pages`.** Neither deploys on a push,
   a cron or another workflow's dispatch: control requests a Deploy for what changed (for the hub a live release, a
-  push to `main`, the Refresh's `Refresh data` commit, an image repository created or deleted, an hourly reconcile;
+  push to `main`, the Refresh's `Refresh data` commit, an image repository created or deleted, a reconcile after six quiet hours;
   for the site a push to the hub's `gh-pages`, a push to its own `main`, a daily `refresh_all`) and dispatches it at
   the repository's next slot, 400 s apart, the site's half a slot after the hub's. So each deploys at most nine
   times an hour, and not at all when nothing changed. The Deploy publishes the build as the one commit of
