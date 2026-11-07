@@ -228,6 +228,11 @@ rewrites in image repos have their own list in [playground-references.md](playgr
   that domain serves, so give it a data domain (not the website's) or none. Enable Pages on every repo first
   (a maintainer, as in the new-image recipe; control only reports repos without it and never gets
   Administration write), then backfill with a `reason: pages` dispatch per repo before the hub links them.
+- **The hub's and the site's Pages publish from `gh-pages`.** Set the live hub and site repos' Pages to the
+  `gh-pages` branch, root folder (`gh api -X PUT repos/<repo>/pages -f build_type=legacy -f 'source[branch]=gh-pages'
+  -f 'source[path]=/'`) after their first Deploy has pushed the branch, and let `github-actions[bot]` force-push
+  it. Their Deploys only run when control dispatches them (control `deploys.py`), so live control must be up before
+  the hub or site can deploy at all.
 - **The hub's website URL.** `config.WEBSITE` and `site_build()` in the hub hard-code the playground site; its
   `/builds/<image>/<tag>/` redirect stubs and `links.test_report` follow them.
 - **Docs URLs.** Point the site, hub and docs URLs baked into generated files (`builder.manifest.Settings`)

@@ -155,6 +155,27 @@ publish-stores) and the site's two, and each job queued for a slot separately: a
 A lone release is as fast as before (heimdall: hub 3.1 minutes, static page 5.3, against medians of 3.3 and 6.0).
 In a burst each hub run now waits for one slot instead of two, and a hub plus site pair is two jobs instead of eight.
 
+## Deploys on control's clock, from gh-pages (2026-11-07)
+
+The hub deployed five to seven times an hour, once per `image-released` dispatch with a 330 s gap kept inside the
+job, and its Pages still went stale and then stopped publishing (2026-11-04, 2026-11-06; DECISIONS.md, "Nobody
+babysits GitHub's lapses"). The guess is a limit on how often GitHub's Pages backend refreshes one site, so the
+release path now asks less of it:
+
+- Nothing triggers the hub's or the site's Deploy but control (control `deploys.py`). A release, a push to `main`
+  or the Refresh's `Refresh data` commit only requests the next slot. Slots are 400 s apart, the site's half a slot
+  after the hub's, so each deploys at most nine times an hour, and every release since the last run rides on the
+  next one.
+- Both publish the build as the one commit of `gh-pages` (`scripts/pages_publish.sh`) and push nothing when the
+  build matches the branch, so Pages builds only for a real change. A branch-published site has a soft limit of
+  ten builds an hour, which the slots keep it under.
+- The Discord message of a release stays amber and links the run's job summary until the hub serves the build,
+  then turns green with the site link.
+
+What a release waits for now: up to one slot (400 s, about 200 s on average) before the hub's Deploy starts, its
+run (ingest, render, push), then the Pages build of `gh-pages`: about 85 s for the Labs hub and 95 s for the Labs
+site on their first publish.
+
 ## Decisions this changed
 
 - "The hub runs grype on new builds in the run that ingests them" became: the build scans itself; the hub

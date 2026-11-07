@@ -155,16 +155,29 @@ change one, ask the maintainers first, then update this file in the same change.
   What outlasts that, control heals: it repairs missed webhooks (`heal.py`), retries a failed Pages deploy with
   backoff, and re-runs a live build once when every failed job failed on an infrastructure step, never on the
   image build or the tests (`recover.py`). Discord hears only what control gave up on, grouped hourly.
-  A deploy GitHub calls successful is checked, not trusted: the hub's Deploy fails unless its Pages site then
-  serves the run's `deploy.json` (two deploys at most), and control redeploys the hub like any Pages site. On
-  2026-11-04 GitHub reported five hub deploys successful in an hour while the site kept serving an older one.
+  A deploy GitHub calls successful is checked, not trusted: the hub's and the site's Deploy fail unless their Pages
+  site then serves the run's `deploy.json`, and control requests another Deploy slot with backoff, as it redeploys
+  any Pages site. On 2026-11-04 GitHub reported five hub deploys successful in an hour while the site kept serving
+  an older one.
   On 2026-11-06 the hub's Pages stopped publishing altogether: a deploy of a commit it had seen came back
   "successful" in seconds with nothing synced, and one of a new commit hung in syncing for ten minutes, while a
   scratch repository deployed the same site in under two. Deleting and recreating the hub's Pages site
   (`gh api -X DELETE repos/<repo>/pages`, then `POST … -f build_type=workflow`, then a Deploy) cleared it at
   once; the `github-pages` environment and its branch policy survive the reset. The stale deploys came mostly in
-  busy hours, so the hub's Deploy also keeps its Pages deploys at least 330 s apart (waiting before its ingest,
-  so releases arriving meanwhile join the same deploy) and deploys at most twice a run.
+  busy hours, which is why the hub and the site now publish from a branch on control's slots (below).
+- **Control paces the hub's and the site's deploys, and both publish from `gh-pages`.** Neither deploys on a push,
+  a cron or another workflow's dispatch: control requests a Deploy for what changed (for the hub a live release, a
+  push to `main`, the Refresh's `Refresh data` commit, an image repository created or deleted, an hourly reconcile;
+  for the site a push to the hub's `gh-pages`, a push to its own `main`, a daily `refresh_all`) and dispatches it at
+  the repository's next slot, 400 s apart, the site's half a slot after the hub's. So each deploys at most nine
+  times an hour, and not at all when nothing changed. The Deploy publishes the build as the one commit of
+  `gh-pages` (pushed with a lease, like the `data` branch) and pushes nothing when the build matches what is there,
+  so Pages builds only for a real change; Pages' soft limit of ten builds an hour for a branch-published site stays
+  out of reach. Chosen over the Actions artifact deploy after the stale and hung deploys of 2026-11-04 and
+  2026-11-06, which looked like a limit on how often GitHub's Pages backend refreshes one site; triggering from
+  every release had the hub deploying five to seven times an hour. Image repositories keep their artifact deploys:
+  each deploys a few times a day and none has gone stale. Release latency is the price: a release waits up to one
+  slot for the hub.
 - **Batch build projects share the org.** wheelie, proot-apps and selkies-layers are brought into the
   playground org, not a separate build org. They are not images: their builds are capped so they always leave
   runner slots free for image, hub and site builds, and the site shows them apart from the image fleet.
@@ -192,7 +205,9 @@ change one, ask the maintainers first, then update this file in the same change.
   on its Pages (Actions build, no branch rule on `github-pages`, so every live branch can deploy), as the
   new-image recipe says; control only reports an image repository without Pages.
 - **A release's Discord message is held until its site page is live** ("passed, publishing"), so it never
-  links a 404. Past 30 minutes control posts where it is stuck (hub or site); it stops watching after 24 h.
+  links a 404. While held it is amber and links the run's job summary, which opens with the build's report, never
+  control; once the hub serves the build it turns green and links the site's build page. Past 30 minutes control
+  posts where it is stuck (hub or site); it stops watching after 24 h.
 - **Discord follows the Jenkins colours:** green for a live success, dark green for a dev or PR success, red
   for a live failure, dark red for a dev or PR failure. A build without a site page links its report: a PR
   build its report comment, any other its run's summary. A package check is announced only when it fails;
@@ -332,7 +347,7 @@ Design and plan: [docs/labs.md](docs/labs.md).
 - **The Labs site is its own build of the site's code,** not a section of the main site: Labs mode
   (`PUBLIC_SITE_MODE=labs`) changes the layout, the Labs hub is its data, and a thin `linuxserverlabs-playground/site`
   deploys it with its own snapshots and Pages. Labs refreshes and failures never touch the main site, and Labs
-  control dispatches `hub-updated` inside its own org. No credential crosses between the orgs.
+  control paces its hub's and site's deploys inside its own org. No credential crosses between the orgs.
 - **GHCR only, after the cutover too.** Labs never pushes to Docker Hub or other registries.
 - **The bar:**
   - the upstream is owned by an organisation on any git host (GitHub preferred), never a personal account, with

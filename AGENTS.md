@@ -49,8 +49,8 @@ them without the maintainers.
 | `workflows` | The reusable `image-build.yml` and `mod-build.yml` plus one composite action per step | the floating tag `v1` moves to the new commit (image repos call `@v1`) |
 | `ci` | The container test harness: runs each built image, takes screenshots, emits the release bundle | push to main publishes `ghcr.io/linuxserver-playground/ci:latest`, which workflows pulls |
 | `dumper` | Rust static file-tree walker for the bundle (`dumper files`) | a GitHub Release; workflows fetch `releases/latest` |
-| `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index, the PRoot Apps index and build reports; `refresh.yml` hourly: stars, mods, PRoot Apps, pushes to the store repos (tags come from each build's `build.json`) | push to main, hourly refresh dispatched by control, `repository_dispatch image-released` |
-| `site` | Astro website: image pages, build pages, fleet board (live from control), PRoot Apps catalogue, docs collection, blog | push to main, `repository_dispatch hub-updated` (relayed by control after every hub deploy), daily cron |
+| `hub` | Ingests each release's `build.json` and `record.json` into `data/`, serves the API on Pages, generates stores, proxy confs, k8s manifests, the mods index, the PRoot Apps index and build reports; `refresh.yml` hourly: stars, mods, PRoot Apps, pushes to the store repos (tags come from each build's `build.json`) | control dispatches its Deploy on fixed slots (at most nine an hour) when something changed: a release, a push to main, refreshed data; it publishes to `gh-pages` |
+| `site` | Astro website: image pages, build pages, fleet board (live from control), PRoot Apps catalogue, docs collection, blog | control dispatches its Deploy on its slots, half a slot after the hub's: after the hub publishes, a push to main, and daily with `refresh_all`; it publishes to `gh-pages` |
 | `control` | FastAPI GitHub App on n97: webhooks, fleet discovery, central scheduler, `/events`, OAuth sign-in, member actions, Discord | push to main: Publish runs the checks and pushes `:latest`; n97's updater pulls it within 5 minutes |
 | `triage` | Retired (2026-11-02): the AI first responder was a demonstration and is not carried to the live org. Its container on n97 is stopped; the repository is kept for reference | nothing deploys it |
 | `docker-<name>` | One image each: `image.yml`, two Dockerfiles, `root/`; README, AGENTS.md and `build.yml` are generated. Its Pages site (deployed from an artifact, nothing committed) serves its newest builds' heavy files | push to a live branch builds, releases and redeploys its Pages; any other branch builds to `dev/`; `reason=pages` only redeploys its Pages |
@@ -97,20 +97,26 @@ LinuxServer Labs publishes newer, less proven images in its own org on the same 
    attestation. `builder record` derives `record.json`: package tables, the diff against the previous release,
    a grype scan, base layers. The GitHub Release gets the bundle assets with it.
 4. The workflow POSTs signed events to control `/events`. Control posts to Discord (held at "publishing" until
-   the hub serves the build) and sends the hub `repository_dispatch image-released`. The Publish job then
-   deploys the image repo's own Pages from its Releases (newest 5 per live branch): screenshots, test logs,
+   the hub serves the build, linking the run's summary meanwhile) and requests the hub's next Deploy slot. The
+   Publish job then deploys the image repo's own Pages from its Releases (newest 5 per live branch): screenshots, test logs,
    file trees and package tables, which the site reads cross-origin (CONVENTIONS §6, "Repo Pages"). When the
    run completes, control attaches `run.json` and `logs.zip` to the Release.
 5. The hub's Deploy reconciles the organisation over GraphQL, ingests every release `data/` lacks (build.json
    and record.json: two downloads each), publishes `data/` to its `data` branch, renders the API on every core
-   and deploys Pages. From then on the build's site page works: the site renders every build page in the
-   browser from the hub's API (`LiveBuildPage`, on its 404 page).
-6. When the hub's Deploy succeeds, control sends `hub-updated` to the site, and the site rebuilds from the hub
-   API: the image pages, lists and search pick up the build. Nobody waits for this step.
+   and publishes the site to its `gh-pages` branch, which Pages serves. Control dispatches it on fixed slots, 400 s
+   apart (at most nine an hour, below Pages' ten builds an hour for a branch), and only when something was requested
+   since the last one; every release since then rides on the same run. From then on the build's site page works:
+   the site renders every build page in the browser from the hub's API (`LiveBuildPage`, on its 404 page), and
+   control turns the Discord message green with the site link.
+6. When the hub's Deploy pushed something new to `gh-pages`, control requests the site's next slot (half a slot
+   after the hub's), and the site rebuilds from the hub API: the image pages, lists and search pick up the build.
+   Nobody waits for this step. Neither repository deploys on its own: no push, cron or workflow starts them, and a
+   build identical to what `gh-pages` holds is not pushed. Control's `/api/status.json` `deploys` shows what waits.
 7. The site's fleet pages read control's JSON API live, with the session cookie, for anything that changes
    minute to minute.
-8. Hourly, the hub's `refresh.yml` reads stars, refreshes the mods index, publishes to the `data` branch and asks for a Deploy, then pushes the Unraid, Umbrel
-   and Runtipi store repos.
+8. Hourly, the hub's `refresh.yml` reads stars, refreshes the mods index, publishes what changed to the `data` branch
+   as a `Refresh data` commit (which control serves at the hub's next slot), then pushes the Unraid, Umbrel and
+   Runtipi store repos.
 
 `docs/delivery-latency.md` measures this path and records why it is shaped this way.
 
@@ -210,7 +216,9 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   pull request, which a reviewer merges. Open edits show on the page they change, not on any overview. A change
   to the editor spans both repos; `site/scripts/editor-check.mjs` drives it against a fake control plane.
 - **Hub generator or API change.** Edit `hub`, update the fixture tests for sonarr, swag and multidb, and
-  push. Pages redeploys on push. To force a full refresh: `gh workflow run deploy.yml -R linuxserver-playground/hub`.
+  push. Control deploys it at the hub's next slot (within about seven minutes). A hand dispatch
+  (`gh workflow run deploy.yml -R linuxserver-playground/hub`) works but is outside control's nine an hour, so
+  leave it for when control is down.
 - **Control change.** Edit `control`, run its checks, and push to main. That deploys. A red main ships
   nothing, so watch the Publish run. Settings live as defaults in `control/config.py`, so changing one is a
   code change. Only a new *secret* needs n97 (see Secrets).
@@ -221,15 +229,15 @@ Run the validation steps from each repo's AGENTS.md before every push. Never cla
   (CONVENTIONS §3, "Mods"). When upstream ships several version lines at once (Go's two supported releases and
   its release candidate), list the others under `upstream.lines` and the floating `-X`/`-X.Y` tags under `tags`;
   `render-mod` then adds the `line` input to that branch's `build.yml`, and control builds each line in turn
-  (`code-server-golang` is the worked example). Control re-reads a pushed `mod.yml` at once. The hub refreshes the mods index only on scheduled or dispatched runs (control dispatches one
-  hourly); `gh workflow run deploy.yml -R linuxserver-playground/hub` to see it sooner.
+  (`code-server-golang` is the worked example). Control re-reads a pushed `mod.yml` at once. The hub refreshes the
+  mods index only in its hourly `refresh.yml` (control dispatches it), and control serves that at the next Deploy
+  slot; `gh workflow run refresh.yml -R linuxserver-playground/hub` to see it sooner.
 - **Remove an image.** Check nothing depends on it first: no other image builds `FROM` it and no open PRs.
   Then delete the repo and its GHCR packages (`<name>`, `build/<name>`, and any `dev/<name>` or
   `untrusted-pr/<name>`); packages outlive their repo. Everything else follows on its own:
   - control drops the repo on GitHub's `repository deleted` webhook;
-  - the hub's next Deploy (within the hour, or `gh workflow run deploy.yml -R linuxserver-playground/hub`) removes
-    its data;
-  - the site rebuilds without its pages on the `hub-updated` that follows.
+  - the `repository deleted` webhook also requests the hub's next Deploy slot, which removes its data;
+  - the site rebuilds without its pages at its own next slot after that.
 
   Archiving instead keeps it on the site with an `archived` flag.
 - **New `docker-*` repo that is not an image.** Leave out `image.yml`; discovery lists it as a helper repo.
